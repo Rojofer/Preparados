@@ -33,20 +33,16 @@
    "url": "./#ayuda"
   },
   {
+   "name": "Radio y comunicación",
+   "url": "./#radio"
+  },
+  {
    "name": "Mapa y brújula",
    "url": "./#mapa"
   },
   {
    "name": "30 días sin luz",
    "url": "./#30dias"
-  },
-  {
-   "name": "Avisar que estoy bien",
-   "url": "./#aviso"
-  },
-  {
-   "name": "Compartir con la familia",
-   "url": "./#compartir"
   }
  ]
 }

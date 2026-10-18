@@ -562,6 +562,19 @@ textarea{min-height:76px;resize:vertical}
 .apr-ojo strong{color:var(--crit);font-size:14px;text-transform:uppercase;letter-spacing:.06em}
 .apr-nav{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
 .apr-nav .btn{flex:1 1 140px;white-space:normal;text-align:center}
+.radios{list-style:none;margin:0 0 6px;padding:0;display:flex;flex-direction:column;gap:6px}
+.radios li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 12px;align-items:center;padding:10px 12px;border-radius:12px;background:var(--surface-2);border:2px solid transparent}
+.radios li.on{border-color:var(--ok)}
+.r-f{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:64px;padding:6px 4px;border-radius:10px;background:var(--tile);color:var(--tile-ink);font-size:20px;font-weight:600;line-height:1}
+.r-f small{font-size:11px;letter-spacing:.08em;color:var(--signal);margin-bottom:3px}
+.r-t{display:flex;flex-direction:column;line-height:1.3;min-width:0}.r-t span{font-size:14px;color:var(--ink-2)}
+.r-ok{grid-column:2;display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ink-2);min-height:36px;cursor:pointer}
+.r-ok input{width:20px;height:20px;accent-color:var(--ok)}
+.kv-list{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px}
+.coms{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.coms li{display:flex;flex-direction:column;gap:6px;padding:14px;border-radius:var(--r);background:var(--surface);border:1px solid var(--line)}
+.coms h3{display:flex;gap:10px;align-items:center;font-size:18px}
+.coms h3 .mono{display:grid;place-items:center;flex:none;width:28px;height:28px;border-radius:50%;background:var(--signal);color:var(--on-signal,#fff);font-size:15px}
 .msgprev{padding:14px;border-radius:12px;background:var(--surface-2);font-size:17px;line-height:1.45;overflow-wrap:anywhere}
 .fb{display:flex;flex-direction:column;gap:14px;padding:20px 18px;border-radius:16px;background:var(--surface);border:2px solid var(--crit)}
 .fb h1{font-size:40px}
@@ -749,6 +762,12 @@ const SRC = {
   robosMza:["Gobierno de Mendoza: prevenir robos en el hogar","https://www.mendoza.gov.ar/prensa/seguridad-aconseja-medidas-de-prevencion-para-evitar-robos-en-el-hogar/"],
   sroCasero:["WikEM: suero de rehidratación oral casero","https://www.wikem.org/wiki/ORS/es"],
   stcChicos:["Save the Children: cómo hablar con niños y niñas sobre desastres","https://savethechildren.es/sites/default/files/2024-11/Como_hablar_con_ninos_y_ninas_sobre_desastres_naturales_STC.pdf"],
+  radiosAzul:["Streema: radios de Azul","https://streema.com/radios/Azul"],
+  lu10:["TotalMedios: AM 1320 LU10 Radio Azul","https://www.totalmedios.com/medio/2486/am-1320-lu10-radio-azul-"],
+  radioPublica:["Euskal Kultura: Radio Pública de Azul, FM 87.9","https://www.euskalkultura.eus/english/news/the-gure-txokoa-basque-club-in-azul-will-debut-its-radio-program-this-friday-la-voz-de-los-vascos-bi-weekly-on-radio-publica"],
+  starlinkAr:["Infozona: Starlink en el celular todavía no está habilitado en la Argentina (agosto de 2026)","https://www.infozona.com.ar/starlink-en-el-celular-como-funciona-argentina/"],
+  enacomRadioaf:["DPL News: ENACOM simplificó el reglamento de radioaficionados","https://dplnews.com/argentina-enacom-simplifico-el-reglamento-de-radioaficionados/"],
+  seraIaru:["IARU Región 2: radioaficionados argentinos en emergencias","https://iaru-r2.org/en/amateur-radio-operators-active-during-floods-in-argentina"],
   gmapsShare:["Google: cómo compartir la ubicación","https://support.google.com/maps/answer/7326816?hl=es-419&co=GENIE.Platform%3DAndroid"],
   androidSOS:["Ayuda de Android: obtén ayuda durante una emergencia","https://support.google.com/android/answer/9319337?hl=es-419"],
   samsungSOS:["Xataka: mensajes SOS de Samsung con tu ubicación","https://www.xataka.com/basics/como-enviar-mensajes-automaticos-sos-samsung-tu-ubicacion-fotos"],
@@ -2350,7 +2369,7 @@ const BOTIQUIN = [
   {title:"Medicamentos",items:[["b-analgesico","Analgésicos y antifebriles, cada uno con sus instrucciones",1],["b-sales","Sales de rehidratación oral",1],["b-propios","Los medicamentos habituales de cada integrante",1],["b-antihist","Antihistamínico"],["b-antiacido","Antiácido"]]},
   {title:"Información",items:[["b-telefonos","Teléfonos de emergencia y de la obra social",1],["b-manual","Un manual de primeros auxilios"]]}
 ];
-const LISTS = {mochila:{list:MOCHILA, label:"Mochila"}, botiquin:{list:BOTIQUIN, label:"Botiquín"}, kit:{list:KIT, label:"Kit del hogar"}};
+const LISTS = {indisp:{list:null, label:"Lo indispensable"}, mochila:{list:MOCHILA, label:"Mochila"}, botiquin:{list:BOTIQUIN, label:"Botiquín"}, kit:{list:KIT, label:"Kit del hogar"}};
 const CORTE_STEPS = [
   ["puertas","Heladera y freezer cerrados"],
   ["aparatos","Aparatos sensibles desenchufados"],
@@ -2403,6 +2422,7 @@ const ICON = {
   fire:'<path d="M12 3c3 4 5 6 5 10a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-4-1-6 1-9z"/><path d="M4 21l16-3M4 18l16 3"/>',
   pot:'<path d="M4 10h16v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4z"/><path d="M2 10h20M9 7q1-2 0-4M14 7q1-2 0-4"/>',
   home:'<path d="M3 11 12 4l9 7v9H3z"/><path d="M10 20v-5h4v5"/>',
+  radio:'<rect x="3" y="9" width="18" height="12" rx="2"/><path d="M7 9 17 3"/><circle cx="15.5" cy="15" r="2.5"/><path d="M6.5 13.5h4M6.5 16.5h4"/>',
   id:'<rect x="2.5" y="5" width="19" height="14" rx="2"/><circle cx="8.5" cy="11" r="2.2"/><path d="M5.5 16a3 3 0 0 1 6 0M14 10h5M14 13.5h4"/>',
   cal:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
   toilet:'<path d="M14 3h6v8h-6z"/><path d="M3 11h17a6 6 0 0 1-6 6v4H9v-4a6 6 0 0 1-6-6z"/>',
@@ -2414,7 +2434,7 @@ const icon = (name, cls) => `<svg class="ic ${cls || ""}" viewBox="0 0 24 24" ar
 
 /* ---------- Estado: solo en este navegador ---------- */
 const KEY = "preparados.v1";
-const state = {checks:{}, corte:null, contacts:[], punto:"", inv:[], recs:{}, plan:{miembros:[], mascotas:"", tareas:{}, lugares:{}, contacto:{}, sim:null}, fichas:[], provincia:"", ciudad:"Azul", yo:"", trash:[], lastBackup:0, lugares:[], ultimaPos:null, mes:{checks:{}}, miAviso:null, avisos:[]};
+const state = {checks:{}, corte:null, contacts:[], punto:"", inv:[], recs:{}, plan:{miembros:[], mascotas:"", tareas:{}, lugares:{}, contacto:{}, sim:null}, fichas:[], provincia:"", ciudad:"Azul", yo:"", trash:[], lastBackup:0, lugares:[], ultimaPos:null, mes:{checks:{}}, radioOk:{}, miAviso:null, avisos:[]};
 function load(){
   try{
     const raw = localStorage.getItem(KEY);
@@ -2441,6 +2461,7 @@ function load(){
     if(typeof s.lastBackup === "number") state.lastBackup = s.lastBackup;
     if(Array.isArray(s.lugares)) state.lugares = s.lugares.filter(l => l && l.id && l.nombre && isFinite(l.lat) && isFinite(l.lng)).slice(0, 40);
     if(s.miAviso && s.miAviso.at && s.miAviso.estado) state.miAviso = s.miAviso;
+    if(s.radioOk && typeof s.radioOk === "object") state.radioOk = s.radioOk;
     if(s.mes && typeof s.mes === "object") state.mes = {p:s.mes.p, g:s.mes.g, pb:s.mes.pb, checks:s.mes.checks && typeof s.mes.checks === "object" ? s.mes.checks : {}};
     if(s.ultimaPos && isFinite(s.ultimaPos.lat) && isFinite(s.ultimaPos.lng)) state.ultimaPos = {lat:+s.ultimaPos.lat, lng:+s.ultimaPos.lng, acc:+s.ultimaPos.acc || 0, at:+s.ultimaPos.at || 0};
     if(Array.isArray(s.avisos)) state.avisos = s.avisos.filter(a => a && a.at && a.estado && a.from).slice(0, 20);
@@ -2448,7 +2469,7 @@ function load(){
 }
 function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
 
-const ui = {tab:"inicio", sub:null, guide:null, step:0, mode:"paso", quizAns:{}, prep:"mochila", verMin:true, invEdit:null, invDel:null, planSeg:"numeros", planStep:null, memDel:null, simStart:null, planTextShow:false, fichaEdit:null, fichaBig:null, fichaDel:null, aviso:{estado:"bien", extra:"", geo:null}, resetAsk:null, delAsk:null, sosAsk:false, summary:null, calc:{personas:2, dias:3, litros:10, diasC:14},
+const ui = {tab:"inicio", sub:null, guide:null, step:0, mode:"paso", quizAns:{}, prep:"indisp", verMin:true, invEdit:null, invDel:null, planSeg:"numeros", planStep:null, memDel:null, simStart:null, planTextShow:false, fichaEdit:null, fichaBig:null, fichaDel:null, aviso:{estado:"bien", extra:"", geo:null}, resetAsk:null, delAsk:null, sosAsk:false, summary:null, calc:{personas:2, dias:3, litros:10, diasC:14},
   story:{i:0, play:false}, persist:null, mapa:{tab:"azul", sel:null, yo:null, modo:null, ruta:null, calle:null, q:"", res:[], heading:null, gpsMsg:"", seguir:true, guardar:false, nombre:""},
   ayuda:{estado:"ayuda", extra:"", geo:null, gmsg:"", buscando:false, pedido:false, off:{}, mostrar:false},
   share:{sel:{plan:true, inv:true, fichas:true, aviso:true}, msg:"", rmsg:"", parts:null, part:0, qrAuto:true, recv:null, recvSel:{}, paste:false, scanning:false, got:{}, avisosDel:false}};
@@ -2519,8 +2540,9 @@ function renderHome(){
   const c = CIUDADES[state.ciudad];
   const tops = c ? c.nums.filter(x => x.top) : [];
   const tels = `<ul class="quick"><li><a class="qcall q911" href="tel:911">${icon("phone")}<span><strong>Emergencias</strong><span class="mono">911</span></span></a></li>${tops.map(x => `<li><a class="qcall" href="tel:${x.tel}">${icon(x.ic || "phone")}<span><strong>${x.sh}</strong><span class="mono">${x.n}</span></span></a></li>`).join("")}</ul>
-    <button class="btn btn-ghost btn-sm" data-action="go-locales">Todos los números y tus contactos</button>`;
+    <div class="inline"><button class="btn btn-ghost btn-sm" data-action="go-locales">Todos los números y tus contactos</button><button class="btn btn-ghost btn-sm" data-action="go-radio">Radios de Azul</button></div>`;
   const herr = `<div class="tools4">
+      <button class="tool4" data-action="go-radio">${icon("radio")}<span>Radio y comunicación</span></button>
       <button class="tool4" data-action="go-mapa">${icon("compass")}<span>Mapa y brújula</span></button>
       <button class="tool4" data-action="linterna">${icon("torch")}<span>Linterna</span></button>
       <button class="tool4" data-action="sos-start">${icon("sos")}<span>Luz SOS</span></button>
@@ -2545,7 +2567,7 @@ function renderHome(){
     <div class="hsecs">
       ${hsec("pasa", "storm", "¿Qué está pasando?", "Toca la situación y sigue los pasos", pasa, "hs-main")}
       ${hsec("tel", "phone", "Teléfonos", c ? `911 y los de ${esc(state.ciudad)}: hospital, luz, agua, gas` : "911 y tus contactos", tels)}
-      ${hsec("herr", "compass", "Herramientas", "Mapa, linterna, SOS, silbato y más", herr)}
+      ${hsec("herr", "compass", "Herramientas", "Radio, mapa, linterna, SOS, silbato y más", herr)}
       ${hsec("extremo", "flame", "Caso extremo", "Días sin luz, gas ni agua: plan de 30 días", extremo)}
       ${hsec("prep", "pack", "Tu preparación", `Mochila ${pm.pct}% · Botiquín ${pb.pct}% · Kit ${pk.pct}%${alerts ? ` · <b class="hs-alert">hay cosas para revisar</b>` : ""}`, prep)}
     </div>
@@ -2903,10 +2925,11 @@ function comidaAInventario(){
 }
 
 function renderPrep(){
-  const tabs = [["mochila","Mochila"],["botiquin","Botiquín"],["kit","Kit del hogar"],["comida","Reserva de comida"],["inv","Inventario"],["calc","Calculadoras"]];
+  const tabs = [["indisp","Lo indispensable"],["mochila","Mochila"],["botiquin","Botiquín"],["kit","Kit del hogar"],["comida","Reserva de comida"],["inv","Inventario"],["calc","Calculadoras"]];
   const seg = `<div class="seg seg-4" role="tablist" aria-label="Preparar">${tabs.map(([k, l]) => `<button role="tab" aria-selected="${ui.prep === k}" data-action="prep" data-id="${k}">${l}</button>`).join("")}</div>`;
   let body;
-  if(ui.prep === "mochila") body = checklistHTML("mochila", MOCHILA, "Una por persona, lista para salir y pasar 72 horas fuera de casa. Revísala cada 3 a 6 meses y renueva el agua y la comida cada 2 o 3 meses.") + srcFoot(["mochilaMza","readyKit"]);
+  if(ui.prep === "indisp") body = checklistHTML("indisp", INDISP, "Lo que conviene tener sí o sí, en orden de prioridad. El detalle está en Mochila, Botiquín y Kit del hogar; para cortes largos, el plan de 30 días.") + `<div class="inline"><button class="btn btn-outline" data-action="go-mes">${icon("cal")}Plan 30 días sin luz</button><button class="btn btn-ghost" data-action="go-radio">Radio y comunicación</button></div>`;
+  else if(ui.prep === "mochila") body = checklistHTML("mochila", MOCHILA, "Una por persona, lista para salir y pasar 72 horas fuera de casa. Revísala cada 3 a 6 meses y renueva el agua y la comida cada 2 o 3 meses.") + srcFoot(["mochilaMza","readyKit"]);
   else if(ui.prep === "botiquin") body = checklistHTML("botiquin", BOTIQUIN, "Guárdalo en un lugar fácil de alcanzar para los adultos y fuera del alcance de los chicos. Revisa los vencimientos, repón lo que uses y guarda cada medicamento con sus instrucciones. Consulta con tu médico qué remedios conviene tener para tu familia.") + srcFoot(["botiquinCR","botiquinKH"]);
   else if(ui.prep === "kit") body = checklistHTML("kit", KIT, "Para quedarse en casa varios días sin luz, agua o gas.");
   else if(ui.prep === "comida") body = renderComida();
@@ -3539,6 +3562,96 @@ function renderAprender(){
     ${srcBox(["botulismo","robosMza","sroCasero","stcChicos"], "Lecturas de referencia. Ante una emergencia, llama al 911.")}
   </section>`;
 }
+
+/* ---------- Radio y comunicación ---------- */
+const RADIOS = [
+  /* [id, banda, frecuencia, nombre, nota] */
+  {g:"En Azul", nota:"Las primeras para saber qué pasa en la ciudad: cortes, calles, centros de ayuda.", l:[
+    ["lu10","AM","1320","LU10 Radio Azul","La AM de la ciudad. Con pilas se escucha aunque no haya luz en ningún lado."],
+    ["muni","FM","87.9","Radio Pública (FM Municipio)","La radio municipal."],
+    ["ciudad","FM","101.3","Radio Ciudad",""],
+    ["pueblo","FM","104.1","FM Del Pueblo",""],
+    ["universal","FM","106.1","FM Radio Universal",""],
+    ["mega","FM","90.9","Mega 90.9",""]]},
+  {g:"De la zona", nota:"Si las de Azul no salen al aire.", l:[
+    ["lu22","AM","1140","LU22 Radio Tandil","Tandil queda a unos 90 km."]]},
+  {g:"Nacionales en AM", nota:"De noche la AM llega a cientos de kilómetros: sirven si cae todo en la zona.", l:[
+    ["nacional","AM","870","Radio Nacional","La radio pública nacional."],
+    ["rivadavia","AM","630","Radio Rivadavia",""],
+    ["continental","AM","590","Radio Continental",""],
+    ["mitre","AM","790","Radio Mitre",""],
+    ["lared","AM","910","La Red",""]]}
+];
+const COMS = [
+  ["Mientras haya una rayita de señal","Un SMS corto sale aunque internet no ande, y el celular lo reintenta solo. Usa «Necesito ayuda» o «Estoy bien»: arman el mensaje con tu ubicación.","ayuda"],
+  ["Un contacto fuera de la zona","Elijan a alguien que viva lejos (otra ciudad o el exterior). Todos le avisan a esa persona y ella pasa las noticias. A veces una llamada a otra ciudad entra cuando las de la misma ciudad no.","plan"],
+  ["Wifi donde haya generador","Hospitales, municipalidad, comercios o vecinos con generador o Starlink pueden tener wifi. Con wifi salen el WhatsApp, las llamadas por internet y el correo.",""],
+  ["La radio local lee mensajes","En las emergencias, las radios del interior leen avisos de la gente al aire. Lleva un papel corto a LU10 o a la radio municipal: quién eres, que están bien y a quién va dirigido.",""],
+  ["Radioaficionados","Los radioaficionados se comunican con todo el país y el mundo sin internet ni antenas de celular, y en las emergencias pasan mensajes de familias. Busquen el radio club más cercano. Para transmitir uno mismo hace falta licencia de ENACOM, que se tramita a través de un radio club y hoy ya no vence.",""],
+  ["Por satélite","Un comunicador satelital de bolsillo (como Garmin inReach o Zoleo) manda mensajes y un SOS desde cualquier lugar, con un abono mensual. Los celulares que mandan mensajes por satélite todavía no tienen el servicio habilitado en la Argentina: no cuentes con eso por ahora.",""],
+  ["Entre vecinos, sin red","Handies y radios Meshtastic sirven para la cuadra o el barrio, no para hablar con otra ciudad. Compra equipos homologados por ENACOM: tienen una etiqueta con el número de homologación.","guia:sin-red"]
+];
+function renderRadio(){
+  const ok = state.radioOk || {};
+  const grupos = RADIOS.map(gr => `<h3 class="phase-h">${gr.g}</h3><p class="fine">${gr.nota}</p>
+    <ul class="radios">${gr.l.map(([id, b, f, n, nota]) => `<li class="${ok[id] ? "on" : ""}"><span class="r-f mono"><small>${b}</small>${f}</span><span class="r-t"><strong>${n}</strong>${nota ? `<span>${nota}</span>` : ""}</span>
+      <label class="r-ok"><input type="checkbox" data-radio="${id}"${ok[id] ? " checked" : ""}><span>La escucho bien</span></label></li>`).join("")}</ul>`).join("");
+  const coms = COMS.map(([t, d, k], i) => `<li><h3><span class="mono">${i + 1}</span>${t}</h3><p>${d}</p>${k === "ayuda" ? `<div class="inline"><button class="btn btn-ghost btn-sm" data-action="go-ayuda">Necesito ayuda</button><button class="btn btn-ghost btn-sm" data-action="go-aviso">Estoy bien</button></div>` : k === "plan" ? `<div class="inline"><button class="btn btn-ghost btn-sm" data-action="ayuda-plan">Cargar el contacto en el plan</button></div>` : k.indexOf("guia:") === 0 ? `<div class="inline"><button class="btn btn-ghost btn-sm" data-action="guide" data-id="${k.slice(5)}">Comunicarse sin red</button></div>` : ""}</li>`).join("");
+  return `<section class="stack">
+    <button class="back" data-action="tab" data-tab="inicio">${icon("back")}Inicio</button>
+    <div class="intro"><h1>Radio y comunicación</h1><p class="lede">Qué escuchar para saber qué pasa y cómo avisar afuera cuando no hay internet.</p></div>
+    <div class="card"><h2>Qué escuchar</h2>
+      <p>Una radio a pilas es lo más confiable cuando se corta todo. Prueben ahora cada una y marquen las que se escuchan bien en casa.</p>
+      ${grupos}
+      <p class="fine">Frecuencias según listados públicos de emisoras. Pueden cambiar: confírmalas con tu radio.</p></div>
+    <div class="card"><h2>Escuchar mejor</h2><ul class="kv-list">
+      <li>La AM llega mucho más lejos de noche. De día, prueben las FM de Azul.</li>
+      <li>Las radios de AM tienen la antena adentro: gira la radio hasta que se escuche mejor. Cerca de una ventana o afuera, mejor.</li>
+      <li>Las noticias salen a la hora en punto: escuchen dos o tres veces por día y apaguen para ahorrar pilas.</li>
+      <li>Anoten en un papel pegado a la radio las frecuencias que se escuchan bien.</li></ul></div>
+    <h2 class="sec">Comunicarse fuera de la zona</h2>
+    <p class="fine sec-lede">De lo más fácil a lo que requiere equipo. Prueben en orden.</p>
+    <ol class="coms">${coms}</ol>
+    ${srcBox(["radiosAzul","lu10","radioPublica","starlinkAr","enacomRadioaf","seraIaru"], "Frecuencias y servicios verificados en octubre de 2026.")}
+  </section>`;
+}
+const INDISP = [
+  {title:"Insumos sí o sí: para 2 semanas", items:[
+    ["i-agua","Agua: 4 litros por persona por día, y lavandina para potabilizar",1],
+    ["i-comida","Comida que no necesita heladera, y un abrelatas manual",1],
+    ["i-remedios","Medicamentos habituales para 30 días, con las recetas",1],
+    ["i-botiquin","Botiquín con lo mínimo",1],
+    ["i-luz","Una linterna por persona, frontal si se puede, y pilas de repuesto",1],
+    ["i-radio","Radio AM/FM a pilas o a manivela",1],
+    ["i-pb","Powerbanks cargados: uno por persona",1],
+    ["i-fosforos","Fósforos y encendedores",1],
+    ["i-efectivo","Efectivo en billetes chicos",1],
+    ["i-docs","Documentos y contactos en papel, en una bolsa hermética",1],
+    ["i-higiene","Higiene: papel, jabón, alcohol en gel, bolsas de residuos e higiene femenina",1],
+    ["i-gato","Alimento, agua y piedras para el gato",1]]},
+  {title:"Equipamiento básico", items:[
+    ["e-matafuegos","Matafuegos ABC en la cocina, cargado y a mano",1],
+    ["e-co","Detector de monóxido de carbono a pilas, cerca de los dormitorios",1],
+    ["e-bidones","Bidones para guardar agua",1],
+    ["e-herramientas","Caja de herramientas, cinta, precintos, soga y lona",1],
+    ["e-anafe","Anafe con garrafa o cartuchos, por si falla el gas",1],
+    ["e-conservadora","Conservadora"],
+    ["e-mochilas","Una mochila de emergencia por persona"]]},
+  {title:"Recomendado para cortes largos", items:[
+    ["r-estacion","Estación de energía de 300 a 500 Wh"],
+    ["r-panel","Panel solar de 100 W para cargarla"],
+    ["r-lamparas","Lámparas LED recargables, una por ambiente"],
+    ["r-luces","Luces solares con sensor para la entrada y el patio"],
+    ["r-filtro","Filtro de agua portátil"],
+    ["r-handies","Dos handies homologados para la familia o la cuadra"],
+    ["r-alarmas","Alarmas a pilas para puertas y ventanas"]]},
+  {title:"Si pueden más adelante", optional:true, items:[
+    ["a-satelital","Comunicador satelital con abono, para avisar desde cualquier lugar"],
+    ["a-mesh","Radios Meshtastic para mensajes a kilómetros, sin red"],
+    ["a-generador","Generador, siempre afuera y lejos de ventanas"],
+    ["a-radioaf","Licencia de radioaficionado de algún adulto de la familia"]]}
+];
+LISTS.indisp.list = INDISP;
 
 /* ---------- Plan 30 días sin luz ---------- */
 const MES_COMIDA = [
@@ -4893,7 +5006,7 @@ function render(top){
   if(scanStream) stopScan();
   let html;
   if(!(ui.tab === "inicio" && ui.sub === "mapa")) stopGeo();
-  if(ui.tab === "inicio") html = ui.sub === "corte" ? renderCorte() : ui.sub === "aviso" ? renderAviso() : ui.sub === "mapa" ? renderMapa() : ui.sub === "ayuda" ? renderAyuda() : ui.sub === "mes" ? renderMes() : renderHome();
+  if(ui.tab === "inicio") html = ui.sub === "corte" ? renderCorte() : ui.sub === "aviso" ? renderAviso() : ui.sub === "mapa" ? renderMapa() : ui.sub === "ayuda" ? renderAyuda() : ui.sub === "mes" ? renderMes() : ui.sub === "radio" ? renderRadio() : renderHome();
   else if(ui.tab === "guias") html = ui.guide ? renderGuide() : renderGuides();
   else if(ui.tab === "preparar") html = renderPrep();
   else if(ui.tab === "linterna") html = renderTools();
@@ -5223,6 +5336,7 @@ document.addEventListener("click", e => {
     case "go-mapa": go("inicio", {sub:"mapa"}); break;
     case "go-ayuda": goAyuda(); break;
     case "go-mes": go("inicio", {sub:"mes"}); break;
+    case "go-radio": go("inicio", {sub:"radio"}); break;
     case "apr-lec": { const a = ui.apr || (ui.apr = {lec:null, q:"", open:"casa"}); a.lec = el.dataset.id; const l = APR_ALL().find(x => x.id === a.lec); if(l) a.open = l.tema.id; render(true); break; }
     case "apr-back": ui.apr.lec = null; render(true); { const d = document.querySelector(`[data-apr="${ui.apr.open}"]`); if(d) d.scrollIntoView({block:"start"}); } break;
     case "mes-ficha": ui.planSeg = "ficha"; go("numeros"); break;
@@ -5468,6 +5582,7 @@ document.addEventListener("toggle", e => {
   try{ localStorage.setItem(HOME_KEY, ui.homeOpen || ""); }catch(err){}
 }, true);
 document.addEventListener("change", e => {
+  if(e.target.matches("[data-radio]")){ state.radioOk[e.target.dataset.radio] = e.target.checked; save(); e.target.closest("li").classList.toggle("on", e.target.checked); return; }
   if(e.target.matches("[data-mes]")){ state.mes.checks[e.target.dataset.mes] = e.target.checked; save(); e.target.closest(".check").classList.toggle("on", e.target.checked); const pr = document.querySelector(".mes-prog"); if(pr){ const [, tot] = pr.textContent.split("/"); pr.textContent = `${Object.keys(state.mes.checks).filter(k => state.mes.checks[k]).length}/${tot}`; } return; }
   if(e.target.matches("[data-ay-tel]")){ ui.ayuda.off[e.target.dataset.ayTel] = !e.target.checked; render(false); return; }
   const t = e.target;
@@ -5615,6 +5730,7 @@ else if(hash === "mapa") ui.sub = "mapa";
 else if(hash === "aviso") ui.sub = "aviso";
 else if(hash === "ayuda") ui.sub = "ayuda";
 else if(hash === "30dias") ui.sub = "mes";
+else if(hash === "radio") ui.sub = "radio";
 else if(hash === "corte") ui.sub = "corte";
 else if(hash.indexOf("guia-") === 0 && GUIDES.some(g => g.id === hash.slice(5))){ ui.tab = "guias"; ui.guide = hash.slice(5); }
 updNet();
