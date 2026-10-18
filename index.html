@@ -463,6 +463,28 @@ textarea{min-height:76px;resize:vertical}
 .kv .v{font-weight:700;overflow-wrap:anywhere}
 .kv .v.none{font-weight:400;color:var(--ink-2)}
 .plantext{min-height:220px;font-family:var(--font-data);font-size:14px}
+.ay-home{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:12px;width:100%;padding:14px;border-radius:var(--r);background:var(--crit);color:var(--on-crit);text-align:left;min-height:64px}
+.ay-home strong{display:block;font-size:19px;line-height:1.2}
+.ay-home span span{display:block;font-size:15px;opacity:.92}
+.ay-home .ic{width:24px;height:24px}
+.ay-home-ic{display:grid;place-items:center;width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.18)}
+.ay-intro h1{color:var(--crit)}
+.ay-geo{font-size:17px;line-height:1.4;overflow-wrap:anywhere}
+.ay-dest{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px}
+.ay-dest label{display:flex;gap:10px;align-items:center;min-height:44px;padding:0 4px;flex-wrap:wrap}
+.ay-dest input{width:22px;height:22px}
+.ay-uno summary{cursor:pointer;color:var(--blue);font-size:15px;padding:6px 0}
+.ay-pe{font-size:18px;font-weight:700}
+.ay-tools{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}
+.ay-sin summary{cursor:pointer;list-style:none}
+.ay-sin summary h2{display:inline}
+.ay-sin summary::after{content:" ▾";color:var(--ink-2)}
+.ay-list{margin:8px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:8px}
+.ay-show{text-align:center;padding-top:8px}
+.ay-show-k{font-family:var(--font-display);font-weight:700;font-size:48px;line-height:1;color:var(--crit);text-transform:uppercase}
+.ay-show-n{font-size:30px;font-weight:700}
+.ay-show-t{font-size:22px;line-height:1.35}
+.ay-show-tel{display:block;font-size:clamp(24px,8.5vw,40px);white-space:nowrap;font-weight:600;color:var(--ink);text-decoration:none;overflow-wrap:anywhere}
 .msgprev{padding:14px;border-radius:12px;background:var(--surface-2);font-size:17px;line-height:1.45;overflow-wrap:anywhere}
 .fb{display:flex;flex-direction:column;gap:14px;padding:20px 18px;border-radius:16px;background:var(--surface);border:2px solid var(--crit)}
 .fb h1{font-size:40px}
@@ -643,6 +665,13 @@ const SRC = {
   comisariasAzul:["Percance: comisarías de Azul","https://www.percance.com.ar/comisarias_policiab_azul.htm"],
   camuzzi:["Camuzzi: emergencias de gas","https://www.camuzzigas.com/"],
   organic:["Organic Maps","https://organicmaps.app/es/"],
+  gmapsShare:["Google: cómo compartir la ubicación","https://support.google.com/maps/answer/7326816?hl=es-419&co=GENIE.Platform%3DAndroid"],
+  androidSOS:["Ayuda de Android: obtén ayuda durante una emergencia","https://support.google.com/android/answer/9319337?hl=es-419"],
+  samsungSOS:["Xataka: mensajes SOS de Samsung con tu ubicación","https://www.xataka.com/basics/como-enviar-mensajes-automaticos-sos-samsung-tu-ubicacion-fotos"],
+  familyLink:["Google Family Link","https://families.google/intl/es-419/familylink/"],
+  briar:["Briar: mensajes sin internet","https://briarproject.org/"],
+  meshtastic:["Meshtastic","https://meshtastic.org/"],
+  meshRegion:["Meshtastic: región LoRa por país (Argentina: ANZ)","https://meshtastic.org/docs/configuration/region-by-country/"],
   osm:["OpenStreetMap: datos del mapa de Azul (ODbL)","https://www.openstreetmap.org/copyright"],
   gmapsOff:["Google Maps: mapas sin conexión en Android","https://support.google.com/maps/answer/6291838?hl=es-419&co=GENIE.Platform%3DAndroid"],
   ign:["IGN: límites provinciales (vía argentina-map-react, MIT)","https://www.ign.gob.ar/NuestrasActividades/InformacionGeoespacial/CapasSIG"]
@@ -1421,6 +1450,49 @@ const ILL = {
     draw:() => BG() + C("il-w",120,100,62) + P("il-o2","M120 46v10M120 144v10M66 100h10M164 100h10") + T(120,34,"N",true,"middle") +
       G(P("il-a","M120 56l16 52-16-10-16 10z") + A('<animateTransform attributeName="transform" type="rotate" values="-20 120 100;30 120 100;-20 120 100" dur="4s" repeatCount="indefinite"/>')) + C("il-g",120,100,6) +
       T(240,92,"1,2 km",false,"middle") + G(T(0,0,"hacia el noreste",true,"middle"),"translate(240 116)")},
+  /* Ubicar a la familia y comunicarse sin red */
+  "fam-compartir":{alt:"Dos celulares comparten la ubicación: en cada uno aparece en el mapa dónde está el otro.",
+    draw:() => BG() + FLOOR(320) + PHONE(40,40, R("il-waters",-26,-43,52,86,3) + P("il-o2","M-26 -10h52M4 -43v86") + G(PIN(),"translate(14 6) scale(0.8)")) +
+      PHONE(216,40, R("il-waters",-26,-43,52,86,3) + P("il-o2","M-26 14h52M-8 -43v86") + G(PIN(),"translate(-14 -6) scale(0.8)")) +
+      G(P("il-dash","M112 96h96") + A('<animate attributeName="stroke-dashoffset" values="26;0" dur="1s" repeatCount="indefinite"/>')) + T(160,86,"ubicación",true,"middle")},
+  "fam-ver":{alt:"El mapa del papá muestra dónde está cada hija, con la hora de la última actualización.",
+    draw:() => BG() + R("il-waters",20,20,280,150,10) + P("il-o2","M20 70h280M20 130h280M100 20v150M210 20v150") + R("il-leaf",132,84,58,36,4) +
+      G(C("il-a",0,0,16) + C("il-w",0,-4,6) + P("il-w","M-9 10a9 7 0 0 1 18 0"),"translate(70 104)") + G(T(0,0,"hace 2 min",true,"middle"),"translate(62 150)") +
+      G(C("il-a",0,0,16) + C("il-w",0,-4,6) + P("il-w","M-9 10a9 7 0 0 1 18 0"),"translate(236 52)") + G(T(0,0,"hace 5 min",true,"middle"),"translate(250 98)") +
+      G(T(0,0,"Compartir ubicación",true,"middle"),"translate(160 192)")},
+  "fam-link":{alt:"El celular del papá y el de la hija, unidos por Family Link: el papá ve en el mapa dónde está el celular de la hija.",
+    draw:() => BG() + FLOOR(320) + PHONE(40,40, R("il-waters",-26,-43,52,86,3) + P("il-o2","M-26 -6h52M6 -43v86") + G(PIN(),"translate(-8 10) scale(0.8)")) +
+      G(R("il-g",0,0,50,90,10) + R("il-w",5,10,40,64,4) + C("il-w",25,82,3),"translate(226 66)") +
+      G(P("il-a","M0 -20l18 7v12c0 12-8 19-18 23-10-4-18-11-18-23v-12z") + P("il-mark","M-7 2l5 5 9-10"),"translate(166 92)") +
+      P("il-dash","M112 100h34M186 100h36")},
+  "fam-sos":{alt:"Un dedo aprieta cinco veces el botón de encendido del celular y aparece la pantalla de Emergencia SOS.",
+    draw:() => BG() + FLOOR(320) + PHONE(120,30, C("il-red",0,-6,20) + G(T(0,0,"SOS",true,"middle"),"translate(0 -1)") + G(T(0,0,"911",true,"middle"),"translate(0 30) scale(0.8)")) + R("il-g",184,60,6,26,2) +
+      G(G(HAND(0,0,-90),"translate(232 90) scale(1.1)") + mv("0 0;-8 0;0 0","0.5s")) + T(250,52,"× 5",false,"middle")},
+  "fam-samsung":{alt:"Tres toques al botón lateral mandan un SMS con la ubicación a los contactos elegidos.",
+    draw:() => BG() + FLOOR(320) + PHONE(60,30, G(PIN(),"translate(0 -10)") + P("il-o2","M-18 18h36")) + R("il-g",124,60,6,26,2) + T(150,52,"× 3",false,"start") +
+      G(R("il-w",184,64,112,52,10) + P("il-w","M198 116l-6 14 18-14") + T(222,96,"SOS",true,"middle") + G(PIN(),"translate(266 92)") + fade("0;1;1","2s"))},
+  "fam-ayuda":{alt:"En Preparados, el botón Necesito ayuda arma un SMS con la ubicación y lo manda a toda la familia.",
+    draw:() => BG() + FLOOR(320) + PHONE(40,40, R("il-red",-22,-14,44,28,8) + G(T(0,0,"AYUDA",true,"middle"),"translate(0 5) scale(0.75)")) +
+      G(R("il-w",136,40,58,30,8) + T(165,60,"SMS",true,"middle") + mv("0 0;20 -6;20 -6","2s")) + G(R("il-w",136,94,58,30,8) + T(165,114,"SMS",true,"middle") + mv("0 0;20 0;20 0","2s")) + G(R("il-w",136,148,58,30,8) + T(165,168,"SMS",true,"middle") + mv("0 0;20 6;20 6","2s")) +
+      G(C("il-a",0,0,14),"translate(258 50)") + G(C("il-a",0,0,14),"translate(258 108)") + G(C("il-a",0,0,14),"translate(258 166)")},
+  "red-plan":{alt:"Un reloj que marca las 18 y un marcador en la plaza: si no hay señal, se encuentran ahí a esa hora.",
+    draw:() => BG() + FLOOR(320) + C("il-w",92,92,54) + P("il-o","M92 92V58M92 92l-22 14") + T(92,52,"12",true,"middle") + T(92,140,"18",true,"middle") +
+      R("il-leaf",186,108,104,60,10) + G(PIN(),"translate(238 98) scale(2)") + G(T(0,0,"plaza",true,"middle"),"translate(238 192)")},
+  "red-911":{alt:"Un celular sin señal de su compañía llama al 911 usando la antena de otra compañía.",
+    draw:() => BG() + FLOOR(320) + PHONE(48,40, G(T(0,0,"911",false,"middle"),"translate(0 6)")) +
+      G(P("il-o","M236 172l20-110 20 110M242 140h28M246 116h20") + C("il-a",256,58,6),"") + G(P("il-o2","M136 100q40-40 100-40") + fade("0;1;1","1.5s")) + T(256,190,"otra antena",true,"middle")},
+  "red-sms":{alt:"Con una sola rayita de señal, un SMS corto sale igual aunque internet no ande.",
+    draw:() => BG() + FLOOR(320) + PHONE(60,40, R("il-a",-16,10,6,8,1) + R("il-g",-8,4,6,14,1) + R("il-g",0,-2,6,20,1) + R("il-g",8,-8,6,26,1)) +
+      G(R("il-w",170,70,96,40,10) + P("il-w","M184 110l-6 14 18-14") + T(218,96,"SMS",true,"middle") + mv("0 20;0 0;0 0","2s")) + G(CLOUD(190,170,1.3) + BADGE(270,150,false))},
+  "red-wifi":{alt:"Un comercio con wifi: con wifi salen el WhatsApp y la ubicación aunque la red del celular no ande.",
+    draw:() => BG() + FLOOR(320) + R("il-w",40,70,140,102,6) + P("il-a","M30 70h160l-12-26H42z") + R("il-waters",60,96,44,40,4) + R("il-g",120,104,40,68,4) +
+      G(WIFI(),"translate(110 30) scale(1.4)") + PHONE(220,52)},
+  "red-subir":{alt:"Una persona sube a un lugar alto y al aire libre, donde el celular encuentra más señal.",
+    draw:() => BG() + P("il-leaf","M0 172q100-90 200-60t120 0V186a14 14 0 0 1-14 14H14a14 14 0 0 1-14-14z") + STAND(170,112) +
+      G(R("il-a",226,40,8,10,1) + R("il-a",238,32,8,18,1) + R("il-a",250,24,8,26,1) + R("il-a",262,16,8,34,1) + fade("0.3;1;1","1.5s"))},
+  "red-mesh":{alt:"Dos radios chiquitas con antena se mandan mensajes y la ubicación entre ellas, a kilómetros, sin red.",
+    draw:() => BG() + FLOOR(320) + R("il-g",40,96,54,70,8) + P("il-o","M60 96V54") + R("il-w",50,110,34,22,4) + R("il-g",226,96,54,70,8) + P("il-o","M260 96V54") + R("il-w",236,110,34,22,4) +
+      G(P("il-o2","M120 80q40-30 80 0") + fade("1;0;1","1.4s")) + G(P("il-o2","M132 96q28-18 56 0") + fade("0;1;0","1.4s")) + T(160,150,"varios km",true,"middle")},
   /* Historieta: compartir sin wifi */
   "sw-1":{alt:"Dos celulares. Arriba, la nube de internet y el wifi tachados: no hay conexión.",
     draw:() => BG() + FLOOR(320) + PHONE(36,46) + PHONE(220,46) + CLOUD(110,70,1.9) + G(WIFI(), "translate(160 46) scale(1.2)") + BADGE(204,30,false)},
@@ -1836,6 +1908,41 @@ const GUIDES = [
     {ph:"Mantenimiento",t:"Un lugar fijo",d:"Que todos sepan dónde está. Revísala cada 3 a 6 meses y cambia lo vencido.",a:{type:"prep",id:"mochila",label:"Abrir la checklist"}}
    ],src:["readyKit","indeci","revision"]},
 
+  {id:"ubicar-familia",group:"saber",icon:"compass",title:"Ver dónde está la familia",summary:"Compartir la ubicación con Google, Emergencia SOS y qué hacer si no hay red.",
+   keys:["Con red: compartan la ubicación en Google Maps hasta que la desactiven.","Activa Emergencia SOS: 5 toques al botón de encendido llaman al 911.","Sin red nadie puede mandar su ubicación: acuerden punto y horario de encuentro."],
+   steps:[
+    {ph:"Antes, con internet",img:"fam-compartir",t:"Compartan la ubicación",d:"En el celular de cada hija: abre Google Maps, toca su foto de perfil → «Compartir ubicación» → «Hasta que lo desactives» y elige a papá. Hagan lo mismo desde tu celular hacia ellas."},
+    {ph:"Antes, con internet",img:"fam-ver",t:"Cómo ves dónde están",d:"En tu Google Maps, toca tu foto → «Compartir ubicación»: aparece cada una en el mapa, con la hora de la última actualización y cuánta batería le queda. Necesita que su celular tenga datos o wifi."},
+    {ph:"Antes, con internet",img:"fam-link",t:"Para chicos: Family Link",d:"Si alguna es menor de 13, Google Family Link te deja supervisar su cuenta y ver la ubicación de su celular. Se instala en los dos teléfonos."},
+    {ph:"Antes",img:"fam-sos",t:"Activa Emergencia SOS",d:"Ajustes → «Seguridad y emergencia» → «Emergencia SOS» → «Iniciar configuración». Después, 5 toques al botón de encendido llaman al 911 y pueden compartir la ubicación con los contactos de emergencia. Requiere Android 12 o más nuevo; no anda en modo avión ni con el ahorro de batería."},
+    {ph:"Antes",img:"fam-samsung",t:"En Samsung: mensajes SOS",d:"Ajustes → «Funciones avanzadas» o «Seguridad y emergencia» → «Enviar mensajes SOS». Con 3 toques al botón lateral manda un SMS con la ubicación a los contactos elegidos: sirve con poca señal y sin internet."},
+    {ph:"En la emergencia",img:"fam-ayuda",t:"Botón «Necesito ayuda»",d:"En el Inicio de Preparados: toma la ubicación del GPS, dice en qué calle de Azul estás y arma un SMS para toda la familia. Carga antes sus teléfonos en Plan → Números.",a:{type:"ayuda",label:"Abrir «Necesito ayuda»"}},
+    {ph:"Sin red",img:"red-plan",t:"Sin red, vale el plan",d:"Sin datos ni señal, ningún celular puede mandar su ubicación. Por eso acuerden dónde encontrarse y a qué hora: «si no hay señal, a las 12 y a las 18 en la plaza San Martín».",a:{type:"guide",id:"sin-red",label:"Cómo comunicarse sin red"}}
+   ],
+   quiz:[
+    {q:"¿Qué necesita Google Maps para mostrarte dónde está tu hija?",o:["Nada, anda siempre","Que su celular tenga datos o wifi","Solo el GPS"],a:1,e:"El GPS sabe dónde está, pero para mandarte la ubicación su celular necesita internet."},
+    {q:"¿Qué hace Emergencia SOS de Android?",o:["Apaga el celular","Con 5 toques al botón de encendido llama al 911","Borra los datos"],a:1,e:"Y puede compartir la ubicación con tus contactos de emergencia."},
+    {q:"Si no hay red ni wifi, ¿cómo se encuentran?",o:["Esperan la ubicación en el mapa","Van al punto de encuentro a la hora acordada","No hay forma"],a:1,e:"Sin red no viaja ninguna ubicación: el plan acordado es lo que funciona."}
+   ],
+   src:["gmapsShare","androidSOS","samsungSOS","familyLink"]},
+  {id:"sin-red",group:"saber",icon:"phone",title:"Comunicarse sin red",summary:"Qué hacer si no hay internet ni señal: 911, SMS, wifi, punto de encuentro y radios.",
+   keys:["El 911 puede entrar con la antena de cualquier compañía: llama igual.","Un SMS corto sale con muy poca señal: usa «Necesito ayuda».","Sin nada de red, vale lo acordado: punto y horario de encuentro."],
+   steps:[
+    {ph:"Antes",img:"red-plan",t:"Acuerden punto y horario",d:"Elijan un lugar cerca de casa y otro fuera del barrio, y horarios fijos: si no hay señal, se encuentran ahí a las 12 y a las 18. Que las chicas lo sepan de memoria."},
+    {ph:"Durante",img:"red-911",t:"El 911 entra igual",d:"Las llamadas de emergencia pueden usar la antena de cualquier compañía y, en la mayoría de los celulares, funcionan también sin chip. Aunque la pantalla diga «Solo emergencias», llama.",a:{type:"call",tel:"911",num:"911"}},
+    {ph:"Durante",img:"red-sms",t:"Prueba con un SMS",d:"Cuando internet no anda, un SMS corto muchas veces sale. Si no hay señal, el celular lo vuelve a intentar solo. «Necesito ayuda» lo arma con tu ubicación.",a:{type:"ayuda",label:"Abrir «Necesito ayuda»"}},
+    {ph:"Durante",img:"red-wifi",t:"Busca wifi",d:"Un comercio, una escuela o la municipalidad pueden tener wifi aunque la red del celular esté caída. Con wifi salen el WhatsApp y la ubicación. Sirve también para un celular sin chip."},
+    {ph:"Durante",img:"red-subir",t:"Busca señal",d:"Sal al aire libre o sube a un lugar alto, lejos de paredes gruesas. Manda el mensaje y guarda el celular para cuidar la batería."},
+    {ph:"Para tener",img:"sw-4",t:"Mensajes por Bluetooth",d:"Apps como Briar o Bridgefy mandan mensajes de celular a celular sin red, por Bluetooth o wifi. Llegan a pocas decenas de metros: sirven en la misma casa, edificio o cuadra. Hay que instalarlas y probarlas antes."},
+    {ph:"Para tener",img:"red-mesh",t:"Para distancias largas: radios",d:"Meshtastic son radios chicas que se conectan al celular por Bluetooth y se pasan mensajes y la ubicación a varios kilómetros, sin red. Cuestan unos USD 30 a 60 cada una. En la Argentina se usan en la banda de 915 MHz."},
+    {ph:"Si te perdiste",img:"ext-silbato",t:"Que te escuchen",d:"Tres pitidos largos con el silbato piden auxilio. De noche, la luz SOS de la linterna. Quédate en un lugar seguro y visible.",a:{type:"silbato",label:"Probar el silbato"}}
+   ],
+   quiz:[
+    {q:"Tu celular dice «Solo emergencias». ¿Puedes llamar al 911?",o:["No, no hay señal","Sí, usa la antena de otra compañía","Solo con wifi"],a:1,e:"Las llamadas de emergencia pueden entrar por cualquier antena."},
+    {q:"Internet no anda pero hay una rayita de señal. ¿Qué pruebas?",o:["Un video","Un SMS corto","Nada"],a:1,e:"El SMS no usa internet y necesita muy poca señal."},
+    {q:"¿Hasta dónde llegan los mensajes por Bluetooth, como Briar?",o:["A toda la ciudad","Unas decenas de metros","A otro país"],a:1,e:"Para distancias largas hacen falta radios, como Meshtastic."}
+   ],
+   src:["briar","meshtastic","meshRegion"]},
   {id:"mapas",group:"saber",icon:"compass",title:"Mapas sin internet",summary:"Bajar los mapas antes y ubicarte con el GPS cuando no hay señal.",
    keys:["Ahora, con wifi: baja tu provincia en Organic Maps y la zona en Google Maps.","Guarda tu casa, el punto de encuentro y el hospital.","El GPS funciona sin internet: solo activa la ubicación."],
    steps:[
@@ -2181,7 +2288,7 @@ const icon = (name, cls) => `<svg class="ic ${cls || ""}" viewBox="0 0 24 24" ar
 
 /* ---------- Estado: solo en este navegador ---------- */
 const KEY = "preparados.v1";
-const state = {checks:{}, corte:null, contacts:[], punto:"", inv:[], recs:{}, plan:{miembros:[], mascotas:"", tareas:{}, lugares:{}, contacto:{}, sim:null}, fichas:[], provincia:"", ciudad:"Azul", yo:"", trash:[], lastBackup:0, lugares:[], miAviso:null, avisos:[]};
+const state = {checks:{}, corte:null, contacts:[], punto:"", inv:[], recs:{}, plan:{miembros:[], mascotas:"", tareas:{}, lugares:{}, contacto:{}, sim:null}, fichas:[], provincia:"", ciudad:"Azul", yo:"", trash:[], lastBackup:0, lugares:[], ultimaPos:null, miAviso:null, avisos:[]};
 function load(){
   try{
     const raw = localStorage.getItem(KEY);
@@ -2208,6 +2315,7 @@ function load(){
     if(typeof s.lastBackup === "number") state.lastBackup = s.lastBackup;
     if(Array.isArray(s.lugares)) state.lugares = s.lugares.filter(l => l && l.id && l.nombre && isFinite(l.lat) && isFinite(l.lng)).slice(0, 40);
     if(s.miAviso && s.miAviso.at && s.miAviso.estado) state.miAviso = s.miAviso;
+    if(s.ultimaPos && isFinite(s.ultimaPos.lat) && isFinite(s.ultimaPos.lng)) state.ultimaPos = {lat:+s.ultimaPos.lat, lng:+s.ultimaPos.lng, acc:+s.ultimaPos.acc || 0, at:+s.ultimaPos.at || 0};
     if(Array.isArray(s.avisos)) state.avisos = s.avisos.filter(a => a && a.at && a.estado && a.from).slice(0, 20);
   }catch(e){}
 }
@@ -2215,6 +2323,7 @@ function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e
 
 const ui = {tab:"inicio", sub:null, guide:null, step:0, mode:"paso", quizAns:{}, prep:"mochila", verMin:true, invEdit:null, invDel:null, planSeg:"numeros", planStep:null, memDel:null, simStart:null, planTextShow:false, fichaEdit:null, fichaBig:null, fichaDel:null, aviso:{estado:"bien", extra:"", geo:null}, resetAsk:null, delAsk:null, sosAsk:false, summary:null, calc:{personas:2, dias:3, litros:10, diasC:14},
   story:{i:0, play:false}, persist:null, mapa:{tab:"azul", sel:null, yo:null, modo:null, ruta:null, calle:null, q:"", res:[], heading:null, gpsMsg:"", seguir:true, guardar:false, nombre:""},
+  ayuda:{estado:"ayuda", extra:"", geo:null, gmsg:"", buscando:false, pedido:false, off:{}, mostrar:false},
   share:{sel:{plan:true, inv:true, fichas:true, aviso:true}, msg:"", rmsg:"", parts:null, part:0, qrAuto:true, recv:null, recvSel:{}, paste:false, scanning:false, got:{}, avisosDel:false}};
 
 /* ---------- Utilidades ---------- */
@@ -2267,6 +2376,7 @@ function renderHome(){
     ${banner}
     ${navigator.onLine === false ? offlineCard(true) : ""}
     ${installCard()}
+    <button class="ay-home" data-action="go-ayuda"><span class="ay-home-ic">${icon("sos")}</span><span><strong>Necesito ayuda · Me perdí</strong><span>Tu ubicación y un SMS a la familia</span></span>${icon("chev")}</button>
     ${homeAvisos()}
     <div class="intro"><h1>¿Qué está pasando?</h1><p class="lede">Toca la situación y sigue los pasos.</p></div>
     <div class="tiles">${tiles}</div>
@@ -2958,6 +3068,159 @@ function newFicha(nombre){
   window.scrollTo(0, 0);
 }
 
+/* ---------- Necesito ayuda / Me perdí ---------- */
+const AYUDA_ESTADOS = [["ayuda","Necesito ayuda"],["perdido","Me perdí"],["punto","Estoy bien, voy al punto de encuentro"]];
+let batNivel = null;
+try{ if(navigator.getBattery) navigator.getBattery().then(b => { const upd = () => { batNivel = Math.round(b.level * 100); }; upd(); b.addEventListener("levelchange", upd); }).catch(() => {}); }catch(e){}
+/* A quién le llega: los contactos guardados y el contacto fuera de la zona, sin repetir */
+function ayudaDest(){
+  const out = [], seen = new Set();
+  const add = (nombre, tel) => { const t = telHref(tel || ""); if(t.length < 6 || seen.has(t)) return; seen.add(t); out.push({nombre:nombre || tel, tel:t, ver:String(tel).trim()}); };
+  const pc = state.plan.contacto || {};
+  state.contacts.forEach(c => add(c.nombre, c.tel));
+  add(pc.nombre, pc.tel);
+  return out;
+}
+const ayudaSel = () => ayudaDest().filter(d => ui.ayuda.off[d.tel] !== true);
+function dondeEstoy(g){
+  if(!g) return "";
+  if(enAzul(g)){ const [x, y] = toXY(g); const d = describir(x, y); return d === "Punto marcado en el mapa" ? "Azul" : `${d}, Azul`; }
+  return "";
+}
+function puntoEncuentro(){
+  const l = state.lugares.find(x => /encuentro/i.test(x.nombre));
+  return {lugar:l || null, texto:(state.plan.lugares.cerca || "").trim()};
+}
+function ayudaText(){
+  const a = ui.ayuda, g = a.geo, pe = puntoEncuentro();
+  const base = {ayuda:"NECESITO AYUDA.", perdido:"ME PERDÍ, necesito ayuda.", punto:`Estoy bien. Voy al punto de encuentro${pe.texto ? `: ${pe.texto}` : pe.lugar ? `: ${pe.lugar.nombre}` : ""}.`}[a.estado];
+  const quien = state.yo ? `Soy ${state.yo}.` : "";
+  const calle = g && dondeEstoy(g) ? `Estoy en ${dondeEstoy(g)}.` : "";
+  const link = g ? [`Ubicación: https://maps.google.com/?q=${g.lat.toFixed(5)},${g.lng.toFixed(5)}`, g.acc ? `(±${Math.round(g.acc)} m)` : ""].filter(Boolean).join(" ") : "";
+  let extra = a.extra.trim(); if(extra){ extra = extra[0].toUpperCase() + extra.slice(1); if(!/[.!?]$/.test(extra)) extra += "."; }
+  const viejo = g && g.at && Date.now() - g.at > 10 * 60000 ? `Ubicación de hace ${fmtDur(Date.now() - g.at)}.` : "";
+  return [base, quien, calle, extra, link, viejo, batNivel !== null ? `Batería ${batNivel}%.` : "", `${hhmm(new Date())} h`].filter(Boolean).join(" ");
+}
+function ayudaSmsHref(tels){ return `sms:${tels.join(",")}?body=${encodeURIComponent(ayudaText())}`; }
+function getAyudaGeo(){
+  const a = ui.ayuda;
+  const say = m => { a.gmsg = m; const st = document.getElementById("ay-geo-st"); if(st) st.textContent = m; };
+  if(!navigator.geolocation){ say("Este celular no puede dar la ubicación. Escribe dónde estás en «Algo más»."); return; }
+  a.buscando = true; say("Buscando tu ubicación con el GPS… Si estás bajo techo, acércate a una ventana.");
+  try{
+    navigator.geolocation.getCurrentPosition(pos => {
+      a.buscando = false;
+      a.geo = {lat:pos.coords.latitude, lng:pos.coords.longitude, acc:pos.coords.accuracy || 0, at:Date.now()};
+      state.ultimaPos = a.geo; save();
+      a.gmsg = "";
+      if(ui.sub === "ayuda") render(false);
+    }, err => {
+      a.buscando = false;
+      const u = state.ultimaPos;
+      if(u && !a.geo){ a.geo = u; }
+      say(err && err.code === 1 ? "No hay permiso para usar la ubicación. Actívalo en los ajustes del navegador o escribe dónde estás." : (u ? "No hay señal del GPS ahora: uso tu última ubicación guardada. Sal al aire libre y toca «Actualizar»." : "Todavía no hay señal del GPS. Sal al aire libre, espera un minuto y toca «Actualizar»."));
+      if(ui.sub === "ayuda") render(false);
+    }, {enableHighAccuracy:true, timeout:30000, maximumAge:30000});
+  }catch(e){ a.buscando = false; say("No se pudo usar el GPS. Escribe dónde estás."); }
+}
+function recordAyuda(){
+  const a = ui.ayuda;
+  state.miAviso = {id:newId("a"), from:state.yo || "", estado:a.estado === "punto" ? "punto" : "ayuda", extra:[a.estado === "perdido" ? "Me perdí." : "", a.extra.trim(), a.geo ? dondeEstoy(a.geo) : ""].filter(Boolean).join(" ").slice(0, 200), geo:a.geo ? {lat:a.geo.lat, lng:a.geo.lng} : null, at:Date.now()};
+  save();
+}
+function ayudaPunto(){
+  const a = ui.ayuda, pe = puntoEncuentro();
+  if(!pe.lugar && !pe.texto) return `<div class="card"><h2>Punto de encuentro</h2><p>Todavía no acordaron un punto de encuentro. Elígelo con tu familia en el plan y guárdalo en el mapa con el nombre «Punto de encuentro».</p><button class="btn btn-ghost btn-sm" data-action="go-plan">Ir al plan familiar</button></div>`;
+  let dist = "";
+  if(pe.lugar && a.geo){ const km = distKm(a.geo, pe.lugar); dist = `<p class="ay-dist"><strong>${km < 0.03 ? "Estás en el punto de encuentro" : `A ${fmtKm(km)}, hacia ${cardinal(rumbo(a.geo, pe.lugar))}`}</strong></p>`; }
+  return `<div class="card"><h2>Punto de encuentro</h2><p class="ay-pe">${esc(pe.texto || pe.lugar.nombre)}</p>${dist}
+    ${pe.lugar ? `<button class="btn btn-primary" data-action="ayuda-ir" data-id="${esc(pe.lugar.id)}">${icon("compass")}Cómo llegar caminando</button>` : `<p class="fine">Guárdalo en el mapa con el nombre «Punto de encuentro» y la app te muestra cómo llegar.</p>`}</div>`;
+}
+function renderAyudaMostrar(){
+  const a = ui.ayuda, d = ayudaDest()[0], donde = a.geo ? dondeEstoy(a.geo) : "";
+  return `<section class="stack ay-show" aria-label="Pantalla para mostrar a otra persona">
+    <p class="ay-show-k">${a.estado === "perdido" ? "Me perdí" : "Necesito ayuda"}</p>
+    ${state.yo ? `<p class="ay-show-n">Me llamo ${esc(state.yo)}</p>` : ""}
+    ${d ? `<p class="ay-show-t">Por favor, llamen a ${esc(d.nombre)}:</p><a class="ay-show-tel mono" href="tel:${esc(d.tel)}">${esc(d.ver)}</a>` : `<p class="ay-show-t">Por favor, llamen al 911.</p>`}
+    ${donde ? `<p class="ay-show-t">Estoy en ${esc(donde)}.</p>` : ""}
+    <a class="btn btn-danger btn-big" href="tel:911">${icon("phone")}Llamar al 911</a>
+    <button class="btn btn-ghost" data-action="ayuda-mostrar" data-v="0">Volver</button>
+  </section>`;
+}
+function renderAyuda(){
+  const a = ui.ayuda;
+  if(a.mostrar) return renderAyudaMostrar();
+  if(!a.geo && !a.buscando && !a.pedido){ a.pedido = true; setTimeout(getAyudaGeo, 0); }
+  const dest = ayudaDest(), sel = ayudaSel(), g = a.geo, donde = g ? dondeEstoy(g) : "";
+  const geoTxt = g ? `${donde ? `<strong>${esc(donde)}</strong><br>` : ""}<span class="mono">${g.lat.toFixed(5)}, ${g.lng.toFixed(5)}</span>${g.acc ? ` · precisión de unos ${Math.round(g.acc)} m` : ""}${g.at && Date.now() - g.at > 10 * 60000 ? ` · de hace ${fmtDur(Date.now() - g.at)}` : ""}` : (a.gmsg ? "" : "Buscando…");
+  return `<section class="stack">
+    <button class="back" data-action="tab" data-tab="inicio">${icon("back")}Inicio</button>
+    <div class="intro ay-intro"><h1>Necesito ayuda</h1><p class="lede">Respira. Quédate en un lugar seguro y avisa dónde estás.</p></div>
+    <a class="btn btn-danger btn-big" href="tel:911">${icon("phone")}Llamar al 911</a>
+    <div class="card">
+      <h2>1. Dónde estoy</h2>
+      <p class="ay-geo">${geoTxt}</p>
+      <p class="fine" id="ay-geo-st" role="status">${esc(a.gmsg || "")}</p>
+      <div class="inline"><button class="btn btn-ghost btn-sm" data-action="ayuda-geo">${g ? "Actualizar" : "Buscar de nuevo"}</button>${g && enAzul(g) ? `<button class="btn btn-ghost btn-sm" data-action="ayuda-mapa">Ver en el mapa</button>` : ""}</div>
+    </div>
+    <div class="card">
+      <h2>2. Qué pasa</h2>
+      <div class="chips" role="group" aria-label="Qué pasa">${AYUDA_ESTADOS.map(([k, t]) => `<button class="chip" data-action="ayuda-estado" data-k="${k}" aria-pressed="${a.estado === k}">${t}</button>`).join("")}</div>
+      ${state.yo ? "" : `<div class="field"><label class="lbl" for="ay-yo">Tu nombre</label><input id="ay-yo" data-yo maxlength="40" autocomplete="off" value="${esc(state.yo)}" placeholder="Ej.: Sofía"></div>`}
+      <div class="field"><label class="lbl" for="ay-extra">Algo más (opcional)</label><input id="ay-extra" maxlength="140" autocomplete="off" value="${esc(a.extra)}" placeholder="Ej.: estoy frente a una farmacia"></div>
+    </div>
+    <div class="card">
+      <h2>3. Avisar a la familia</h2>
+      <p class="msgprev" id="ay-prev">${esc(ayudaText())}</p>
+      ${dest.length ? `<span class="lbl">Le llega a</span><ul class="ay-dest">${dest.map(d => `<li><label><input type="checkbox" data-ay-tel="${esc(d.tel)}"${ui.ayuda.off[d.tel] === true ? "" : " checked"}> ${esc(d.nombre)} <span class="mono">${esc(d.ver)}</span></label></li>`).join("")}</ul>
+        <a class="btn btn-signal btn-big" id="ay-sms" href="${ayudaSmsHref(sel.map(d => d.tel))}" data-action="ayuda-sent">Mandar SMS${sel.length > 1 ? ` a ${sel.length} personas` : sel.length ? ` a ${esc(sel[0].nombre)}` : ""}</a>
+        ${sel.length > 1 ? `<details class="ay-uno"><summary>Si el SMS sale solo para uno, mándalo de a uno</summary><div class="inline">${sel.map(d => `<a class="btn btn-ghost btn-sm" data-ay-one="${esc(d.tel)}" href="${ayudaSmsHref([d.tel])}" data-action="ayuda-sent">SMS a ${esc(d.nombre)}</a>`).join("")}</div></details>` : ""}`
+      : `<p>Todavía no hay teléfonos de la familia guardados. Cárgalos en <strong>Plan → Números</strong> para mandarles el SMS con un toque.</p><a class="btn btn-signal" id="ay-sms" href="${ayudaSmsHref([])}" data-action="ayuda-sent">Escribir un SMS</a><button class="btn btn-ghost btn-sm" data-action="go-numeros">Cargar teléfonos</button>`}
+      <div class="inline"><a class="btn btn-ghost btn-sm" id="ay-wa" href="https://wa.me/?text=${encodeURIComponent(ayudaText())}" target="_blank" rel="noopener" data-action="ayuda-sent">WhatsApp</a><button class="btn btn-ghost btn-sm" data-action="ayuda-copy">Copiar</button></div>
+      <p class="saved" id="ay-ok" role="status"></p>
+      <p class="fine">El SMS no usa internet: alcanza con un poco de señal. Si no sale, el celular lo vuelve a intentar cuando aparece señal.</p>
+    </div>
+    ${ayudaPunto()}
+    <div class="card"><h2>Que te vean y te escuchen</h2>
+      <div class="ay-tools"><button class="btn btn-outline" data-action="ayuda-mostrar" data-v="1">Pantalla para mostrar</button><button class="btn btn-outline" data-action="sos-start">Luz SOS</button><button class="btn btn-outline" data-action="silbato">Silbato</button></div>
+      <p class="fine">«Pantalla para mostrar» muestra en grande tu nombre y a quién llamar, para que te ayude un adulto, un comercio o la policía.</p></div>
+    <details class="card ay-sin"><summary><h2>Si no tienes chip ni señal</h2></summary>
+      <ul class="ay-list">
+        <li><strong>El 911 suele entrar igual.</strong> Las llamadas de emergencia usan la antena de cualquier compañía y, en la mayoría de los celulares, también funcionan sin chip. Prueba siempre.</li>
+        <li><strong>Busca wifi.</strong> Un comercio, una escuela o una casa: con wifi sale el WhatsApp.</li>
+        <li><strong>Pide ayuda a un adulto</strong> con «Pantalla para mostrar»: que llame a tu familia desde su celular.</li>
+        <li><strong>No camines sin rumbo.</strong> Si conoces el camino, ve al punto de encuentro. Si no, quédate en un lugar seguro y visible.</li>
+        <li><strong>Cuida la batería:</strong> baja el brillo y cierra las apps que no uses.</li>
+      </ul></details>
+    <button class="btn btn-ghost" data-action="guide" data-id="sin-red">Cómo comunicarse sin red</button>
+  </section>`;
+}
+function updAyuda(){
+  const p = document.getElementById("ay-prev"); if(p) p.textContent = ayudaText();
+  const s = document.getElementById("ay-sms"); if(s) s.href = ayudaSmsHref(ayudaSel().map(d => d.tel));
+  document.querySelectorAll("[data-ay-one]").forEach(el => { el.href = ayudaSmsHref([el.dataset.ayOne]); });
+  const w = document.getElementById("ay-wa"); if(w) w.href = "https://wa.me/?text=" + encodeURIComponent(ayudaText());
+}
+async function copyAyuda(){
+  const say = m => { const el = document.getElementById("ay-ok"); if(el) el.textContent = m; };
+  recordAyuda();
+  try{ await navigator.clipboard.writeText(ayudaText()); say("Copiado: pégalo en un mensaje."); }
+  catch(e){ const p = document.getElementById("ay-prev"); if(p){ const r = document.createRange(); r.selectNodeContents(p); const s = window.getSelection(); s.removeAllRanges(); s.addRange(r); } say("El texto quedó seleccionado: cópialo desde el menú del teléfono."); }
+}
+function ayudaIr(id){
+  const l = state.lugares.find(x => x.id === id), a = ui.ayuda;
+  if(!l) return;
+  ui.mapa.tab = "azul";
+  if(a.geo) ui.mapa.yo = {lat:a.geo.lat, lng:a.geo.lng, acc:a.geo.acc || 0, gps:true};
+  go("inicio", {sub:"mapa"});
+  if(!enAzul(l)) return;
+  const [x, y] = toXY(l);
+  selectResult({tipo:"Mi lugar", n:l.nombre, a:l.desc, x, y, lid:l.id});
+  const m = ui.mapa;
+  if(m.yo && enAzul(m.yo)){ m.ruta = ruta(toXY(m.yo), [x, y]); drawMapa(); drawMapPanel(); }
+}
+
+function goAyuda(){ const a = ui.ayuda; a.mostrar = false; a.pedido = false; a.gmsg = ""; if(a.geo && a.geo.at && Date.now() - a.geo.at > 5 * 60000) a.geo = null; go("inicio", {sub:"ayuda"}); }
 /* ---------- Aviso «estoy bien» ---------- */
 const AVISO_ESTADOS = [["bien","Estoy bien"],["punto","Voy al punto de encuentro"],["ayuda","Necesito ayuda"]];
 function avisoText(){
@@ -4002,7 +4265,7 @@ function render(top){
   if(scanStream) stopScan();
   let html;
   if(!(ui.tab === "inicio" && ui.sub === "mapa")) stopGeo();
-  if(ui.tab === "inicio") html = ui.sub === "corte" ? renderCorte() : ui.sub === "aviso" ? renderAviso() : ui.sub === "mapa" ? renderMapa() : renderHome();
+  if(ui.tab === "inicio") html = ui.sub === "corte" ? renderCorte() : ui.sub === "aviso" ? renderAviso() : ui.sub === "mapa" ? renderMapa() : ui.sub === "ayuda" ? renderAyuda() : renderHome();
   else if(ui.tab === "guias") html = ui.guide ? renderGuide() : renderGuides();
   else if(ui.tab === "preparar") html = renderPrep();
   else if(ui.tab === "linterna") html = renderTools();
@@ -4319,6 +4582,7 @@ document.addEventListener("click", e => {
       else if(t === "metronomo"){ if(metro) stopMetro(); else startMetro(); afterTool(); }
       else if(t === "aviso") go("inicio", {sub:"aviso"});
       else if(t === "mapa") go("inicio", {sub:"mapa"});
+      else if(t === "ayuda") goAyuda();
       else if(t === "silbato"){ if(whistle) stopWhistle(); else startWhistle(); afterTool(); }
       else if(t === "sos") openOverlay("sos");
       break;
@@ -4326,6 +4590,15 @@ document.addEventListener("click", e => {
     case "go-zona": go("guias", {scrollTo:"zona"}); break;
     case "install": if(installEvt){ const ev = installEvt; ev.prompt(); ev.userChoice.finally(() => { installEvt = null; render(false); }); } break;
     case "go-mapa": go("inicio", {sub:"mapa"}); break;
+    case "go-ayuda": goAyuda(); break;
+    case "ayuda-geo": getAyudaGeo(); break;
+    case "ayuda-estado": ui.ayuda.estado = el.dataset.k; render(false); break;
+    case "ayuda-sent": recordAyuda(); break;
+    case "ayuda-copy": copyAyuda(); break;
+    case "ayuda-mostrar": ui.ayuda.mostrar = el.dataset.v === "1"; render(true); if(ui.ayuda.mostrar) keepAwake(); break;
+    case "ayuda-ir": ayudaIr(el.dataset.id); break;
+    case "ayuda-mapa": { const g = ui.ayuda.geo; if(g){ ui.mapa.tab = "azul"; ui.mapa.yo = {lat:g.lat, lng:g.lng, acc:g.acc || 0, gps:true}; go("inicio", {sub:"mapa"}); if(enAzul(g)){ const [x, y] = toXY(g); MAP.cx = x; MAP.cy = y; MAP.z = 1.1; drawMapa(); drawMapPanel(); } } break; }
+    case "ayuda-plan": ui.planSeg = "familia"; go("numeros"); break;
     case "geo-start": startGeo(); break;
     case "geo-stop": stopGeo(); ui.mapa.gpsMsg = ""; drawMapPanel(); break;
     case "map-tab": ui.mapa.tab = el.dataset.t; render(false); break;
@@ -4539,6 +4812,7 @@ document.addEventListener("click", e => {
   }
 });
 document.addEventListener("change", e => {
+  if(e.target.matches("[data-ay-tel]")){ ui.ayuda.off[e.target.dataset.ayTel] = !e.target.checked; render(false); return; }
   const t = e.target;
   if(t.matches("[data-check]")){
     if(t.checked) state.checks[t.dataset.check] = true; else delete state.checks[t.dataset.check];
@@ -4597,6 +4871,9 @@ document.addEventListener("input", e => {
   }else if(e.target.id === "aviso-extra"){
     ui.aviso.extra = e.target.value.slice(0, 140);
     updAviso();
+  }else if(e.target.id === "ay-extra"){
+    ui.ayuda.extra = e.target.value.slice(0, 140);
+    updAyuda();
   }else if(e.target.matches("[data-pf]")){
     const [a, b] = e.target.dataset.pf.split(".");
     const val = e.target.value.slice(0, 120);
@@ -4614,6 +4891,7 @@ document.addEventListener("input", e => {
   }else if(e.target.matches("[data-yo]")){
     state.yo = e.target.value.slice(0, 40);
     save();
+    if(ui.sub === "ayuda") updAyuda();
   }
 });
 document.addEventListener("submit", e => {
@@ -4670,6 +4948,7 @@ else if(hash === "compartir"){ ui.tab = "numeros"; ui.planSeg = "compartir"; }
 else if(hash === "extremo") ui.tab = "guias";
 else if(hash === "mapa") ui.sub = "mapa";
 else if(hash === "aviso") ui.sub = "aviso";
+else if(hash === "ayuda") ui.sub = "ayuda";
 else if(hash === "corte") ui.sub = "corte";
 else if(hash.indexOf("guia-") === 0 && GUIDES.some(g => g.id === hash.slice(5))){ ui.tab = "guias"; ui.guide = hash.slice(5); }
 updNet();

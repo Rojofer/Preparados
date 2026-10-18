@@ -29,6 +29,10 @@
  ],
  "shortcuts": [
   {
+   "name": "Necesito ayuda",
+   "url": "./#ayuda"
+  },
+  {
    "name": "Mapa y brújula",
    "url": "./#mapa"
   },
