@@ -1,0 +1,44 @@
+{
+ "name": "Preparados",
+ "short_name": "Preparados",
+ "description": "Qué hacer en una emergencia en casa y en la ciudad, sin internet.",
+ "lang": "es-AR",
+ "start_url": "./",
+ "scope": "./",
+ "display": "standalone",
+ "orientation": "portrait",
+ "background_color": "#0A1324",
+ "theme_color": "#0A1324",
+ "icons": [
+  {
+   "src": "icons/icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png"
+  },
+  {
+   "src": "icons/icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png"
+  },
+  {
+   "src": "icons/icon-maskable-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "maskable"
+  }
+ ],
+ "shortcuts": [
+  {
+   "name": "Mapa y brújula",
+   "url": "./#mapa"
+  },
+  {
+   "name": "Avisar que estoy bien",
+   "url": "./#aviso"
+  },
+  {
+   "name": "Compartir con la familia",
+   "url": "./#compartir"
+  }
+ ]
+}
