@@ -397,6 +397,12 @@ textarea{min-height:76px;resize:vertical}
 .maprow .g-ic .ic{width:24px;height:24px}
 .fgroup{margin-top:6px;padding-top:10px;border-top:1px solid var(--line);font-size:17px;color:var(--ink-2);text-transform:uppercase;letter-spacing:.06em}
 .foto-row{display:flex;gap:14px;align-items:center}
+.dni-box{display:flex;flex-direction:column;gap:8px;margin-top:4px}
+.dni-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.dni-slot{display:flex;flex-direction:column;gap:6px;min-width:0}
+.dni-slot img,.dni-vacio{width:100%;aspect-ratio:1.58;border-radius:10px;border:1px solid var(--line);object-fit:cover;background:var(--surface-2)}
+.dni-vacio{display:grid;place-items:center;color:var(--ink-2)}.dni-vacio .ic{width:40px;height:40px}
+.fb-dni{display:flex;flex-direction:column;gap:10px}.fb-dni figure{margin:0}.fb-dni img{width:100%;border-radius:10px;border:1px solid var(--line)}.fb-dni figcaption{font-size:14px;color:var(--ink-2)}
 .foto{flex:none;width:88px;height:88px;border-radius:14px;object-fit:cover;border:1px solid var(--line);background:var(--surface-2)}
 .foto.vacia{display:grid;place-items:center;color:var(--ink-2)}
 .foto.vacia .ic{width:34px;height:34px}
@@ -414,6 +420,7 @@ textarea{min-height:76px;resize:vertical}
 .pf header{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;border-bottom:1px solid #ccc;padding-bottom:8px;margin-bottom:8px}
 .pf h1{margin:2px 0 0;font-size:22px;color:#111}.pf-k{margin:0;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#C9302C}
 .pf header img{width:84px;height:84px;object-fit:cover;border-radius:8px;border:1px solid #ccc}
+.pf-dni{display:flex;gap:10px;margin-top:10px}.pf-dni figure{margin:0;flex:1}.pf-dni img{width:100%;max-width:86mm;border:1px solid #ccc;border-radius:6px}.pf-dni figcaption{font-size:10px;color:#555}
 .pf table{width:100%;border-collapse:collapse}.pf th{width:38%;text-align:left;vertical-align:top;padding:3px 8px 3px 0;color:#555;font-weight:700}
 .pf td{padding:3px 0;font-weight:700}.pf td.alert{color:#C9302C}.pf-f{margin:8px 0 0;font-size:10px;color:#777}
 .ph{font:13px/1.4 Arial,Helvetica,sans-serif;color:#111;border-bottom:2px solid #111;margin-bottom:12px;padding-bottom:6px}.ph h1{font-size:20px;margin:0 0 4px;color:#111}.ph p{margin:0}
@@ -485,6 +492,35 @@ textarea{min-height:76px;resize:vertical}
 .ay-show-n{font-size:30px;font-weight:700}
 .ay-show-t{font-size:22px;line-height:1.35}
 .ay-show-tel{display:block;font-size:clamp(24px,8.5vw,40px);white-space:nowrap;font-weight:600;color:var(--ink);text-decoration:none;overflow-wrap:anywhere}
+.ext-d summary,.ext-g summary{cursor:pointer;list-style:none}
+.ext-d summary::-webkit-details-marker,.ext-g summary::-webkit-details-marker{display:none}
+.ext-d summary{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center}
+.ext-d summary::after,.ext-g summary h2::after{content:"";width:10px;height:10px;border-right:2.5px solid var(--ink-2);border-bottom:2.5px solid var(--ink-2);transform:rotate(45deg);margin:0 6px 4px;transition:transform .2s}
+.ext-d[open] summary::after,.ext-g[open] summary h2::after{transform:rotate(-135deg);margin-bottom:-4px}
+.ext-g summary h2{display:flex;align-items:center;justify-content:space-between}
+.ext-t{display:flex;flex-direction:column;line-height:1.3}.ext-t span{font-size:15px;color:var(--ink-2)}
+.ext-d[open]{gap:12px}.ext-d .btn .ic{width:20px;height:20px}
+.ext-g{display:flex;flex-direction:column;gap:10px}.ext-g[open] summary{margin-bottom:10px}
+.mes-cfg{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.mes-cfg .stepper{gap:6px}.mes-cfg .stepper button{width:42px;height:42px;font-size:22px}.mes-cfg .stepper output{font-size:26px}
+.mes-casa li span{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-2)}
+.res-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.res-grid .res .num{font-size:36px}
+.cmp{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.cmp-c{display:flex;flex-direction:column;gap:8px;padding:14px;border-radius:var(--r);background:var(--surface);border:1px solid var(--line)}
+.cmp-c.rec{border:2px solid var(--ok)}
+.cmp-c h3{font-size:19px}.cmp-k{font-size:14px;color:var(--ink-2);font-weight:700}
+.cmp-badge{align-self:flex-start;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:3px 8px;border-radius:99px;background:var(--ok);color:var(--surface)}
+.cmp-v{font-weight:700}.cmp-v.ok{color:var(--ok)}.cmp-v.no{color:var(--crit)}
+.cmp-c .stepper button{width:44px;height:44px;font-size:22px}.cmp-c .stepper output{font-size:24px}
+.mes-plan{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:0;border-left:3px solid var(--line);margin-left:8px}
+.mes-plan>li{position:relative;padding:0 0 18px 20px}
+.mes-plan>li::before{content:"";position:absolute;left:-9.5px;top:4px;width:16px;height:16px;border-radius:50%;background:var(--signal);border:3px solid var(--bg)}
+.mes-plan h3{font-size:18px;margin-bottom:6px}
+.mes-plan ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:8px}
+.mes-plan .inline{margin-top:4px}
+.mes-prog{font-size:18px;color:var(--ink-2)}
+.check strong{font-weight:700}.check .mono{white-space:nowrap}
 .msgprev{padding:14px;border-radius:12px;background:var(--surface-2);font-size:17px;line-height:1.45;overflow-wrap:anywhere}
 .fb{display:flex;flex-direction:column;gap:14px;padding:20px 18px;border-radius:16px;background:var(--surface);border:2px solid var(--crit)}
 .fb h1{font-size:40px}
@@ -665,6 +701,9 @@ const SRC = {
   comisariasAzul:["Percance: comisarías de Azul","https://www.percance.com.ar/comisarias_policiab_azul.htm"],
   camuzzi:["Camuzzi: emergencias de gas","https://www.camuzzigas.com/"],
   organic:["Organic Maps","https://organicmaps.app/es/"],
+  dniDigital:["Argentina.gob.ar: el DNI digital tiene la misma validez que la tarjeta","https://www.argentina.gob.ar/noticias/el-gobierno-nacional-oficializo-el-dni-digital"],
+  cuhc:["Allende & Brea: Certificado Único Habilitante para Circulación (2020)","https://allende.com/en/administrative/public-health-emergency-covid-19-unique-enabling-certificate-for-circulation-covid-19-emergency-08-05-2020/"],
+  profileSolar:["Profile Solar: producción solar estimada en la provincia de Buenos Aires","https://profilesolar.com/locations/Argentina/General-Pacheco/"],
   gmapsShare:["Google: cómo compartir la ubicación","https://support.google.com/maps/answer/7326816?hl=es-419&co=GENIE.Platform%3DAndroid"],
   androidSOS:["Ayuda de Android: obtén ayuda durante una emergencia","https://support.google.com/android/answer/9319337?hl=es-419"],
   samsungSOS:["Xataka: mensajes SOS de Samsung con tu ubicación","https://www.xataka.com/basics/como-enviar-mensajes-automaticos-sos-samsung-tu-ubicacion-fotos"],
@@ -1450,6 +1489,28 @@ const ILL = {
     draw:() => BG() + C("il-w",120,100,62) + P("il-o2","M120 46v10M120 144v10M66 100h10M164 100h10") + T(120,34,"N",true,"middle") +
       G(P("il-a","M120 56l16 52-16-10-16 10z") + A('<animateTransform attributeName="transform" type="rotate" values="-20 120 100;30 120 100;-20 120 100" dur="4s" repeatCount="indefinite"/>')) + C("il-g",120,100,6) +
       T(240,92,"1,2 km",false,"middle") + G(T(0,0,"hacia el noreste",true,"middle"),"translate(240 116)")},
+  /* Confinamiento o zona cerrada */
+  "conf-docs":{alt:"El DNI en tarjeta y el DNI digital en el celular, juntos: los dos acreditan quién eres.",
+    draw:() => BG() + FLOOR(320) + G(R("il-w",0,0,130,84,8) + R("il-a",0,0,130,18,8) + R("il-g",12,30,34,42,4) + P("il-o2","M58 36h58M58 50h44M58 64h52"),"translate(40 62)") +
+      PHONE(214,40, R("il-w",-22,-30,44,28,3) + R("il-g",-18,-26,12,16,2) + P("il-o2","M-2 -22h20M-2 -14h14") + G(T(0,0,"DNI digital",true,"middle"),"translate(0 16) scale(0.62)"))},
+  "conf-control":{alt:"En un control, una persona muestra su DNI y su permiso a un agente, con calma.",
+    draw:() => BG() + FLOOR(320) + STAND(96,172) + STAND(224,172,"il-dk") + R("il-a",206,58,36,8,3) +
+      G(R("il-w",0,0,30,20,3) + R("il-a",0,0,30,6,3),"translate(118 96) rotate(-8)") + G(T(0,0,"DNI y permiso",true,"middle"),"translate(160 194)")},
+  "conf-permiso":{alt:"Un celular muestra un permiso para circular con un código QR y una fecha de vencimiento.",
+    draw:() => BG() + FLOOR(320) + PHONE(128,30, R("il-w",-18,-36,36,36,2) + P("il-o2","M-12 -30h8v8h-8zM4 -30h8v8h-8zM-12 -14h8v8h-8zM4 -14h4M10 -10h2M4 -6h8") + G(T(0,0,"vence 30/11",true,"middle"),"translate(0 18) scale(0.6)")) +
+      BADGE(220,60,true)},
+  "conf-receta":{alt:"Una receta médica y una caja de remedios: sirven para justificar salidas por salud.",
+    draw:() => BG() + FLOOR(320) + R("il-w",60,40,100,124,6) + P("il-o2","M76 64h68M76 82h68M76 100h50M76 140h40") + T(84,130,"Rp/",false,"start") +
+      R("il-red",188,96,84,60,8) + P("il-w","M222 112h16v12h12v16h-12v12h-16v-12h-12v-16h12z")},
+  "conf-chicos":{alt:"Una nena con una tarjeta en la mochila: su nombre, su DNI y el teléfono de papá.",
+    draw:() => BG() + FLOOR(320) + C("il-p2",100,90,16) + P("il-p2","M82 172v-50a18 18 0 0 1 36 0v50z") + R("il-a",116,118,28,40,6) +
+      G(R("il-w",0,0,112,70,8) + P("il-o2","M12 22h60M12 38h80M12 54h50") + T(12,16,"Si me pierdo",true,"start"),"translate(176 56)") + P("il-dash","M146 128L176 100")},
+  "conf-gato":{alt:"Un gato sentado junto a su libreta sanitaria con la vacuna antirrábica y su transportadora.",
+    draw:() => BG() + FLOOR(320) + P("il-o","M118 160q40 6 34-34") + E("il-p2",90,140,30,30) + C("il-p2",90,94,22) + P("il-p2","M72 82l-4-22 16 12zM108 82l4-22-16 12z") + C("il-w",82,92,3) + C("il-w",98,92,3) +
+      R("il-w",170,70,64,84,6) + R("il-a",170,70,64,18,6) + P("il-o2","M182 104h40M182 118h40M182 132h26") + G(T(0,0,"vacunas",true,"middle"),"translate(202 168)") +
+      R("il-g",250,96,56,62,8) + P("il-w","M260 112v34M270 112v34M280 112v34")},
+  "conf-carpeta":{alt:"Una carpeta con originales y fotocopias dentro de una bolsa hermética, lista para llevar.",
+    draw:() => BG() + FLOOR(320) + R("il-waters",80,40,160,120,12) + R("il-w",96,58,90,70,4) + R("il-w",116,70,90,70,4) + P("il-o2","M128 88h60M128 104h60M128 120h40") + P("il-o","M80 56h160")},
   /* Ubicar a la familia y comunicarse sin red */
   "fam-compartir":{alt:"Dos celulares comparten la ubicación: en cada uno aparece en el mapa dónde está el otro.",
     draw:() => BG() + FLOOR(320) + PHONE(40,40, R("il-waters",-26,-43,52,86,3) + P("il-o2","M-26 -10h52M4 -43v86") + G(PIN(),"translate(14 6) scale(0.8)")) +
@@ -1908,6 +1969,24 @@ const GUIDES = [
     {ph:"Mantenimiento",t:"Un lugar fijo",d:"Que todos sepan dónde está. Revísala cada 3 a 6 meses y cambia lo vencido.",a:{type:"prep",id:"mochila",label:"Abrir la checklist"}}
    ],src:["readyKit","indeci","revision"]},
 
+  {id:"confinamiento",group:"saber",icon:"id",title:"Confinamiento o zona cerrada",summary:"Qué documentos y datos te pueden pedir si cierran la zona o no se puede circular.",
+   keys:["Lleva siempre el DNI: en tarjeta o el DNI digital de Mi Argentina.","Si piden permiso para circular, tramítalo solo en sitios oficiales y guarda el número.","Completa la ficha de cada uno: documentos, salud y contacto."],
+   steps:[
+    {ph:"Antes",img:"conf-docs",t:"El DNI, siempre",d:"Es lo primero que piden. El DNI digital de la app Mi Argentina tiene la misma validez que la tarjeta para acreditar identidad en el país. Se activa desde los 14 años; consulta en el Registro Civil cómo hacerlo."},
+    {ph:"Antes",img:"conf-carpeta",t:"Una carpeta de papeles",d:"En una bolsa hermética: fotocopia del DNI de todos, partidas de nacimiento de las chicas, carnet de la obra social, recetas, cédula del auto y seguro. Las fotos del DNI también pueden ir en la ficha de la app.",a:{type:"ficha",label:"Completar las fichas"}},
+    {ph:"Si cierran la zona",img:"conf-permiso",t:"Permiso para circular",d:"Si las autoridades piden un permiso, tramítalo solo en el sitio oficial que indiquen (en 2020 fue el Certificado Único Habilitante, por internet y con el DNI). Guarda una captura y anota el número y el vencimiento en la ficha."},
+    {ph:"Si cierran la zona",img:"conf-control",t:"En un control",d:"Suelen pedir: nombre, DNI, domicilio, adónde vas y por qué, y el permiso si hace falta. En auto: licencia, cédula del vehículo y seguro. Responde con calma y ten todo a mano."},
+    {ph:"Si cierran la zona",img:"conf-receta",t:"Salidas por salud",d:"Para ir al médico o a la farmacia, lleva la receta, el turno o el certificado médico. Ten medicamentos para un mes y el número de afiliado de la obra social."},
+    {ph:"Los chicos",img:"conf-chicos",t:"Que sepan quiénes son",d:"Que las chicas sepan su nombre completo, su DNI y el teléfono de papá, y lleven una tarjeta en la mochila. Si viajan con un solo adulto o con otra persona, puede hacer falta una autorización.",a:{type:"ayuda",label:"Ver «Necesito ayuda»"}},
+    {ph:"Mascotas",img:"conf-gato",t:"Los papeles del gato",d:"La libreta sanitaria con la vacuna antirrábica, una foto y la transportadora. Si hay que trasladarse, la pueden pedir."},
+    {ph:"Para quedarse",img:"moc-papeles",t:"Preparados para días en casa",d:"Si el confinamiento dura, vale el mismo plan que un corte largo: comida sin heladera, agua, medicamentos y efectivo.",a:{type:"mes",label:"Plan 30 días sin luz"}}
+   ],
+   quiz:[
+    {q:"¿Qué documento piden primero en un control?",o:["La partida de nacimiento","El DNI, en tarjeta o digital","La factura de luz"],a:1,e:"El DNI digital de Mi Argentina tiene la misma validez que la tarjeta dentro del país."},
+    {q:"¿Dónde se tramita un permiso para circular?",o:["En cualquier página que lo ofrezca","Solo en el sitio oficial que indiquen las autoridades","Por WhatsApp"],a:1,e:"Hay páginas falsas que piden datos o dinero: usa solo los canales oficiales."},
+    {q:"¿Qué conviene que lleven las chicas en la mochila?",o:["Nada","Una tarjeta con su nombre, DNI y el teléfono de papá","Mucho dinero"],a:1,e:"Si se pierden o hay un control, ayuda a que te ubiquen rápido."}
+   ],
+   src:["dniDigital","cuhc"]},
   {id:"ubicar-familia",group:"saber",icon:"compass",title:"Ver dónde está la familia",summary:"Compartir la ubicación con Google, Emergencia SOS y qué hacer si no hay red.",
    keys:["Con red: compartan la ubicación en Google Maps hasta que la desactiven.","Activa Emergencia SOS: 5 toques al botón de encendido llaman al 911.","Sin red nadie puede mandar su ubicación: acuerden punto y horario de encuentro."],
    steps:[
@@ -2279,6 +2358,8 @@ const ICON = {
   fire:'<path d="M12 3c3 4 5 6 5 10a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-4-1-6 1-9z"/><path d="M4 21l16-3M4 18l16 3"/>',
   pot:'<path d="M4 10h16v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4z"/><path d="M2 10h20M9 7q1-2 0-4M14 7q1-2 0-4"/>',
   home:'<path d="M3 11 12 4l9 7v9H3z"/><path d="M10 20v-5h4v5"/>',
+  id:'<rect x="2.5" y="5" width="19" height="14" rx="2"/><circle cx="8.5" cy="11" r="2.2"/><path d="M5.5 16a3 3 0 0 1 6 0M14 10h5M14 13.5h4"/>',
+  cal:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
   toilet:'<path d="M14 3h6v8h-6z"/><path d="M3 11h17a6 6 0 0 1-6 6v4H9v-4a6 6 0 0 1-6-6z"/>',
   compass:'<circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2.5 4.5-4.5 2.5 2.5-4.5z"/>',
   back:'<path d="m15 5-7 7 7 7"/>',
@@ -2288,7 +2369,7 @@ const icon = (name, cls) => `<svg class="ic ${cls || ""}" viewBox="0 0 24 24" ar
 
 /* ---------- Estado: solo en este navegador ---------- */
 const KEY = "preparados.v1";
-const state = {checks:{}, corte:null, contacts:[], punto:"", inv:[], recs:{}, plan:{miembros:[], mascotas:"", tareas:{}, lugares:{}, contacto:{}, sim:null}, fichas:[], provincia:"", ciudad:"Azul", yo:"", trash:[], lastBackup:0, lugares:[], ultimaPos:null, miAviso:null, avisos:[]};
+const state = {checks:{}, corte:null, contacts:[], punto:"", inv:[], recs:{}, plan:{miembros:[], mascotas:"", tareas:{}, lugares:{}, contacto:{}, sim:null}, fichas:[], provincia:"", ciudad:"Azul", yo:"", trash:[], lastBackup:0, lugares:[], ultimaPos:null, mes:{checks:{}}, miAviso:null, avisos:[]};
 function load(){
   try{
     const raw = localStorage.getItem(KEY);
@@ -2315,6 +2396,7 @@ function load(){
     if(typeof s.lastBackup === "number") state.lastBackup = s.lastBackup;
     if(Array.isArray(s.lugares)) state.lugares = s.lugares.filter(l => l && l.id && l.nombre && isFinite(l.lat) && isFinite(l.lng)).slice(0, 40);
     if(s.miAviso && s.miAviso.at && s.miAviso.estado) state.miAviso = s.miAviso;
+    if(s.mes && typeof s.mes === "object") state.mes = {p:s.mes.p, g:s.mes.g, pb:s.mes.pb, checks:s.mes.checks && typeof s.mes.checks === "object" ? s.mes.checks : {}};
     if(s.ultimaPos && isFinite(s.ultimaPos.lat) && isFinite(s.ultimaPos.lng)) state.ultimaPos = {lat:+s.ultimaPos.lat, lng:+s.ultimaPos.lng, acc:+s.ultimaPos.acc || 0, at:+s.ultimaPos.at || 0};
     if(Array.isArray(s.avisos)) state.avisos = s.avisos.filter(a => a && a.at && a.estado && a.from).slice(0, 20);
   }catch(e){}
@@ -2381,7 +2463,8 @@ function renderHome(){
     <div class="intro"><h1>¿Qué está pasando?</h1><p class="lede">Toca la situación y sigue los pasos.</p></div>
     <div class="tiles">${tiles}</div>
     ${zonaHome()}
-    <div class="card"><h2>Caso extremo</h2><p class="fine">Si pasan días sin luz, gas ni agua: fuego, agua, energía, cocina, abrigo, baño y señales.</p><div class="chips">${GUIDES.filter(g => g.group === "extremo").map(g => `<button class="chip" data-action="guide" data-id="${g.id}">${g.title}</button>`).join("")}</div></div>
+    <details class="card ext-d"><summary><span class="g-ic">${icon("flame")}</span><span class="ext-t"><strong>Caso extremo</strong><span>Días sin luz, gas ni agua: fuego, agua, energía, cocina, abrigo, baño y señales.</span></span></summary>
+      <button class="btn btn-primary" data-action="go-mes">${icon("cal")}Plan 30 días sin luz</button><div class="chips">${GUIDES.filter(g => g.group === "extremo").map(g => `<button class="chip" data-action="guide" data-id="${g.id}">${g.title}</button>`).join("")}</div></details>
     <div class="card call"><div class="call-txt"><span class="mono call-num">911</span><span class="call-label">Emergencias: policía y ambulancia</span></div><a class="btn btn-primary" href="tel:911">${icon("phone")}Llamar</a></div>
     ${localHome()}
     <button class="card call maprow" data-action="go-mapa"><span class="g-ic">${icon("compass")}</span><span class="call-txt"><strong>Mapa y brújula</strong><span class="call-label">Dónde estás y hacia dónde ir, sin internet.</span></span>${icon("chev")}</button>
@@ -2418,9 +2501,8 @@ function renderGuides(){
     <ul class="glist">${GUIDES.filter(g => g.group === "emergencia").map(row).join("")}</ul>
     <h2 class="sec">Saber hacer</h2>
     <ul class="glist">${GUIDES.filter(g => g.group === "saber").map(row).join("")}</ul>
-    <h2 class="sec" id="extremo">Caso extremo</h2>
-    <p class="fine sec-lede">Varios días en casa sin luz, gas ni agua.</p>
-    <ul class="glist">${GUIDES.filter(g => g.group === "extremo").map(row).join("")}</ul>
+    <details class="ext-g" id="extremo"${ui.extOpen ? " open" : ""}><summary><h2 class="sec">Caso extremo</h2><span class="fine">Varios días en casa sin luz, gas ni agua · ${GUIDES.filter(g => g.group === "extremo").length + 1} guías</span></summary>
+    <ul class="glist"><li><button class="grow" data-action="go-mes"><span class="g-ic">${icon("cal")}</span><span class="g-txt"><strong>Plan 30 días sin luz</strong><span>Qué tener, cuánto y qué hacer cada semana.</span></span><span class="g-meta">${icon("chev")}</span></button></li>${GUIDES.filter(g => g.group === "extremo").map(row).join("")}</ul></details>
     <h2 class="sec" id="zona">Según dónde vives</h2>
     ${zonaHTML(row)}
     <p class="fine">Basadas en fuentes oficiales argentinas e internacionales. No reemplazan las indicaciones de las autoridades ni la atención médica.</p>
@@ -2928,12 +3010,20 @@ const FICHA_FIELDS = [
   {k:"domicilio", t:"Domicilio", ph:"Ej.: Av. 25 de Mayo 123, Azul", g:"Identificación"},
   {k:"senas", t:"Señas para reconocerla", ph:"Ej.: 1,70 m, pelo canoso, anteojos, cicatriz en la mano", g:"Identificación"},
   {k:"comunica", t:"Cómo comunicarse", ph:"Ej.: no oye bien, usa lengua de señas, habla poco", g:"Identificación"},
+  {k:"dniVence", t:"Vencimiento del DNI", type:"date", g:"Documentos"},
+  {k:"cuil", t:"CUIL", ph:"Ej.: 20-12345678-3", g:"Documentos"},
+  {k:"nacionalidad", t:"Nacionalidad", ph:"Ej.: argentina", g:"Documentos"},
+  {k:"trabajo", t:"Trabajo o escuela", ph:"Ej.: enfermera en el Hospital Pintos · Escuela N.° 2, 5.° año", g:"Documentos"},
+  {k:"licencia", t:"Licencia de conducir", ph:"Ej.: B1, vence en marzo de 2028", g:"Documentos"},
+  {k:"vehiculo", t:"Vehículo y patente", ph:"Ej.: Gol gris, AB 123 CD", g:"Documentos"},
+  {k:"permiso", t:"Permiso para circular", ph:"Ej.: N.° 123456, vence el 30/11", g:"Documentos"},
   {k:"grupo", t:"Grupo y factor", type:"select", opts:["No sé","0+","0−","A+","A−","B+","B−","AB+","AB−"], g:"Salud"},
   {k:"alergias", t:"Alergias", ph:"Ej.: penicilina", alert:true, g:"Salud"},
   {k:"condiciones", t:"Enfermedades o condiciones", ph:"Ej.: diabetes, hipertensión", g:"Salud"},
   {k:"medicacion", t:"Medicación habitual", ph:"Ej.: enalapril 10 mg, mañana y noche", g:"Salud"},
   {k:"dispositivos", t:"Implantes, prótesis o aparatos", ph:"Ej.: marcapasos, audífonos, prótesis de cadera", g:"Salud"},
   {k:"vacuna", t:"Última vacuna antitetánica", type:"date", g:"Salud"},
+  {k:"vacunas", t:"Otras vacunas", ph:"Ej.: antigripal 2026, COVID-19, fiebre amarilla", g:"Salud"},
   {k:"medico", t:"Médico de cabecera y teléfono", ph:"Ej.: Dra. López, 2281 44-5566", g:"Salud"},
   {k:"obra", t:"Obra social o prepaga", ph:"Ej.: PAMI", g:"Salud"},
   {k:"afiliado", t:"N.° de afiliado", g:"Salud"},
@@ -2942,11 +3032,57 @@ const FICHA_FIELDS = [
   {k:"notas", t:"Otras notas", ph:"Ej.: vive solo, tiene un perro", g:"Contacto"}
 ];
 const FOTO_RE = /^data:image\/jpeg;base64,[A-Za-z0-9+/=]+$/;
+const DOCS_KEY = "preparados.docs";
+const dniOk = v => typeof v === "string" && v.length < 260000 && FOTO_RE.test(v);
+function docsAll(){ try{ const d = JSON.parse(localStorage.getItem(DOCS_KEY) || "{}"); return d && typeof d === "object" ? d : {}; }catch(e){ return {}; } }
+function docsOf(id){ const d = docsAll()[id]; return d && typeof d === "object" ? d : {}; }
+function docsSave(all){ try{ localStorage.setItem(DOCS_KEY, JSON.stringify(all)); return true; }catch(e){ return false; } }
+function dniImgs(f, cls){
+  const d = docsOf(f.id), out = [["f","Frente"],["d","Dorso"]].filter(([k]) => dniOk(d[k]));
+  return out.length ? `<div class="${cls}">${out.map(([k, t]) => `<figure><img src="${d[k]}" alt="DNI de ${esc(f.nombre)}: ${t.toLowerCase()}"><figcaption>DNI · ${t}</figcaption></figure>`).join("")}</div>` : "";
+}
+function dniForm(f){
+  const d = docsOf(f.id);
+  const slot = (k, t) => `<div class="dni-slot">${dniOk(d[k]) ? `<img src="${d[k]}" alt="DNI: ${t.toLowerCase()}">` : `<div class="dni-vacio" aria-hidden="true">${icon("id")}</div>`}
+    <span class="lbl">${t}</span><div class="inline"><input type="file" id="dni-${k}" class="sr" accept="image/*" data-dni="${k}"><label class="btn btn-ghost btn-sm" for="dni-${k}">${dniOk(d[k]) ? "Cambiar" : "Agregar foto"}</label>${dniOk(d[k]) ? `<button class="btn btn-ghost btn-sm" data-action="dni-del" data-k="${k}">Quitar</button>` : ""}</div></div>`;
+  return `<div class="dni-box"><span class="lbl">Foto del DNI</span>
+    <div class="dni-row">${slot("f","Frente")}${slot("d","Dorso")}</div>
+    <p class="fine">Sirve como copia si pierdes el DNI o para dar tus datos rápido. No reemplaza al documento: el oficial en el celular es el <strong>DNI digital de Mi Argentina</strong>. Las fotos quedan solo en este celular y no se mandan por QR.</p>
+    <p class="st" id="dni-st" role="status"></p></div>`;
+}
+async function setDni(file, k){
+  const f = state.fichas.find(x => x.id === ui.fichaEdit);
+  const st = m => { const e = document.getElementById("dni-st"); if(e) e.textContent = m; };
+  if(!f) return;
+  try{
+    st("Preparando la foto…");
+    const url = URL.createObjectURL(file);
+    const img = await new Promise((ok, ko) => { const i = new Image(); i.onload = () => ok(i); i.onerror = ko; i.src = url; });
+    const side = 1100, sc = Math.min(1, side / Math.max(img.naturalWidth, img.naturalHeight));
+    const cv = document.createElement("canvas");
+    cv.width = Math.round(img.naturalWidth * sc); cv.height = Math.round(img.naturalHeight * sc);
+    cv.getContext("2d").drawImage(img, 0, 0, cv.width, cv.height);
+    URL.revokeObjectURL(url);
+    let q = 0.72, data = cv.toDataURL("image/jpeg", q);
+    while(data.length > 250000 && q > 0.3){ q -= 0.1; data = cv.toDataURL("image/jpeg", q); }
+    if(!dniOk(data)) throw 0;
+    const all = docsAll(); all[f.id] = Object.assign({}, all[f.id], {[k]:data, upd:Date.now()});
+    if(!docsSave(all)){ st("No hay lugar en la memoria de la app para otra foto. Quita alguna y vuelve a intentar."); return; }
+    f.upd = Date.now(); save(); render(false);
+  }catch(e){ st("No se pudo usar esa imagen. Prueba con otra foto."); }
+}
+function dniDel(k){
+  const f = state.fichas.find(x => x.id === ui.fichaEdit);
+  if(!f) return;
+  const all = docsAll();
+  if(all[f.id]){ delete all[f.id][k]; if(!all[f.id].f && !all[f.id].d) delete all[f.id]; docsSave(all); }
+  render(false);
+}
 const fotoOk = v => typeof v === "string" && v.length < 90000 && FOTO_RE.test(v);
 function fichaVal(f, d){
   let v = f[d.k] || "";
   if(d.k === "grupo" && v === "No sé") v = "";
-  if((d.k === "nac" || d.k === "vacuna") && v){ const dd = parseISO(v); v = dd ? `${fmtDate(dd)}${d.k === "nac" && edadDe(v) ? ` (${edadDe(v)})` : ""}` : v; }
+  if((d.k === "nac" || d.k === "vacuna" || d.k === "dniVence") && v){ const dd = parseISO(v); v = dd ? `${fmtDate(dd)}${d.k === "nac" && edadDe(v) ? ` (${edadDe(v)})` : ""}${d.k === "dniVence" && dd < new Date() ? " (vencido)" : ""}` : v; }
   if(d.k === "contacto") v = [f.contacto, f.contactoTel].filter(Boolean).join(" · ");
   return v;
 }
@@ -2969,7 +3105,9 @@ function fichaForm(f){
   const foto = `<div class="foto-row">${fotoOk(f.foto) ? `<img class="foto" src="${f.foto}" alt="Foto de ${esc(f.nombre)}">` : `<div class="foto vacia" aria-hidden="true">${icon("home")}</div>`}
     <div class="foto-acts"><span class="lbl">Foto de la cara</span><span class="fine">Ayuda a reconocerla si se pierde.</span><div class="inline"><input type="file" id="ff-foto" class="sr" accept="image/*" data-foto="1"><label class="btn btn-ghost btn-sm" for="ff-foto">${fotoOk(f.foto) ? "Cambiar foto" : "Agregar foto"}</label>${fotoOk(f.foto) ? `<button class="btn btn-ghost btn-sm" data-action="foto-del">Quitar</button>` : ""}</div><p class="st" id="foto-st" role="status"></p></div></div>`;
   let last = "", body = "";
-  FICHA_FIELDS.forEach(d => { if(d.g !== last){ body += `<h3 class="fgroup">${d.g}</h3>`; last = d.g; } body += fld(d); if(d.k === "nombre") body += foto; });
+  FICHA_FIELDS.forEach(d => {
+    if(d.g !== last){ body += `<h3 class="fgroup">${d.g}</h3>`; last = d.g; if(d.g === "Documentos") body += `<p class="fine">Lo que suelen pedir en un control o en una zona cerrada. Ver la guía «Confinamiento o zona cerrada».</p>`; }
+    body += fld(d); if(d.k === "nombre") body += foto; if(d.k === "permiso") body += dniForm(f); });
   return `<div class="card"><div class="card-h"><h2>Ficha de ${esc(f.nombre)}</h2><button class="btn btn-primary btn-sm" data-action="ficha-done">Listo</button></div>
     <p class="fine">Se guarda mientras escribes. Completa lo que sepas.</p>
     ${body}
@@ -2984,6 +3122,7 @@ function fichaBig(f){
     <article class="fb" aria-label="Ficha médica de ${esc(f.nombre)}"><p class="phase">Ficha médica de emergencia</p>
     <div class="fb-head">${fotoOk(f.foto) ? `<img class="foto" src="${f.foto}" alt="Foto de ${esc(f.nombre)}">` : ""}<h1>${esc(f.nombre)}</h1></div>
     ${rows ? `<dl>${rows}</dl>` : `<p>Esta ficha todavía no tiene datos.</p>`}
+    ${dniImgs(f, "fb-dni")}
     ${f.contactoTel ? `<a class="btn btn-danger btn-big" href="tel:${esc(telHref(f.contactoTel))}">${icon("phone")}Llamar a ${esc(f.contacto || "su contacto")}</a>` : ""}</article>
     <div class="card"><h2>Imprimir</h2><p class="fine">Una copia en papel, en la mochila y en la heladera, sirve aunque no haya batería.</p>
       <div class="inline"><button class="btn btn-primary" data-action="ficha-print" data-id="${esc(f.id)}">Imprimir</button><button class="btn btn-outline" data-action="ficha-dl" data-id="${esc(f.id)}">Descargar para imprimir</button></div>
@@ -2992,12 +3131,13 @@ function fichaBig(f){
 function fichaCard(f){
   const rows = FICHA_FIELDS.filter(d => d.k !== "nombre" && d.k !== "contactoTel").map(d => { const v = fichaVal(f, d); return v ? `<tr><th>${d.t}</th><td${d.alert ? ' class="alert"' : ""}>${esc(v)}</td></tr>` : ""; }).join("");
   return `<section class="pf"><header><div><p class="pf-k">Ficha médica de emergencia</p><h1>${esc(f.nombre)}</h1></div>${fotoOk(f.foto) ? `<img src="${f.foto}" alt="">` : ""}</header>
-    <table>${rows || '<tr><td>Sin datos todavía.</td></tr>'}</table><p class="pf-f">Hecha con Preparados${f.upd ? ` · actualizada el ${fmtDate(new Date(f.upd))}` : ""}</p></section>`;
+    <table>${rows || '<tr><td>Sin datos todavía.</td></tr>'}</table>${dniImgs(f, "pf-dni")}<p class="pf-f">Hecha con Preparados${f.upd ? ` · actualizada el ${fmtDate(new Date(f.upd))}` : ""}</p></section>`;
 }
 const PRINT_CSS = `.pf{break-inside:avoid;page-break-inside:avoid;border:2px solid #C9302C;border-radius:10px;padding:14px 16px;margin:0 0 14px;font:13px/1.35 Arial,Helvetica,sans-serif;color:#111;background:#fff}
 .pf header{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;border-bottom:1px solid #ccc;padding-bottom:8px;margin-bottom:8px}
 .pf h1{margin:2px 0 0;font-size:22px}.pf-k{margin:0;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#C9302C}
 .pf header img{width:84px;height:84px;object-fit:cover;border-radius:8px;border:1px solid #ccc}
+.pf-dni{display:flex;gap:10px;margin-top:10px}.pf-dni figure{margin:0;flex:1}.pf-dni img{width:100%;max-width:86mm;border:1px solid #ccc;border-radius:6px}.pf-dni figcaption{font-size:10px;color:#555}
 .pf table{width:100%;border-collapse:collapse}.pf th{width:38%;text-align:left;vertical-align:top;padding:3px 8px 3px 0;color:#555;font-weight:700}
 .pf td{padding:3px 0;font-weight:700}.pf td.alert{color:#C9302C}.pf-f{margin:8px 0 0;font-size:10px;color:#777}
 .ph{font:13px/1.4 Arial,Helvetica,sans-serif;color:#111;border-bottom:2px solid #111;margin-bottom:12px;padding-bottom:6px}.ph h1{font-size:20px;margin:0 0 4px}.ph p{margin:0}
@@ -3066,6 +3206,146 @@ function newFicha(nombre){
   ui.fichaEdit = f.id;
   render(false);
   window.scrollTo(0, 0);
+}
+
+/* ---------- Plan 30 días sin luz ---------- */
+const MES_COMIDA = [
+  /* [id, nombre, cantidad por persona para 30 días, unidad, nota] */
+  ["arroz","Arroz",2,"kg"],
+  ["fideos","Fideos secos",3,"kg"],
+  ["legumbres","Lentejas, porotos o garbanzos secos",1.5,"kg"],
+  ["polenta","Polenta o harina",1.5,"kg"],
+  ["avena","Avena",1,"kg"],
+  ["leche","Leche en polvo",0.8,"kg"],
+  ["pescado","Latas de atún o caballa",8,"latas"],
+  ["carne","Latas de carne, arvejas o choclo",8,"latas"],
+  ["tomate","Puré de tomate y verduras en lata",6,"latas"],
+  ["fruta","Fruta en lata o fruta seca",6,"latas o paquetes"],
+  ["galletitas","Galletitas",2,"kg"],
+  ["aceite","Aceite",1,"L"],
+  ["azucar","Azúcar",1,"kg"],
+  ["dulce","Dulce, miel o mermelada",0.5,"kg"],
+  ["frutos","Maní o frutos secos",0.5,"kg"],
+  ["yerba","Yerba, té o café",0.5,"kg"],
+  ["sopas","Sopas o caldos en sobre",8,"sobres"]
+];
+const MES_COSAS = [
+  ["luz",[["lamparas","Una lámpara LED recargable por ambiente"],["frontal","Una linterna frontal por persona"],["pilas","Pilas de repuesto (AA y AAA)"],["radio","Radio a pilas o a manivela, para las noticias"]]],
+  ["Cocina y agua",[["fosforos","Fósforos y encendedores: 3 cajas"],["anafe","Anafe con 2 garrafas o cartuchos, por si falla el gas"],["bidones","Bidones para guardar agua"],["lavandina","Lavandina sin perfume, para potabilizar"]]],
+  ["Higiene",[["papel","Papel higiénico: 10 rollos por persona"],["toallitas","Toallitas húmedas y alcohol en gel"],["femenina","Higiene femenina para el mes"],["bolsas","Bolsas de residuos grandes y resistentes"]]],
+  ["Salud y dinero",[["remedios","Medicamentos para 30 días, con las recetas"],["botiquin","Botiquín revisado"],["efectivo","Efectivo en billetes chicos: sin luz no andan cajeros ni posnet"]]],
+  ["Abrigo y ánimo",[["frazadas","Frazadas o bolsas de dormir para todos"],["juegos","Juegos de mesa, cartas y libros"]]]
+];
+const MES_ETAPAS = [
+  ["Ahora, con luz",[
+    ["Compren lo de la lista de abajo y guárdenlo junto, con fecha.","inv"],
+    ["Elijan cómo van a cargar los celulares: miren la comparación de energía."],
+    ["Cada uno con su ficha completa y la copia de seguridad guardada.","ficha"],
+    ["Prueben una noche entera sin luz: así ven qué falta."]]],
+  ["Día 1",[
+    ["Anoten la hora del corte: la app cuenta las horas de la heladera.","corte"],
+    ["Heladera y freezer cerrados. Desenchufen los electrodomésticos."],
+    ["Llenen bidones y ollas con agua mientras siga saliendo."],
+    ["Radio a pilas para las noticias. Avisen a la familia cómo están.","aviso"]]],
+  ["Días 2 y 3",[
+    ["Coman primero lo de la heladera y después lo del freezer, si sigue frío.","guia:comida-corte"],
+    ["Cocinen con gas en cantidad y para todos a la vez: se ahorra gas y fósforos."],
+    ["Armen la rutina de carga: al mediodía, con sol, se carga todo."]]],
+  ["Semana 1",[
+    ["Racionen la energía: celulares en ahorro, brillo bajo y wifi apagado."],
+    ["Agua: 4 litros por persona por día para tomar y cocinar. Si se corta la de red, potabilicen.","guia:agua-segura"],
+    ["Basura en bolsas bien cerradas, lejos de la casa. Baño: guía de caso extremo.","guia:bano"],
+    ["Hablen con los vecinos: quién necesita ayuda y quién tiene qué."]]],
+  ["Semanas 2 a 4",[
+    ["Revisen las reservas cada domingo y anoten lo que se usa.","inv"],
+    ["Horarios fijos para comer, dormir y jugar: ayuda mucho a los chicos."],
+    ["Calefacción solo con artefactos a gas con salida al exterior. Nunca el horno ni braseros adentro.","guia:monoxido"],
+    ["De noche, una luz encendida en la entrada y la casa cerrada."]]]
+];
+function mesCfg(){ const m = state.mes, has = k => m[k] !== undefined && m[k] !== null && isFinite(+m[k]); return {p:Math.max(1, Math.min(12, has("p") ? +m.p : (state.plan.miembros.length || 4))), g:Math.max(0, Math.min(6, has("g") ? +m.g : 1)), pb:Math.max(0, Math.min(10, has("pb") ? +m.pb : 2))}; }
+const fmtQ = n => fmtNum(Math.round(n * 10) / 10);
+function mesNeeds(){
+  const c = mesCfg();
+  const wh = c.p * 12 + 45 + 3;
+  const panelW = Math.max(100, Math.ceil(wh / 2.2 / 50) * 50);
+  const estWh = wh * 2 <= 300 ? 300 : wh * 2 <= 500 ? 500 : 1000;
+  return {c, wh, panelW, estWh, verano:Math.round(panelW * 5.5), invierno:Math.round(panelW * 2.2),
+    diasPB:Math.floor(c.pb * 50 / (c.p * 12) * 10) / 10, pilasLuz:Math.round(45 * 30 / 2.5),
+    agua7:Math.ceil(c.p * 4 * 7 + c.g * 0.25 * 7), agua30:c.p * 4 * 30 + c.g * 0.25 * 30};
+}
+function mesCheck(id, txt){
+  const on = !!state.mes.checks[id];
+  return `<label class="check${on ? " on" : ""}" for="mes-${id}"><input type="checkbox" id="mes-${id}" data-mes="${id}"${on ? " checked" : ""}><span>${txt}</span></label>`;
+}
+function mesLink(k){
+  if(!k) return "";
+  if(k === "inv") return `<button class="btn btn-ghost btn-sm" data-action="go-inv">Inventario</button>`;
+  if(k === "ficha") return `<button class="btn btn-ghost btn-sm" data-action="mes-ficha">Fichas</button>`;
+  if(k === "corte") return `<button class="btn btn-ghost btn-sm" data-action="act" data-type="corte">Contador de corte</button>`;
+  if(k === "aviso") return `<button class="btn btn-ghost btn-sm" data-action="go-aviso">Estoy bien</button>`;
+  if(k.indexOf("guia:") === 0){ const g = GUIDES.find(x => x.id === k.slice(5)); return g ? `<button class="btn btn-ghost btn-sm" data-action="guide" data-id="${g.id}">${g.title}</button>` : ""; }
+  return "";
+}
+function renderMes(){
+  const n = mesNeeds(), c = n.c;
+  const comida = MES_COMIDA.map(([id, t, q, u]) => mesCheck("c-" + id, `<strong>${t}</strong> <span class="mono">${fmtQ(q * c.p)} ${u}</span>`)).join("");
+  const gato = c.g ? mesCheck("c-gato", `<strong>Alimento para ${c.g === 1 ? "el gato" : `los ${c.g} gatos`}</strong> <span class="mono">${fmtQ(1.8 * c.g)} kg</span>`) + mesCheck("c-arena", `<strong>Piedras sanitarias</strong> <span class="mono">${fmtQ(15 * c.g)} kg</span>`) : "";
+  const cosas = MES_COSAS.map(([t, items]) => `<h3 class="phase-h">${t === "luz" ? "Luz y noticias" : t}</h3><div class="checks">${items.map(([id, x]) => mesCheck("o-" + id, x)).join("")}</div>`).join("");
+  const total = MES_COMIDA.length + (c.g ? 2 : 0) + MES_COSAS.reduce((a, [, i]) => a + i.length, 0);
+  const hechos = Object.keys(state.mes.checks).filter(k => state.mes.checks[k] && (k.indexOf("c-") === 0 || k.indexOf("o-") === 0)).length;
+  const etapas = MES_ETAPAS.map(([t, items]) => `<li><h3>${t}</h3><ul>${items.map(([x, k]) => `<li>${x}${k ? `<div class="inline">${mesLink(k)}</div>` : ""}</li>`).join("")}</ul></li>`).join("");
+  const num = (id, label, v) => `<div class="field mes-n"><span class="lbl" id="lbl-mes-${id}">${label}</span><div class="stepper" role="group" aria-labelledby="lbl-mes-${id}"><button data-action="mes-step" data-k="${id}" data-d="-1" aria-label="Restar">−</button><output aria-live="polite">${v}</output><button data-action="mes-step" data-k="${id}" data-d="1" aria-label="Sumar">+</button></div></div>`;
+  return `<section class="stack">
+    <button class="back" data-action="tab" data-tab="inicio">${icon("back")}Inicio</button>
+    <div class="intro"><h1>30 días sin luz</h1><p class="lede">Qué tener, cuánto y qué hacer cada semana para pasar un mes sin electricidad en casa.</p></div>
+    <div class="card"><h2>Tu casa</h2>
+      <div class="mes-cfg">${num("p","Personas",c.p)}${num("g","Gatos",c.g)}</div>
+      <ul class="kv mes-casa"><li><span>Cocina</span><strong>Gas natural: sigue andando. Enciende con fósforos.</strong></li><li><span>Agua</span><strong>De red. Puede bajar la presión: guarda una reserva.</strong></li><li><span>Heladera</span><strong>Sin luz no enfría: el plan es comer sin frío.</strong></li></ul></div>
+
+    <h2 class="sec">Cuánto necesitan</h2>
+    <div class="res-grid">
+      <div class="res"><span class="mono num">${fmtQ(n.agua7)}</span><span class="unit-l">litros</span><p>de agua de reserva para 7 días, para tomar y cocinar${c.g ? `, con ${c.g === 1 ? "el gato" : "los gatos"}` : ""}</p></div>
+      <div class="res"><span class="mono num">${fmtNum(c.p * 30)}</span><span class="unit-l">días-persona</span><p>de comida que no necesita heladera: la lista está abajo</p></div>
+      <div class="res"><span class="mono num">${fmtNum(n.wh)}</span><span class="unit-l">Wh por día</span><p>para ${c.p} celulares, 3 luces LED y una radio</p></div>
+    </div>
+    <p class="fine">Si también se corta el agua de red, para 30 días harían falta unos ${fmtNum(Math.round(n.agua30))} litros: no se pueden guardar en casa. La salida es potabilizar agua de lluvia o del tanque.</p>
+
+    <h2 class="sec">Energía: comparación</h2>
+    <div class="cmp">
+      <article class="cmp-c"><h3>Pilas y powerbanks</h3><p class="cmp-k">$ · sin ruido</p>
+        ${num("pb","Powerbanks de 20.000 mAh",c.pb)}
+        <p>Alcanzan para unos <strong>${fmtQ(n.diasPB)} días</strong> de celulares. Las luces a pilas del mes gastarían unas <strong>${fmtNum(n.pilasLuz)} pilas AA</strong>.</p>
+        <p class="cmp-v no">Solas no llegan a 30 días: sirven de respaldo.</p></article>
+      <article class="cmp-c rec"><p class="cmp-badge">Recomendado para ustedes</p><h3>Estación de energía + panel solar</h3><p class="cmp-k">$$ · sin ruido · sin combustible</p>
+        <p>Una estación de <strong>${fmtNum(n.estWh)} Wh</strong> y un panel de <strong>${n.panelW} W</strong>. El panel carga unos ${fmtNum(n.verano)} Wh por día en verano y ${fmtNum(n.invierno)} Wh en invierno.</p>
+        <p class="cmp-v ok">Cubre celulares, luces y radio los 30 días. No alcanza para la heladera.</p></article>
+      <article class="cmp-c"><h3>Generador a nafta</h3><p class="cmp-k">$$ · mucho ruido · riesgo de monóxido</p>
+        <p>Uno chico, 2 horas por día para la heladera y cargar todo, gasta cerca de <strong>30 litros de nafta</strong> en el mes, que hay que guardar.</p>
+        <p class="cmp-v">Es el único que mantiene la heladera. Siempre afuera, lejos de ventanas.</p></article>
+    </div>
+    <p class="fine">Cálculos aproximados: 12 Wh por celular por día, luces de 3 W durante 5 horas y una radio. El panel rinde menos con nubes y en invierno. Un auto con nafta también carga celulares con el motor en marcha.</p>
+    <button class="btn btn-ghost" data-action="guide" data-id="energia">Guía: energía sin luz</button>
+
+    <h2 class="sec">Semana por semana</h2>
+    <ol class="mes-plan">${etapas}</ol>
+
+    <div class="card-h"><h2 class="sec">Lista para el mes</h2><span class="mono mes-prog">${hechos}/${total}</span></div>
+    <h3 class="phase-h">Comida sin heladera, para ${c.p} ${c.p === 1 ? "persona" : "personas"}</h3>
+    <div class="checks">${comida}${gato}</div>
+    <p class="fine">Unas 2.000 calorías por persona por día. Los chicos comen algo menos; guarden igual la misma cantidad. Con gas natural se pueden cocinar arroz, fideos y legumbres: rinden mucho y son baratos.</p>
+    ${cosas}
+    <div class="inline"><button class="btn btn-outline" data-action="mes-print">Imprimir la lista</button></div>
+    ${srcBox(["epre","profileSolar"], "Cantidades orientativas. Revisa las fechas de vencimiento y repone lo que se usa.")}
+  </section>`;
+}
+function mesPrintHTML(){
+  const n = mesNeeds(), c = n.c;
+  const li = (id, t) => `<li>${state.mes.checks[id] ? "☑" : "☐"} ${t}</li>`;
+  return `<section class="pf"><header><div><p class="pf-k">Preparados</p><h1>Lista para 30 días sin luz</h1></div></header>
+    <p>${c.p} personas${c.g ? ` y ${c.g} ${c.g === 1 ? "gato" : "gatos"}` : ""}. Agua de reserva: ${fmtQ(n.agua7)} litros (7 días).</p>
+    <h3>Comida</h3><ul>${MES_COMIDA.map(([id, t, q, u]) => li("c-" + id, `${t}: ${fmtQ(q * c.p)} ${u}`)).join("")}${c.g ? li("c-gato", `Alimento para gato: ${fmtQ(1.8 * c.g)} kg`) + li("c-arena", `Piedras sanitarias: ${fmtQ(15 * c.g)} kg`) : ""}</ul>
+    ${MES_COSAS.map(([t, items]) => `<h3>${t === "luz" ? "Luz y noticias" : t}</h3><ul>${items.map(([id, x]) => li("o-" + id, x)).join("")}</ul>`).join("")}
+    <h3>Energía</h3><p>Estación de ${fmtNum(n.estWh)} Wh + panel de ${n.panelW} W, y ${c.pb} powerbanks de respaldo.</p></section>`;
 }
 
 /* ---------- Necesito ayuda / Me perdí ---------- */
@@ -3415,6 +3695,20 @@ const SHARE = [
      if(n) res.push(plural(n, "ficha nueva", "fichas nuevas"));
      if(u) res.push(plural(u, "ficha actualizada", "fichas actualizadas"));
    }},
+  {id:"docs", t:"Fotos del DNI", d:"Documentos personales: pásalas solo a tu familia directa. No van por QR.",
+   has:() => state.fichas.some(f => { const d = docsOf(f.id); return dniOk(d.f) || dniOk(d.d); }),
+   sum:x => { const n = Object.values(x && typeof x === "object" ? x : {}).filter(d => d && (dniOk(d.f) || dniOk(d.d))).length; return n ? plural(n, "persona", "personas") : ""; },
+   get:() => { const all = docsAll(), out = {}; state.fichas.forEach(f => { if(all[f.id]) out[f.id] = all[f.id]; }); return out; },
+   apply:(x, res) => {
+     const all = docsAll(); let n = 0;
+     Object.entries(x && typeof x === "object" ? x : {}).slice(0, 30).forEach(([id, d]) => {
+       if(!d || !(dniOk(d.f) || dniOk(d.d))) return;
+       const old = all[id] || {};
+       if((+old.upd || 0) >= (+d.upd || 0) && (old.f || old.d)) return;
+       all[id] = {upd:+d.upd || Date.now()}; if(dniOk(d.f)) all[id].f = d.f; if(dniOk(d.d)) all[id].d = d.d; n++;
+     });
+     if(n){ if(docsSave(all)) res.push(plural(n, "DNI en foto", "DNI en foto")); else res.push("las fotos del DNI no entraron en la memoria"); }
+   }},
   {id:"aviso", t:"Avisos «estoy bien»", d:"El tuyo y los que recibiste: así la noticia pasa de celular en celular.",
    has:() => !!state.miAviso || state.avisos.length > 0,
    sum:x => { const l = avisoList(x); return l.slice(0, 3).map(a => `${a.from || SIN_NOMBRE}: ${avisoBase(a)}`).join(" · ") + (l.length > 3 ? ` y ${l.length - 3} más` : ""); },
@@ -3597,6 +3891,7 @@ async function showQR(){
   if(typeof qrcode !== "function"){ ui.share.msg = "No se pudo preparar el código QR. Usa Quick Share."; render(false); return; }
   const pl = sharePayload();
   if(pl.sec.fichas) pl.sec.fichas = {fichas:pl.sec.fichas.fichas.map(f => { const c = Object.assign({}, f); delete c.foto; return c; })};
+  delete pl.sec.docs;
   ui.share.parts = qrPartsOf(await encodeCode(pl));
   ui.share.part = 0; ui.share.qrAuto = true;
   ui.share.msg = "";
@@ -3788,6 +4083,7 @@ function backupAlert(){
 function famStore(obj){
   if(!obj || !obj.from) return;
   const fam = lsGet(FAM_KEY) || {}, key = obj.from.trim().toLowerCase();
+  if(obj.sec && obj.sec.docs){ obj = Object.assign({}, obj, {sec:Object.assign({}, obj.sec)}); delete obj.sec.docs; }
   fam[key] = {from:obj.from, at:obj.at, got:Date.now(), payload:obj};
   const keys = Object.keys(fam).sort((a, b) => fam[b].got - fam[a].got).slice(0, 8);
   const out = {}; keys.forEach(k => { out[k] = fam[k]; });
@@ -4265,7 +4561,7 @@ function render(top){
   if(scanStream) stopScan();
   let html;
   if(!(ui.tab === "inicio" && ui.sub === "mapa")) stopGeo();
-  if(ui.tab === "inicio") html = ui.sub === "corte" ? renderCorte() : ui.sub === "aviso" ? renderAviso() : ui.sub === "mapa" ? renderMapa() : ui.sub === "ayuda" ? renderAyuda() : renderHome();
+  if(ui.tab === "inicio") html = ui.sub === "corte" ? renderCorte() : ui.sub === "aviso" ? renderAviso() : ui.sub === "mapa" ? renderMapa() : ui.sub === "ayuda" ? renderAyuda() : ui.sub === "mes" ? renderMes() : renderHome();
   else if(ui.tab === "guias") html = ui.guide ? renderGuide() : renderGuides();
   else if(ui.tab === "preparar") html = renderPrep();
   else if(ui.tab === "linterna") html = renderTools();
@@ -4583,6 +4879,8 @@ document.addEventListener("click", e => {
       else if(t === "aviso") go("inicio", {sub:"aviso"});
       else if(t === "mapa") go("inicio", {sub:"mapa"});
       else if(t === "ayuda") goAyuda();
+      else if(t === "ficha"){ ui.planSeg = "ficha"; go("numeros"); }
+      else if(t === "mes") go("inicio", {sub:"mes"});
       else if(t === "silbato"){ if(whistle) stopWhistle(); else startWhistle(); afterTool(); }
       else if(t === "sos") openOverlay("sos");
       break;
@@ -4591,6 +4889,10 @@ document.addEventListener("click", e => {
     case "install": if(installEvt){ const ev = installEvt; ev.prompt(); ev.userChoice.finally(() => { installEvt = null; render(false); }); } break;
     case "go-mapa": go("inicio", {sub:"mapa"}); break;
     case "go-ayuda": goAyuda(); break;
+    case "go-mes": go("inicio", {sub:"mes"}); break;
+    case "mes-ficha": ui.planSeg = "ficha"; go("numeros"); break;
+    case "mes-step": { const c = mesCfg(), k = el.dataset.k, lim = {p:[1,12], g:[0,6], pb:[0,10]}[k]; state.mes[k] = Math.max(lim[0], Math.min(lim[1], c[k] + Number(el.dataset.d))); save(); const y = window.scrollY; render(false); window.scrollTo(0, y); break; }
+    case "mes-print": printDoc(mesPrintHTML()); break;
     case "ayuda-geo": getAyudaGeo(); break;
     case "ayuda-estado": ui.ayuda.estado = el.dataset.k; render(false); break;
     case "ayuda-sent": recordAyuda(); break;
@@ -4782,6 +5084,7 @@ document.addEventListener("click", e => {
     case "ficha-dl": downloadFichas([el.dataset.id]); break;
     case "fichas-print": printFichas(state.fichas.map(f => f.id)); break;
     case "fichas-dl": downloadFichas(state.fichas.map(f => f.id)); break;
+    case "dni-del": dniDel(el.dataset.k); break;
     case "foto-del": { const f = state.fichas.find(x => x.id === ui.fichaEdit); if(f){ delete f.foto; f.upd = Date.now(); save(); render(false); } break; }
     case "backup": backupFile(); ensurePersist(true); break;
     case "print-all": printDoc(allPrintHTML()); break;
@@ -4812,6 +5115,7 @@ document.addEventListener("click", e => {
   }
 });
 document.addEventListener("change", e => {
+  if(e.target.matches("[data-mes]")){ state.mes.checks[e.target.dataset.mes] = e.target.checked; save(); e.target.closest(".check").classList.toggle("on", e.target.checked); const pr = document.querySelector(".mes-prog"); if(pr){ const [, tot] = pr.textContent.split("/"); pr.textContent = `${Object.keys(state.mes.checks).filter(k => state.mes.checks[k]).length}/${tot}`; } return; }
   if(e.target.matches("[data-ay-tel]")){ ui.ayuda.off[e.target.dataset.ayTel] = !e.target.checked; render(false); return; }
   const t = e.target;
   if(t.matches("[data-check]")){
@@ -4844,6 +5148,10 @@ document.addEventListener("change", e => {
     state.corte.done[t.dataset.corte] = t.checked;
     save();
     t.closest(".check").classList.toggle("on", t.checked);
+  }else if(t.matches("[data-dni]")){
+    const file = t.files && t.files[0];
+    t.value = "";
+    if(file) setDni(file, t.dataset.dni);
   }else if(t.matches("[data-foto]")){
     const file = t.files && t.files[0];
     t.value = "";
@@ -4945,10 +5253,11 @@ else if(hash === "inventario"){ ui.tab = "preparar"; ui.prep = "inv"; }
 else if(hash === "plan"){ ui.tab = "numeros"; ui.planSeg = "familia"; }
 else if(hash === "ficha"){ ui.tab = "numeros"; ui.planSeg = "ficha"; }
 else if(hash === "compartir"){ ui.tab = "numeros"; ui.planSeg = "compartir"; }
-else if(hash === "extremo") ui.tab = "guias";
+else if(hash === "extremo"){ ui.tab = "guias"; ui.extOpen = true; }
 else if(hash === "mapa") ui.sub = "mapa";
 else if(hash === "aviso") ui.sub = "aviso";
 else if(hash === "ayuda") ui.sub = "ayuda";
+else if(hash === "30dias") ui.sub = "mes";
 else if(hash === "corte") ui.sub = "corte";
 else if(hash.indexOf("guia-") === 0 && GUIDES.some(g => g.id === hash.slice(5))){ ui.tab = "guias"; ui.guide = hash.slice(5); }
 updNet();
