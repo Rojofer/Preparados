@@ -414,8 +414,10 @@ textarea{min-height:76px;resize:vertical}
   body > *:not(#print-area){display:none!important}
   body{background:#fff!important}
   body::before{display:none!important}
-  #print-area{display:block!important}
+  #print-area{display:block!important;color:#111;background:#fff;font:13px/1.35 Arial,Helvetica,sans-serif}
 }
+.pm-map{break-inside:avoid;page-break-inside:avoid}.pm-map img{display:block;width:100%;max-height:150mm;object-fit:contain;border:1px solid #999;border-radius:6px}
+.pm-leg{font-size:11px;color:#333}.pg{break-inside:avoid;page-break-inside:avoid;margin:0 0 10px}.pg h3,.pg h4{margin:8px 0 4px}.pg ol{margin:0;padding-left:18px}.pg li{margin:2px 0}.pg-k{margin:2px 0 4px}
 .pf{break-inside:avoid;page-break-inside:avoid;border:2px solid #C9302C;border-radius:10px;padding:14px 16px;margin:0 0 14px;font:13px/1.35 Arial,Helvetica,sans-serif;color:#111;background:#fff}
 .pf header{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;border-bottom:1px solid #ccc;padding-bottom:8px;margin-bottom:8px}
 .pf h1{margin:2px 0 0;font-size:22px;color:#111}.pf-k{margin:0;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#C9302C}
@@ -575,6 +577,31 @@ textarea{min-height:76px;resize:vertical}
 .coms li{display:flex;flex-direction:column;gap:6px;padding:14px;border-radius:var(--r);background:var(--surface);border:1px solid var(--line)}
 .coms h3{display:flex;gap:10px;align-items:center;font-size:18px}
 .coms h3 .mono{display:grid;place-items:center;flex:none;width:28px;height:28px;border-radius:50%;background:var(--signal);color:var(--on-signal,#fff);font-size:15px}
+html.ahorro{--bg:#000;--surface:#000;--surface-2:#0B0F17;--line:#22293A}
+html.ahorro body{background:#000}
+html.ahorro .topbar,html.ahorro nav,html.ahorro .tabbar{background:#000!important;border-color:#22293A!important}
+html.ahorro *{animation:none!important;transition:none!important}
+.ahorro-v{gap:14px}
+.ah-top{display:flex;justify-content:space-between;font-size:18px;color:var(--ink-2)}
+.ah-big{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.ah-b{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:86px;border-radius:14px;border:2px solid #333;background:#000;color:#E9EEF6;font-weight:700;font-size:17px;text-decoration:none}
+.ah-b .ic{width:28px;height:28px}
+.ah-911{border-color:var(--crit);color:var(--crit);font-family:var(--font-data);font-size:24px}
+.ah-ay{background:var(--crit);border-color:var(--crit);color:#000}
+.ah-dl{display:grid;gap:4px 0;margin:0}
+.ah-dl dt{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2);margin-top:10px}
+.ah-dl dd{margin:0;font-size:19px;line-height:1.4}
+.ah-tels{display:flex;flex-wrap:wrap;gap:8px}
+.ah-tels a{padding:8px 12px;border:1px solid #333;border-radius:10px;color:#E9EEF6;text-decoration:none;font-weight:700}
+.ah-tips summary{cursor:pointer;color:var(--ink-2)}
+.ah-tips ul{margin:8px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:6px;color:var(--ink-2)}
+.auto-line{font-size:16px;line-height:1.4;padding:10px 12px;border-radius:10px;background:var(--surface-2)}
+.auto-g{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}
+.auto-t{display:flex;flex-direction:column;gap:2px;padding:12px;border-radius:12px;background:var(--surface-2);border:2px solid transparent;min-width:0}
+.auto-t.warn{border-color:var(--crit)}
+.auto-n{font-size:38px;font-weight:600;line-height:1}
+.auto-u{font-size:13px;color:var(--ink-2)}
+.auto-s{font-size:13px;color:var(--ink-2);overflow-wrap:anywhere}
 .msgprev{padding:14px;border-radius:12px;background:var(--surface-2);font-size:17px;line-height:1.45;overflow-wrap:anywhere}
 .fb{display:flex;flex-direction:column;gap:14px;padding:20px 18px;border-radius:16px;background:var(--surface);border:2px solid var(--crit)}
 .fb h1{font-size:40px}
@@ -2434,7 +2461,7 @@ const icon = (name, cls) => `<svg class="ic ${cls || ""}" viewBox="0 0 24 24" ar
 
 /* ---------- Estado: solo en este navegador ---------- */
 const KEY = "preparados.v1";
-const state = {checks:{}, corte:null, contacts:[], punto:"", inv:[], recs:{}, plan:{miembros:[], mascotas:"", tareas:{}, lugares:{}, contacto:{}, sim:null}, fichas:[], provincia:"", ciudad:"Azul", yo:"", trash:[], lastBackup:0, lugares:[], ultimaPos:null, mes:{checks:{}}, radioOk:{}, miAviso:null, avisos:[]};
+const state = {checks:{}, corte:null, contacts:[], punto:"", inv:[], recs:{}, plan:{miembros:[], mascotas:"", tareas:{}, lugares:{}, contacto:{}, sim:null}, fichas:[], provincia:"", ciudad:"Azul", yo:"", trash:[], lastBackup:0, lugares:[], ultimaPos:null, mes:{checks:{}}, radioOk:{}, ahorro:false, manual:{}, miAviso:null, avisos:[]};
 function load(){
   try{
     const raw = localStorage.getItem(KEY);
@@ -2462,6 +2489,8 @@ function load(){
     if(Array.isArray(s.lugares)) state.lugares = s.lugares.filter(l => l && l.id && l.nombre && isFinite(l.lat) && isFinite(l.lng)).slice(0, 40);
     if(s.miAviso && s.miAviso.at && s.miAviso.estado) state.miAviso = s.miAviso;
     if(s.radioOk && typeof s.radioOk === "object") state.radioOk = s.radioOk;
+    state.ahorro = !!s.ahorro;
+    if(s.manual && typeof s.manual === "object") state.manual = s.manual;
     if(s.mes && typeof s.mes === "object") state.mes = {p:s.mes.p, g:s.mes.g, pb:s.mes.pb, checks:s.mes.checks && typeof s.mes.checks === "object" ? s.mes.checks : {}};
     if(s.ultimaPos && isFinite(s.ultimaPos.lat) && isFinite(s.ultimaPos.lng)) state.ultimaPos = {lat:+s.ultimaPos.lat, lng:+s.ultimaPos.lng, acc:+s.ultimaPos.acc || 0, at:+s.ultimaPos.at || 0};
     if(Array.isArray(s.avisos)) state.avisos = s.avisos.filter(a => a && a.at && a.estado && a.from).slice(0, 20);
@@ -2526,6 +2555,7 @@ function renderHome(){
   const ahora = [];
   if(state.corte) ahora.push(`<button class="banner" data-action="go-corte"><span class="dot" aria-hidden="true"></span><span class="banner-txt"><strong>Sin luz hace <span data-live="short">${fmtDur(elapsed())}</span></strong><span>Ver el contador de la heladera</span></span>${icon("chev")}</button>`);
   if(navigator.onLine === false) ahora.push(`<button class="net-line" data-action="go-compartir" data-to="qs"><span class="dot" aria-hidden="true"></span>Sin conexión: la app funciona igual. Para pasar datos, Quick Share.</button>`);
+  const bb = ahorroBanner(); if(bb) ahora.push(bb);
   const av = homeAvisos(); if(av) ahora.push(av);
   const tiles = TILES.map(t => t.corte
     ? `<button class="tile signal" data-action="go-corte" aria-label="${t.label}: ${t.hint}">${icon(t.icon)}<span class="t-label">${t.label}</span></button>`
@@ -2542,6 +2572,7 @@ function renderHome(){
   const tels = `<ul class="quick"><li><a class="qcall q911" href="tel:911">${icon("phone")}<span><strong>Emergencias</strong><span class="mono">911</span></span></a></li>${tops.map(x => `<li><a class="qcall" href="tel:${x.tel}">${icon(x.ic || "phone")}<span><strong>${x.sh}</strong><span class="mono">${x.n}</span></span></a></li>`).join("")}</ul>
     <div class="inline"><button class="btn btn-ghost btn-sm" data-action="go-locales">Todos los números y tus contactos</button><button class="btn btn-ghost btn-sm" data-action="go-radio">Radios de Azul</button></div>`;
   const herr = `<div class="tools4">
+      <button class="tool4" data-action="ahorro-on">${icon("bolt")}<span>Modo ahorro de batería</span></button>
       <button class="tool4" data-action="go-radio">${icon("radio")}<span>Radio y comunicación</span></button>
       <button class="tool4" data-action="go-mapa">${icon("compass")}<span>Mapa y brújula</span></button>
       <button class="tool4" data-action="linterna">${icon("torch")}<span>Linterna</span></button>
@@ -2552,11 +2583,13 @@ function renderHome(){
     <button class="btn btn-ghost btn-sm" data-action="tab" data-tab="linterna">Todas las herramientas</button>`;
   const pm = progress(MOCHILA, true), pb = progress(BOTIQUIN, true), pk = progress(KIT);
   const alerts = invAlert() + backupAlert();
+  const autoTxt = autonomiaHTML(true);
   const prep = `${alerts}
+      ${autoTxt ? `<p class="auto-line">${autoTxt}</p>` : ""}
       ${bar("Mochila: lo mínimo", pm, "mochila")}
       ${bar("Botiquín: lo mínimo", pb, "botiquin")}
       ${bar("Kit del hogar", pk, "kit")}
-      <div class="inline"><button class="btn btn-ghost btn-sm" data-action="tab" data-tab="preparar">Seguir preparando</button><button class="btn btn-ghost btn-sm" data-action="go-inv">Inventario</button><button class="btn btn-ghost btn-sm" data-action="act" data-type="ficha">Fichas</button></div>`;
+      <div class="inline"><button class="btn btn-ghost btn-sm" data-action="tab" data-tab="preparar">Seguir preparando</button><button class="btn btn-ghost btn-sm" data-action="go-inv">Inventario</button><button class="btn btn-ghost btn-sm" data-action="act" data-type="ficha">Fichas</button><button class="btn btn-ghost btn-sm" data-action="go-manual">Manual en papel</button></div>`;
   return `<section class="stack home">
     <div class="sos-bar" role="group" aria-label="Acciones urgentes">
       <a class="sb sb-911" href="tel:911">${icon("phone")}<span>911</span></a>
@@ -2822,6 +2855,7 @@ function invSummary(){
   return {venc, pronto, recs:REMINDERS.filter(r => recStatus(r).due).length};
 }
 function renderInv(){
+  const autoCard = autonomiaHTML(false);
   const sum = invSummary();
   const recs = REMINDERS.map(r => {
     const s = recStatus(r), st = state.recs[r.id] || {};
@@ -2841,7 +2875,7 @@ function renderInv(){
   const ed = ui.invEdit ? state.inv.find(x => x.id === ui.invEdit) : null;
   const v = k => ed ? esc(ed[k] || "") : "";
   const pl = (n, a, b) => `${n} ${n === 1 ? a : b}`;
-  return `<h2 class="sec">Recordatorios</h2>
+  return `${autoCard}<h2 class="sec">Recordatorios</h2>
     <p class="fine">Cuando toca una revisión, también aparece en el inicio.</p>
     <ul class="rems">${recs}</ul>
     <h2 class="sec">Inventario</h2>
@@ -2852,7 +2886,7 @@ function renderInv(){
       ${ed ? "" : `<div class="chips" role="group" aria-label="Sugerencias">${INV_SUGG.map(([n], k) => `<button type="button" class="chip" data-action="inv-sugg" data-k="${k}">${n}</button>`).join("")}</div>`}
       <div class="field"><label class="lbl" for="i-nombre">Qué es</label><input id="i-nombre" maxlength="60" autocomplete="off" value="${v("nombre")}" placeholder="Ej.: Agua embotellada"></div>
       <div class="grid2">
-        <div class="field"><label class="lbl" for="i-cant">Cantidad</label><input id="i-cant" maxlength="30" autocomplete="off" value="${v("cant")}" placeholder="Ej.: 6 de 2 L"></div>
+        <div class="field"><label class="lbl" for="i-cant">Cantidad</label><input id="i-cant" maxlength="30" autocomplete="off" value="${v("cant")}" placeholder="Ej.: 6 de 2 L · 2 kg · 8 latas · 30 días"></div>
         <div class="field"><label class="lbl" for="i-cat">Tipo</label><select id="i-cat">${INV_CATS.map(c => `<option${ed && ed.cat === c ? " selected" : ""}>${c}</option>`).join("")}</select></div>
       </div>
       <div class="field"><label class="lbl" for="i-vence">Vence</label><input id="i-vence" type="date" value="${v("vence")}"><span class="fine">Si no tiene vencimiento, déjalo vacío.</span></div>
@@ -3237,7 +3271,9 @@ const PRINT_CSS = `.pf{break-inside:avoid;page-break-inside:avoid;border:2px sol
 .pf td{padding:3px 0;font-weight:700}.pf td.alert{color:#C9302C}.pf-f{margin:8px 0 0;font-size:10px;color:#777}
 .ph{font:13px/1.4 Arial,Helvetica,sans-serif;color:#111;border-bottom:2px solid #111;margin-bottom:12px;padding-bottom:6px}.ph h1{font-size:20px;margin:0 0 4px}.ph p{margin:0}
 .ps{font:13px/1.4 Arial,Helvetica,sans-serif;color:#111;margin:0 0 16px}.ps h2{font-size:16px;margin:0 0 6px;border-bottom:1px solid #999}.ps p{margin:4px 0}
-.pt{width:100%;border-collapse:collapse;margin:0 0 8px}.pt th,.pt td{border:1px solid #bbb;padding:3px 6px;text-align:left;vertical-align:top}.pt th{background:#eee}.pt tr{break-inside:avoid}`;
+.pt{width:100%;border-collapse:collapse;margin:0 0 8px}.pt th,.pt td{border:1px solid #bbb;padding:3px 6px;text-align:left;vertical-align:top}.pt th{background:#eee}.pt tr{break-inside:avoid}
+.pm-map{break-inside:avoid;page-break-inside:avoid}.pm-map img{display:block;width:100%;max-height:150mm;object-fit:contain;border:1px solid #999;border-radius:6px}
+.pm-leg{font-size:11px;color:#333}.pg{break-inside:avoid;page-break-inside:avoid;margin:0 0 10px}.pg h3,.pg h4{margin:8px 0 4px}.pg ol{margin:0;padding-left:18px}.pg li{margin:2px 0}.pg-k{margin:2px 0 4px}`;
 function printFichas(ids){ printDoc(state.fichas.filter(f => ids.includes(f.id)).map(fichaCard).join("")); }
 function downloadFichas(ids){
   const list = state.fichas.filter(f => ids.includes(f.id));
@@ -3652,6 +3688,221 @@ const INDISP = [
     ["a-radioaf","Licencia de radioaficionado de algún adulto de la familia"]]}
 ];
 LISTS.indisp.list = INDISP;
+
+/* ---------- Días de autonomía: cuánto alcanza lo que hay en el inventario ---------- */
+function parseCant(txt){
+  const t = String(txt || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/(\d),(\d)/g, "$1.$2");
+  const mx = t.match(/(\d+(?:\.\d+)?)\s*(?:x|de|por)\s*(\d+(?:\.\d+)?)\s*(l|lt|lts|litros?|kg|kilos?|g|gr|grs|gramos|ml|cc)\b/);
+  if(mx){ const k = mx[3], tot = parseFloat(mx[1]) * parseFloat(mx[2]); return /^(l|lt|lts|litros?)$/.test(k) ? {n:tot, u:"l"} : /^(kg|kilos?)$/.test(k) ? {n:tot, u:"kg"} : /^(ml|cc)$/.test(k) ? {n:tot, u:"ml"} : {n:tot, u:"g"}; }
+  const m = t.match(/(\d+(?:\.\d+)?)\s*([a-z]*)/);
+  if(!m) return null;
+  const n = parseFloat(m[1]), w = m[2] || "";
+  let u = "";
+  if(/^(l|lt|lts|litro|litros)$/.test(w)) u = "l";
+  else if(/^(ml|cc)$/.test(w)) u = "ml";
+  else if(/^(kg|kilo|kilos|kgs)$/.test(w)) u = "kg";
+  else if(/^(g|gr|grs|gramos)$/.test(w)) u = "g";
+  else if(/^(lata|latas)$/.test(w)) u = "lata";
+  else if(/^(paquete|paquetes|paq|caja|cajas|bolsa|bolsas|sobre|sobres)$/.test(w)) u = "paq";
+  else if(/^(dia|dias)$/.test(w)) u = "dia";
+  else if(/^(semana|semanas)$/.test(w)) u = "sem";
+  else if(/^(mes|meses)$/.test(w)) u = "mes";
+  else if(/^(bidon|bidones)$/.test(w)){ const lit = t.slice(m.index + m[0].length).match(/(\d+(?:\.\d+)?)\s*(l|lt|lts|litros)\b/); return {n, u:"bidon", bid:lit ? parseFloat(lit[1]) : 0}; }
+  else if(/^(botella|botellas)$/.test(w)) u = "botella";
+  else if(/^(comprimido|comprimidos|pastilla|pastillas|unidad|unidades|u)$/.test(w) || !w) u = "u";
+  return {n, u};
+}
+/* Calorías aproximadas por tipo de alimento */
+const KCAL = [
+  [/aceite/, {kg:8800, l:8000}],
+  [/leche en polvo/, {kg:4900, paq:4900 * 0.8}],
+  [/leche/, {l:600, paq:600}],
+  [/azucar/, {kg:4000, paq:4000}],
+  [/mani|frutos secos|nuez|nueces|almendra/, {kg:6000, paq:1500}],
+  [/galletita|galleta|tostada|bizcocho/, {kg:4500, paq:1400}],
+  [/dulce|miel|mermelada/, {kg:2800, paq:1400}],
+  [/arroz|fideo|harina|polenta|avena|lenteja|poroto|garbanzo|arveja seca|legumbre|cereal|semola/, {kg:3500, paq:1750}],
+  [/pure instantaneo|pure/, {kg:3500, paq:450}],
+  [/atun|caballa|sardina|pescado/, {lata:200}],
+  [/carne|picadillo|paté|pate|salchicha|corned/, {lata:350}],
+  [/lenteja|poroto|garbanzo|legumbre|arveja|choclo/, {lata:250}],
+  [/durazno|fruta|anana|pera|coctel/, {lata:280}],
+  [/tomate|verdura|jardinera|chaucha/, {lata:90}],
+  [/sopa|caldo/, {paq:90}],
+  [/barra|barrita|cereal/, {u:150}],
+  [/\b(yerba|te|cafe|sal)\b/, {skip:true}]
+];
+function kcalDe(it){
+  const c = parseCant(it.cant || ""), n = norm(it.nombre);
+  if(!c) return null;
+  for(const [re, k] of KCAL){
+    if(!re.test(n)) continue;
+    if(k.skip) return 0;
+    if(c.u === "kg" && k.kg) return c.n * k.kg;
+    if(c.u === "g" && k.kg) return c.n / 1000 * k.kg;
+    if((c.u === "l" || c.u === "botella") && k.l) return c.n * k.l;
+    if(c.u === "lata" && k.lata) return c.n * k.lata;
+    if(c.u === "lata" && k.kg) return c.n * 300;
+    if(c.u === "paq" && k.paq) return c.n * k.paq;
+    if(c.u === "u" && k.u) return c.n * k.u;
+    if(c.u === "u" && k.lata) return c.n * k.lata;
+  }
+  if(c.u === "lata") return c.n * 200;
+  if(c.u === "kg") return c.n * 2500;
+  return null;
+}
+function autonomia(){
+  const cfg = mesCfg(), P = cfg.p, G = cfg.g, out = {P, G};
+  const inv = state.inv;
+  // Agua: 4 litros por persona por día, más el gato
+  let litros = 0, aguaNo = [];
+  inv.filter(i => i.cat === "Agua").forEach(i => { const c = parseCant(i.cant || ""); if(!c) return aguaNo.push(i.nombre);
+    if(c.u === "l") litros += c.n; else if(c.u === "ml") litros += c.n / 1000; else if(c.u === "bidon" && c.bid) litros += c.n * c.bid; else if(c.u === "botella") litros += c.n * 2; else aguaNo.push(i.nombre); });
+  out.agua = {litros:Math.round(litros), dias:litros ? Math.floor(litros / (P * 4 + G * 0.25)) : 0, no:aguaNo, hay:inv.some(i => i.cat === "Agua")};
+  // Comida
+  let kcal = 0; const comNo = [], comidas = inv.filter(i => i.cat === "Comida" && !/gato|perro|mascota/.test(norm(i.nombre)));
+  comidas.forEach(i => { const k = kcalDe(i); if(k === null) comNo.push(i.nombre); else kcal += k; });
+  out.comida = {kcal, dias:Math.floor(kcal / (P * 2000)), no:comNo, total:comidas.length};
+  // Remedios: cada uno anotado en días, semanas o meses
+  const rem = inv.filter(i => i.cat === "Remedios" && !/botiquin/.test(norm(i.nombre))).map(i => { const c = parseCant(i.cant || ""); const d = !c ? null : c.u === "dia" ? c.n : c.u === "sem" ? c.n * 7 : c.u === "mes" ? c.n * 30 : null; return {n:i.nombre, d}; });
+  const remOk = rem.filter(r => r.d !== null);
+  out.remedios = {dias:remOk.length ? Math.min(...remOk.map(r => r.d)) : null, cual:remOk.length ? remOk.reduce((a, b) => a.d <= b.d ? a : b).n : "", no:rem.filter(r => r.d === null).map(r => r.n), total:rem.length};
+  // Gato: unos 60 g de alimento seco por día
+  if(G){
+    let kg = 0, no = [];
+    inv.filter(i => /gato|mascota/.test(norm(i.nombre))).forEach(i => { const c = parseCant(i.cant || ""); if(c && c.u === "kg") kg += c.n; else if(c && c.u === "g") kg += c.n / 1000; else no.push(i.nombre); });
+    out.gato = {kg, dias:Math.floor(kg / (0.06 * G)), no};
+  }
+  const lst = [["Agua", out.agua.dias, out.agua.hay], ["Comida", out.comida.dias, out.comida.total > 0], ["Remedios", out.remedios.dias, out.remedios.total > 0 && out.remedios.dias !== null]].concat(G ? [["Comida del gato", out.gato.dias, true]] : []);
+  const cuenta = lst.filter(x => x[2]);
+  out.min = cuenta.length ? cuenta.reduce((a, b) => a[1] <= b[1] ? a : b) : null;
+  return out;
+}
+const diasTxt = d => d === null || d === undefined ? "—" : d >= 60 ? "60+" : String(d);
+function autonomiaHTML(compact){
+  const a = autonomia();
+  if(!state.inv.length) return compact ? "" : `<div class="card auto"><h2>¿Para cuántos días alcanza?</h2><p>Carga en el inventario lo que tienen guardado (agua, comida, remedios y lo del gato) y la app calcula para cuántos días les alcanza.</p></div>`;
+  const tile = (t, d, sub, warn) => `<div class="auto-t${warn ? " warn" : ""}"><span class="mono auto-n">${diasTxt(d)}</span><span class="auto-u">días</span><strong>${t}</strong>${sub ? `<span class="auto-s">${sub}</span>` : ""}</div>`;
+  const lim = a.min ? a.min[1] : null;
+  const tiles = [
+    tile("Agua", a.agua.hay ? a.agua.dias : null, a.agua.hay ? `${fmtNum(a.agua.litros)} litros` : "Sin cargar", a.min && a.min[0] === "Agua"),
+    tile("Comida", a.comida.total ? a.comida.dias : null, a.comida.total ? `${fmtNum(Math.round(a.comida.kcal / 1000))} mil calorías` : "Sin cargar", a.min && a.min[0] === "Comida"),
+    tile("Remedios", a.remedios.dias, a.remedios.dias !== null ? a.remedios.cual : a.remedios.total ? "Anota los días" : "Sin cargar", a.min && a.min[0] === "Remedios")
+  ].concat(a.G ? [tile("Gato", a.gato.dias, a.gato.kg ? `${fmtNum(a.gato.kg)} kg` : "Sin cargar", a.min && a.min[0] === "Comida del gato")] : []).join("");
+  if(compact) return a.min ? `Les alcanza para <strong>${diasTxt(lim)} días</strong>: lo primero que se termina es ${a.min[0].toLowerCase()}.` : "";
+  const no = [].concat(a.agua.no, a.comida.no, a.remedios.no, a.gato ? a.gato.no : []);
+  return `<div class="card auto"><h2>¿Para cuántos días alcanza?</h2>
+    <p>${a.min ? `Para ${a.P} ${a.P === 1 ? "persona" : "personas"}${a.G ? ` y ${a.G === 1 ? "el gato" : `${a.G} gatos`}` : ""}, lo primero que se termina es <strong>${a.min[0].toLowerCase()}: ${diasTxt(lim)} días</strong>.` : "Todavía falta cargar cantidades."}</p>
+    <div class="auto-g">${tiles}</div>
+    ${no.length ? `<p class="fine"><strong>No pude contar:</strong> ${no.slice(0, 6).map(esc).join(", ")}${no.length > 6 ? "…" : ""}. Escribe la cantidad así: «12 litros», «2 kg», «6 latas», «3 paquetes» o, para remedios, «30 días».</p>` : ""}
+    <p class="fine">Estimación: 4 litros de agua y 2.000 calorías por persona por día${a.G ? ", y 60 g de alimento por gato" : ""}. Cambia la cantidad de personas en el plan de 30 días.</p>
+    <div class="inline"><button class="btn btn-ghost btn-sm" data-action="go-mes">Personas y plan de 30 días</button></div></div>`;
+}
+
+/* ---------- Modo ahorro de batería ---------- */
+function applyAhorro(){
+  const on = !!state.ahorro, r = document.documentElement;
+  r.classList.toggle("ahorro", on);
+  if(on){ if(!r.dataset.themeAntes) r.dataset.themeAntes = r.dataset.theme || "-"; r.dataset.theme = "dark"; }
+  else if(r.dataset.themeAntes){ if(r.dataset.themeAntes === "-") delete r.dataset.theme; else r.dataset.theme = r.dataset.themeAntes; delete r.dataset.themeAntes; }
+}
+function ahorroBanner(){
+  if(state.ahorro || batNivel === null || batNivel > 20) return "";
+  return `<button class="banner" data-action="ahorro-on"><span class="dot" aria-hidden="true"></span><span class="banner-txt"><strong>Batería al ${batNivel}%</strong><span>Activa el modo ahorro: pantalla negra y solo lo vital</span></span>${icon("chev")}</button>`;
+}
+function renderAhorro(){
+  const pe = puntoEncuentro(), g = state.ultimaPos, c = CIUDADES[state.ciudad];
+  const radios = RADIOS.flatMap(gr => gr.l).filter(([id]) => (state.radioOk || {})[id]);
+  const rad = (radios.length ? radios : RADIOS[0].l.slice(0, 2)).slice(0, 4);
+  const tels = [["911","911"]].concat(state.contacts.slice(0, 3).map(x => [x.nombre, telHref(x.tel)])).concat(c ? c.nums.filter(x => x.top).slice(0, 2).map(x => [x.sh, x.tel]) : []);
+  const auto = autonomiaHTML(true);
+  let dist = "";
+  if(pe.lugar && g){ const km = distKm(g, pe.lugar); dist = ` · a ${fmtKm(km)} hacia ${cardinal(rumbo(g, pe.lugar))}`; }
+  return `<section class="stack ahorro-v">
+    <div class="ah-top"><span class="mono">${batNivel !== null ? `Batería ${batNivel}%` : "Modo ahorro"}</span><span class="mono">${hhmm(new Date())}</span></div>
+    <div class="ah-big">
+      <a class="ah-b ah-911" href="tel:911">${icon("phone")}911</a>
+      <button class="ah-b ah-ay" data-action="go-ayuda">${icon("sos")}Ayuda</button>
+      <button class="ah-b" data-action="go-aviso">${icon("heart")}Estoy bien</button>
+      <button class="ah-b" data-action="linterna">${icon("torch")}Linterna</button>
+      <button class="ah-b" data-action="silbato">${icon("whistle")}Silbato</button>
+      <button class="ah-b" data-action="go-mapa">${icon("compass")}Mapa</button>
+    </div>
+    <dl class="ah-dl">
+      <dt>Punto de encuentro</dt><dd>${esc(pe.texto || (pe.lugar ? pe.lugar.nombre : "Sin definir"))}${dist}</dd>
+      <dt>Radio</dt><dd>${rad.map(([, b, f, n]) => `<span class="mono">${b} ${f}</span> ${esc(n)}`).join("<br>")}</dd>
+      ${auto ? `<dt>Reservas</dt><dd>${auto}</dd>` : ""}
+      <dt>Teléfonos</dt><dd class="ah-tels">${tels.map(([n, t]) => `<a href="tel:${esc(t)}">${esc(n)}</a>`).join("")}</dd>
+    </dl>
+    <details class="ah-tips"><summary>Para que dure la batería</summary><ul>
+      <li>Brillo al mínimo y la pantalla apagada cuando no la uses.</li>
+      <li>Modo avión, y sácalo solo para mandar un mensaje o llamar.</li>
+      <li>Apaga wifi, Bluetooth y ubicación si no los necesitas.</li>
+      <li>Ahorro de batería del celular activado.</li></ul></details>
+    <button class="btn btn-ghost" data-action="ahorro-off">Salir del modo ahorro</button>
+  </section>`;
+}
+
+/* ---------- Manual para imprimir ---------- */
+const MANUAL_SEC = [
+  ["datos","Datos de la familia","Plan, teléfonos, lugares, inventario y fichas médicas.",true],
+  ["mapa","Mapa del barrio y de Azul","Con tus lugares guardados, hospitales, bomberos y policía.",true],
+  ["radio","Radios y cómo comunicarse","Frecuencias y qué hacer sin internet.",true],
+  ["emergencia","Guías: en la emergencia","Corte de luz, inundación, tormenta, calor, monóxido, RCP, evacuar.",true],
+  ["extremo","Guías: caso extremo","Fuego, agua, energía, cocina, abrigo, baño y señales.",true],
+  ["saber","Guías: saber hacer","Agua segura, comida, mochila, mapas y más.",false],
+  ["zona","Guías de tu zona","Sismo, Zonda, sudestada, nevada, incendio forestal.",false],
+  ["mes","Plan de 30 días sin luz","Semana por semana y la lista para el mes.",false],
+  ["aprender","Lecturas de Aprender","Proteger la casa, familia, saberes y comunidad. Son muchas páginas.",false]
+];
+function manualSel(){ const s = state.manual || {}; const o = {}; MANUAL_SEC.forEach(([k, , , d]) => { o[k] = s[k] === undefined ? d : !!s[k]; }); return o; }
+const PRINT_COL = {"--map-bg":"#F4F6F2","--map-road":"#FFFFFF","--map-main":"#F2CC7A","--map-edge":"#9AA3B2","--map-park":"#CFE6C6","--map-water":"#8DB8E8","--map-rail":"#555","--map-label":"#222","--map-poi":"#7A5BC2","--map-police":"#1F4FB8","--signal":"#E0561B","--crit":"#B3261E","--ok":"#17672F","--blue":"#1F4FB8","--ink":"#111","--font-body":"Arial, Helvetica, sans-serif","--font-data":"Courier New, monospace"};
+let MAP_PRINT = false;
+function mapImage(cx, cy, z, w, h){
+  const keep = {cx:MAP.cx, cy:MAP.cy, z:MAP.z, w:MAP.w, h:MAP.h};
+  const cv = document.createElement("canvas");
+  MAP.cx = cx; MAP.cy = cy; MAP.z = z; MAP_PRINT = true;
+  try{ drawMapa({cv, w, h}); }catch(e){}
+  finally{ MAP_PRINT = false; Object.assign(MAP, keep); }
+  try{ return cv.toDataURL("image/jpeg", 0.85); }catch(e){ return ""; }
+}
+function guidePrint(g){
+  return `<section class="pg"><h3>${esc(g.title)}</h3>${g.keys ? `<p class="pg-k"><strong>Lo esencial:</strong> ${g.keys.map(esc).join(" · ")}</p>` : ""}
+    <ol>${g.steps.map(s => `<li><strong>${esc(s.t)}.</strong> ${esc(s.d)}${s.a && s.a.type === "call" ? ` <strong>Llamar al ${s.a.num}.</strong>` : ""}</li>`).join("")}</ol></section>`;
+}
+function manualHTML(){
+  const sel = manualSel(), parts = [];
+  if(sel.datos) parts.push(allPrintHTML());
+  if(sel.mapa){
+    const casa = state.lugares.find(l => /casa/i.test(l.nombre)) || state.lugares.find(l => /encuentro/i.test(l.nombre));
+    const [hx, hy] = casa && enAzul(casa) ? toXY(casa) : [6800, 5500];
+    const barrio = mapImage(hx, hy, 0.9, 760, 600), ciudad = mapImage(6800, 5500, 0.27, 760, 640);
+    const leg = state.lugares.filter(enAzul).map(l => `<li><strong>${esc(l.nombre)}</strong>${l.desc ? `: ${esc(l.desc)}` : ""}</li>`).join("");
+    parts.push(`<section class="ps pm-map"><h2>Mapa ${casa ? `alrededor de «${esc(casa.nombre)}»` : "del centro de Azul"}</h2>${barrio ? `<img src="${barrio}" alt="Mapa del barrio">` : ""}
+      <p class="pm-leg">Verde: tus lugares · Rojo: hospitales y clínicas · Naranja: bomberos · Azul: policía · Barra de escala abajo a la izquierda. El norte está arriba.</p>${leg ? `<ul>${leg}</ul>` : ""}</section>
+      <section class="ps pm-map"><h2>Azul</h2>${ciudad ? `<img src="${ciudad}" alt="Mapa de Azul">` : ""}<p class="pm-leg">Calles y lugares: © colaboradores de OpenStreetMap.</p></section>`);
+  }
+  if(sel.radio){
+    parts.push(`<section class="ps"><h2>Radios</h2>${printTable(["Banda","Frecuencia","Radio"], RADIOS.flatMap(g => g.l).map(([, b, f, n]) => [b, f, n]))}
+      <h3>Comunicarse fuera de la zona</h3><ol>${COMS.map(([t, d]) => `<li><strong>${esc(t)}.</strong> ${esc(d)}</li>`).join("")}</ol></section>`);
+  }
+  const gsec = (k, t) => { if(sel[k]) parts.push(`<section class="ps pm-g"><h2>${t}</h2>${GUIDES.filter(g => g.group === k).map(guidePrint).join("")}</section>`); };
+  gsec("emergencia", "En la emergencia"); gsec("extremo", "Caso extremo"); gsec("saber", "Saber hacer"); gsec("zona", "Según la zona");
+  if(sel.mes) parts.push(`<section class="ps"><h2>30 días sin luz</h2>${MES_ETAPAS.map(([t, it]) => `<h3>${t}</h3><ul>${it.map(([x]) => `<li>${esc(x)}</li>`).join("")}</ul>`).join("")}</section>${mesPrintHTML()}`);
+  if(sel.aprender) parts.push(`<section class="ps pm-g"><h2>Aprender</h2>${APRENDER.map(t => `<h3>${t.t}</h3>${t.lec.map(l => `<section class="pg"><h4>${l.t}</h4>${l.b.map(aprBlock).join("")}</section>`).join("")}`).join("")}</section>`);
+  return `<header class="ph"><h1>Manual de emergencia de la familia</h1><p>Preparados · impreso el ${fmtDate(new Date())}. Guárdalo en la mochila: sirve aunque no haya batería. En una emergencia, llama al 911.</p></header>${parts.join("")}`;
+}
+function renderManual(){
+  const sel = manualSel();
+  return `<section class="stack">
+    <button class="back" data-action="tab" data-tab="inicio">${icon("back")}Inicio</button>
+    <div class="intro"><h1>Manual en papel</h1><p class="lede">Todo lo importante en hojas para la mochila: sirve cuando no queda batería.</p></div>
+    <div class="card"><h2>Qué incluir</h2><div class="checks">${MANUAL_SEC.map(([k, t, d]) => `<label class="check${sel[k] ? " on" : ""}" for="man-${k}"><input type="checkbox" id="man-${k}" data-man="${k}"${sel[k] ? " checked" : ""}><span><strong>${t}</strong><br><small>${d}</small></span></label>`).join("")}</div></div>
+    <div class="inline"><button class="btn btn-primary" data-action="manual-print">Imprimir</button><button class="btn btn-outline" data-action="manual-dl">Descargar para imprimir</button></div>
+    <p class="st" id="manual-st" role="status"></p>
+    <p class="fine">Si no se abre la impresión, usa «Descargar para imprimir»: el archivo se abre en el navegador y desde ahí imprimes o guardas como PDF. Hagan una copia para cada mochila y actualícenla cuando cambien los datos.</p>
+  </section>`;
+}
 
 /* ---------- Plan 30 días sin luz ---------- */
 const MES_COMIDA = [
@@ -4621,7 +4872,7 @@ function keepHTML(){
     <div class="inline"><button class="btn btn-primary" data-action="backup">Guardar copia de seguridad</button></div><p class="st" id="backup-st" role="status"></p>
     <h3>2. En papel</h3>
     <p class="fine">Plan, teléfonos, inventario y fichas en hojas para la mochila. Sirven aunque no haya batería.</p>
-    <div class="inline"><button class="btn btn-outline" data-action="print-all">Imprimir todo</button><button class="btn btn-ghost" data-action="dl-all">Descargar para imprimir</button></div><p class="st" id="printall-st" role="status"></p>
+    <div class="inline"><button class="btn btn-primary" data-action="go-manual">Armar el manual completo</button><button class="btn btn-outline" data-action="print-all">Imprimir todo</button><button class="btn btn-ghost" data-action="dl-all">Descargar para imprimir</button></div><p class="st" id="printall-st" role="status"></p>
     <h3>3. En los celulares de la familia</h3>
     <p class="fine">Pásense los datos entre todos: cada celular guarda una copia de los demás.</p>
     ${prevHTML()}</div>
@@ -4789,15 +5040,15 @@ function startGeo(){
 function stopGeo(){ if(geoWatch !== null){ try{ navigator.geolocation.clearWatch(geoWatch); }catch(e){} geoWatch = null; } }
 
 /* Dibujo del plano de calles en un canvas */
-function css(v){ return getComputedStyle(document.documentElement).getPropertyValue(v).trim() || "#888"; }
-function drawMapa(){
-  const cv = document.getElementById("azmap");
+function css(v){ if(MAP_PRINT && PRINT_COL[v]) return PRINT_COL[v]; return getComputedStyle(document.documentElement).getPropertyValue(v).trim() || "#888"; }
+function drawMapa(target){
+  const cv = target ? target.cv : document.getElementById("azmap");
   if(!cv) return;
-  const r = cv.getBoundingClientRect(), dpr = Math.min(3, window.devicePixelRatio || 1);
+  const r = target ? {width:target.w, height:target.h} : cv.getBoundingClientRect(), dpr = target ? 2 : Math.min(3, window.devicePixelRatio || 1);
   if(!r.width) return;
   if(cv.width !== Math.round(r.width * dpr) || cv.height !== Math.round(r.height * dpr)){ cv.width = Math.round(r.width * dpr); cv.height = Math.round(r.height * dpr); }
   MAP.w = r.width; MAP.h = r.height;
-  const c = cv.getContext("2d"), az = azData(), z = MAP.z, m = ui.mapa;
+  const c = cv.getContext("2d"), az = azData(), z = MAP.z, m = target ? {} : ui.mapa;
   const sx = x => (x - MAP.cx) * KX * z + MAP.w / 2, sy = y => MAP.h / 2 - (y - MAP.cy) * KY * z;
   c.setTransform(dpr, 0, 0, dpr, 0, 0);
   c.fillStyle = css("--map-bg"); c.fillRect(0, 0, MAP.w, MAP.h);
@@ -5006,7 +5257,9 @@ function render(top){
   if(scanStream) stopScan();
   let html;
   if(!(ui.tab === "inicio" && ui.sub === "mapa")) stopGeo();
-  if(ui.tab === "inicio") html = ui.sub === "corte" ? renderCorte() : ui.sub === "aviso" ? renderAviso() : ui.sub === "mapa" ? renderMapa() : ui.sub === "ayuda" ? renderAyuda() : ui.sub === "mes" ? renderMes() : ui.sub === "radio" ? renderRadio() : renderHome();
+  applyAhorro();
+  if(ui.tab === "inicio" && !ui.sub && state.ahorro) html = renderAhorro();
+  else if(ui.tab === "inicio") html = ui.sub === "corte" ? renderCorte() : ui.sub === "aviso" ? renderAviso() : ui.sub === "mapa" ? renderMapa() : ui.sub === "ayuda" ? renderAyuda() : ui.sub === "mes" ? renderMes() : ui.sub === "radio" ? renderRadio() : ui.sub === "manual" ? renderManual() : renderHome();
   else if(ui.tab === "guias") html = ui.guide ? renderGuide() : renderGuides();
   else if(ui.tab === "preparar") html = renderPrep();
   else if(ui.tab === "linterna") html = renderTools();
@@ -5337,6 +5590,11 @@ document.addEventListener("click", e => {
     case "go-ayuda": goAyuda(); break;
     case "go-mes": go("inicio", {sub:"mes"}); break;
     case "go-radio": go("inicio", {sub:"radio"}); break;
+    case "go-manual": go("inicio", {sub:"manual"}); break;
+    case "ahorro-on": state.ahorro = true; save(); go("inicio"); break;
+    case "ahorro-off": state.ahorro = false; save(); go("inicio"); break;
+    case "manual-print": { const st = document.getElementById("manual-st"); if(st) st.textContent = "Preparando…"; setTimeout(() => { printDoc(manualHTML()); if(st) st.textContent = ""; }, 30); break; }
+    case "manual-dl": downloadDoc("preparados-manual.html", "Manual de emergencia", manualHTML(), "manual-st"); break;
     case "apr-lec": { const a = ui.apr || (ui.apr = {lec:null, q:"", open:"casa"}); a.lec = el.dataset.id; const l = APR_ALL().find(x => x.id === a.lec); if(l) a.open = l.tema.id; render(true); break; }
     case "apr-back": ui.apr.lec = null; render(true); { const d = document.querySelector(`[data-apr="${ui.apr.open}"]`); if(d) d.scrollIntoView({block:"start"}); } break;
     case "mes-ficha": ui.planSeg = "ficha"; go("numeros"); break;
@@ -5582,6 +5840,7 @@ document.addEventListener("toggle", e => {
   try{ localStorage.setItem(HOME_KEY, ui.homeOpen || ""); }catch(err){}
 }, true);
 document.addEventListener("change", e => {
+  if(e.target.matches("[data-man]")){ state.manual[e.target.dataset.man] = e.target.checked; save(); e.target.closest(".check").classList.toggle("on", e.target.checked); return; }
   if(e.target.matches("[data-radio]")){ state.radioOk[e.target.dataset.radio] = e.target.checked; save(); e.target.closest("li").classList.toggle("on", e.target.checked); return; }
   if(e.target.matches("[data-mes]")){ state.mes.checks[e.target.dataset.mes] = e.target.checked; save(); e.target.closest(".check").classList.toggle("on", e.target.checked); const pr = document.querySelector(".mes-prog"); if(pr){ const [, tot] = pr.textContent.split("/"); pr.textContent = `${Object.keys(state.mes.checks).filter(k => state.mes.checks[k]).length}/${tot}`; } return; }
   if(e.target.matches("[data-ay-tel]")){ ui.ayuda.off[e.target.dataset.ayTel] = !e.target.checked; render(false); return; }
@@ -5731,6 +5990,7 @@ else if(hash === "aviso") ui.sub = "aviso";
 else if(hash === "ayuda") ui.sub = "ayuda";
 else if(hash === "30dias") ui.sub = "mes";
 else if(hash === "radio") ui.sub = "radio";
+else if(hash === "manual") ui.sub = "manual";
 else if(hash === "corte") ui.sub = "corte";
 else if(hash.indexOf("guia-") === 0 && GUIDES.some(g => g.id === hash.slice(5))){ ui.tab = "guias"; ui.guide = hash.slice(5); }
 updNet();
