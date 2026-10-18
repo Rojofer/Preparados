@@ -548,6 +548,20 @@ textarea{min-height:76px;resize:vertical}
 .tool4{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 4px;border-radius:12px;background:var(--surface-2);font-size:14px;font-weight:700;line-height:1.2;text-align:center;min-height:84px;justify-content:center}
 .tool4 .ic{width:26px;height:26px;color:var(--signal)}
 @media (max-width:340px){.tools4{grid-template-columns:repeat(2,minmax(0,1fr))}.sb{font-size:14px}}
+.apr-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+.apr-row{display:flex;justify-content:space-between;align-items:center;gap:12px;width:100%;min-height:52px;padding:10px 12px;border-radius:10px;text-align:left;font-size:17px;font-weight:700;background:var(--surface-2)}
+.apr-row .mono{flex:none;font-size:13px;font-weight:500;color:var(--ink-2)}
+.apr-art{display:flex;flex-direction:column;gap:12px;max-width:62ch;font-size:18px;line-height:1.55}
+.apr-art h1{font-size:32px;line-height:1.1}
+.apr-art h3{font-size:20px;margin-top:8px}
+.apr-art ul,.apr-art ol{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:8px}
+.apr-tip,.apr-ojo{padding:14px;border-radius:12px;display:flex;flex-direction:column;gap:4px}
+.apr-tip{background:var(--surface-2);border-left:4px solid var(--ok)}
+.apr-tip strong{color:var(--ok);font-size:14px;text-transform:uppercase;letter-spacing:.06em}
+.apr-ojo{background:var(--crit-soft,var(--surface-2));border-left:4px solid var(--crit)}
+.apr-ojo strong{color:var(--crit);font-size:14px;text-transform:uppercase;letter-spacing:.06em}
+.apr-nav{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.apr-nav .btn{flex:1 1 140px;white-space:normal;text-align:center}
 .msgprev{padding:14px;border-radius:12px;background:var(--surface-2);font-size:17px;line-height:1.45;overflow-wrap:anywhere}
 .fb{display:flex;flex-direction:column;gap:14px;padding:20px 18px;border-radius:16px;background:var(--surface);border:2px solid var(--crit)}
 .fb h1{font-size:40px}
@@ -640,7 +654,7 @@ textarea{min-height:76px;resize:vertical}
     <button class="tab" data-action="tab" data-tab="inicio"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 9-8 9 8"/><path d="M5 9.5V21h14V9.5"/><path d="M10 21v-6h4v6"/></svg><span>Inicio</span></button>
     <button class="tab" data-action="tab" data-tab="guias"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4.5A1.5 1.5 0 0 1 5.5 3H20v15H5.5A1.5 1.5 0 0 0 4 19.5z"/><path d="M4 19.5A1.5 1.5 0 0 0 5.5 21H20v-3"/><path d="M8 7h8M8 11h6"/></svg><span>Guías</span></button>
     <button class="tab" data-action="tab" data-tab="preparar"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="3"/><path d="m8 12.5 3 3 5.5-6.5"/></svg><span>Preparar</span></button>
-    <button class="tab" data-action="tab" data-tab="linterna"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h10v4l-2.5 3.5V21h-5V10.5L7 7z"/><path d="M12 13.5V16"/></svg><span>Linterna</span></button>
+    <button class="tab" data-action="tab" data-tab="aprender"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.5C10 5 7 4.5 3 5v13c4-.5 7 0 9 1.5 2-1.5 5-2 9-1.5V5c-4-.5-7 0-9 1.5z"/><path d="M12 6.5v13"/></svg><span>Aprender</span></button>
     <button class="tab" data-action="tab" data-tab="numeros"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 19v-1.5a3.5 3.5 0 0 0-3.5-3.5h-5A3.5 3.5 0 0 0 4 17.5V19"/><circle cx="10" cy="8" r="3.5"/><path d="M20 19v-1.5a3.5 3.5 0 0 0-2.5-3.35"/><path d="M15.5 4.6a3.5 3.5 0 0 1 0 6.8"/></svg><span>Plan</span></button>
   </div>
 </nav>
@@ -731,6 +745,10 @@ const SRC = {
   dniDigital:["Argentina.gob.ar: el DNI digital tiene la misma validez que la tarjeta","https://www.argentina.gob.ar/noticias/el-gobierno-nacional-oficializo-el-dni-digital"],
   cuhc:["Allende & Brea: Certificado Único Habilitante para Circulación (2020)","https://allende.com/en/administrative/public-health-emergency-covid-19-unique-enabling-certificate-for-circulation-covid-19-emergency-08-05-2020/"],
   profileSolar:["Profile Solar: producción solar estimada en la provincia de Buenos Aires","https://profilesolar.com/locations/Argentina/General-Pacheco/"],
+  botulismo:["Gobierno de Mendoza: cómo prevenir el botulismo","https://www.mendoza.gov.ar/prensa/salud-brinda-recomendaciones-para-prevenir-el-botulismo/"],
+  robosMza:["Gobierno de Mendoza: prevenir robos en el hogar","https://www.mendoza.gov.ar/prensa/seguridad-aconseja-medidas-de-prevencion-para-evitar-robos-en-el-hogar/"],
+  sroCasero:["WikEM: suero de rehidratación oral casero","https://www.wikem.org/wiki/ORS/es"],
+  stcChicos:["Save the Children: cómo hablar con niños y niñas sobre desastres","https://savethechildren.es/sites/default/files/2024-11/Como_hablar_con_ninos_y_ninas_sobre_desastres_naturales_STC.pdf"],
   gmapsShare:["Google: cómo compartir la ubicación","https://support.google.com/maps/answer/7326816?hl=es-419&co=GENIE.Platform%3DAndroid"],
   androidSOS:["Ayuda de Android: obtén ayuda durante una emergencia","https://support.google.com/android/answer/9319337?hl=es-419"],
   samsungSOS:["Xataka: mensajes SOS de Samsung con tu ubicación","https://www.xataka.com/basics/como-enviar-mensajes-automaticos-sos-samsung-tu-ubicacion-fotos"],
@@ -2355,7 +2373,7 @@ const NUMS = [
   {n:"106",tel:"106",label:"Emergencia náutica",desc:"Ríos, lagos y costas: Prefectura Naval."},
   {n:"0800-333-0160",tel:"08003330160",label:"Intoxicaciones",desc:"Centro Nacional de Intoxicaciones, 24 horas, gratis."},
   {n:"144",tel:"144",label:"Violencia de género",desc:"Contención y asesoramiento."},
-  {n:"135",tel:"135",label:"Prevención del suicidio",desc:"Asistencia ante una crisis emocional."},
+  {n:"135",tel:"135",label:"Prevención del suicidio",desc:"Asistencia ante una crisis emocional, desde Buenos Aires y el Gran Buenos Aires. Desde el resto del país: 0800 345 1435."},
   {n:"142",tel:"142",label:"Chicos extraviados",desc:"Menores perdidos, las 24 horas."}
 ];
 
@@ -2508,7 +2526,8 @@ function renderHome(){
       <button class="tool4" data-action="sos-start">${icon("sos")}<span>Luz SOS</span></button>
       <button class="tool4" data-action="silbato">${icon("whistle")}<span>Silbato</span></button>
       <button class="tool4" data-action="go-corte">${icon("bolt")}<span>Contador de corte</span></button>
-      <button class="tool4" data-action="go-compartir" data-to="qs">${icon("phone")}<span>Compartir sin internet</span></button></div>`;
+      <button class="tool4" data-action="go-compartir" data-to="qs">${icon("phone")}<span>Compartir sin internet</span></button></div>
+    <button class="btn btn-ghost btn-sm" data-action="tab" data-tab="linterna">Todas las herramientas</button>`;
   const pm = progress(MOCHILA, true), pb = progress(BOTIQUIN, true), pk = progress(KIT);
   const alerts = invAlert() + backupAlert();
   const prep = `${alerts}
@@ -3259,6 +3278,266 @@ function newFicha(nombre){
   ui.fichaEdit = f.id;
   render(false);
   window.scrollTo(0, 0);
+}
+
+/* ---------- Aprender: lecturas cortas, sin dibujos ---------- */
+/* Bloques: ["p", texto] · ["ul", [ítems]] · ["ol", [pasos]] · ["h", subtítulo] · ["tip", para hacer en familia] · ["ojo", advertencia] */
+const APRENDER = [
+ {id:"casa", t:"Proteger la casa", ic:"home", sub:"Que no se note lo que tienes, reforzar la casa y qué hacer si alguien intenta entrar.", lec:[
+  {id:"discrecion", t:"Que no se note lo que tienes", min:4, b:[
+   ["p","Cuando falta comida, la casa que parece tener de más es la que llama la atención. La primera protección es la discreción: no se puede robar lo que nadie sabe que existe."],
+   ["h","Qué cuidar"],
+   ["ul",["No cuentes cuánta comida, agua o combustible tienen, ni a vecinos ni en redes sociales. Tampoco las chicas en la escuela o con amigos.",
+     "Guarda las reservas repartidas y fuera de la vista: no todo en la cocina ni junto a la ventana.",
+     "Saca la basura en bolsas opacas. Muchas latas vacías o envases de lo que ya nadie consigue dicen mucho.",
+     "De noche, si solo tu casa tiene luz, usa cortinas gruesas o una frazada en la ventana. Una sola casa iluminada en una cuadra a oscuras se ve desde lejos.",
+     "El ruido del generador se escucha a cuadras: úsalo poco, de día y siempre afuera, lejos de las ventanas por el monóxido.",
+     "Cocina con la ventana cerrada cuando el olor a comida pueda llegar a la calle."]],
+   ["tip","Acuerden en familia una frase para responder si alguien pregunta: «Estamos como todos, con lo justo». Que la sepan también las chicas."]]},
+  {id:"puertas", t:"Puertas, ventanas y patio", min:5, b:[
+   ["p","La mayoría de los robos entran por la puerta del frente, la de atrás o una ventana baja. Reforzar eso vale más que cualquier otra cosa."],
+   ["h","Puertas"],
+   ["ul",["Cerradura de seguridad y, por dentro, un pasador o una tranca (un barral de hierro o madera que cruce la puerta).",
+     "Revisa las bisagras y el marco: si el marco está flojo, la mejor cerradura no sirve.",
+     "La puerta de atrás y la del garaje, igual de fuertes que la del frente.",
+     "Una mirilla o un portero para hablar sin abrir."]],
+   ["h","Ventanas y rejas"],
+   ["ul",["Las ventanas bajas, con traba. Si pones rejas, que al menos una se pueda abrir desde adentro con llave: en un incendio es la salida.",
+     "Las llaves de esas rejas, siempre en el mismo lugar y que todos sepan dónde."]],
+   ["h","Afuera"],
+   ["ul",["Nada que sirva para trepar o forzar: escaleras, herramientas, cajones. Guárdalo bajo llave.",
+     "Plantas y cercos bajos adelante: que la casa se vea desde la calle. Un ladrón busca lugares donde nadie lo vea.",
+     "Bicicletas, garrafas y bidones, adentro."]],
+   ["tip","Den una vuelta por la casa como si fueran alguien que quiere entrar. Anoten los tres puntos más débiles y arreglen primero esos."]]},
+  {id:"luz-alarma", t:"Luz, ruido y alarmas sin electricidad", min:3, b:[
+   ["p","Sin luz de red, la calle queda a oscuras. Una luz que se prende sola o un ruido fuerte espantan a la mayoría."],
+   ["ul",["Luces solares con sensor de movimiento en la entrada y el patio: no gastan nada y se prenden solas.",
+     "Alarmas a pilas para puertas y ventanas: suenan fuerte cuando se abren. Son baratas y se pegan con cinta doble faz.",
+     "Un silbato por persona, colgado junto a la cama: sirve para despertar a la familia y avisar a los vecinos.",
+     "Que la casa parezca habitada: una radio encendida de día, la ropa colgada, movimiento."]],
+   ["tip","Prueben una noche cómo se ve la casa desde la vereda con todo apagado y con las luces solares. ¿Dónde queda oscuro?"]]},
+  {id:"intruso", t:"Si alguien intenta entrar", min:5, b:[
+   ["p","La regla más importante: las personas valen más que las cosas. La comida se repone; una persona herida, no. No enfrentes a nadie."],
+   ["h","El plan de la familia"],
+   ["ol",["Elijan un cuarto seguro: con una puerta que trabe por dentro y, si se puede, una ventana para salir.",
+     "Dejen ahí un celular cargado, una linterna, un silbato y agua.",
+     "Acuerden una palabra clave que quiera decir «al cuarto ya», y quién lleva a quién.",
+     "Desde el cuarto, llamen al 911: digan la dirección primero, después qué pasa y cuántos son.",
+     "Hagan ruido: el silbato, gritar «¡llamamos a la policía!». Casi siempre el que entra quiere irse rápido.",
+     "Si los encuentran, no resistan: entreguen lo que pidan. Miren detalles para contarle después a la policía.",
+     "Cuando se vayan, sigan adentro hasta que llegue ayuda. Después hagan la denuncia."]],
+   ["ojo","No pongas trampas ni elementos que puedan herir: son peligrosos para tu familia, para un bombero que entre a ayudar y pueden traerte problemas legales."],
+   ["tip","Practiquen el plan una vez, como un juego, con la palabra clave. Que las chicas sepan llamar al 911 y decir la dirección de memoria."]]},
+  {id:"puerta-comida", t:"Si alguien pide comida en la puerta", min:4, b:[
+   ["p","En una crisis va a haber personas con hambre de verdad, y también quien use esa excusa para mirar o entrar. Se puede ayudar sin ponerse en riesgo."],
+   ["ul",["Habla sin abrir: por la ventana, la reja o el portero. Nunca hagas pasar a desconocidos.",
+     "No digas cuánto tienes ni muestres la despensa.",
+     "Si deciden dar algo, que sea poco, ya preparado de antemano y que lo entregue un adulto, con otro adulto cerca.",
+     "Cuenta dónde hay ayuda: comedores, parroquias, el municipio o la olla de la cuadra. Así ayudas más y no quedas expuesto.",
+     "Desconfía de quien dice ser de CEAL, Camuzzi, la municipalidad o el gobierno: pide la credencial y llama a la empresa a su número oficial antes de abrir.",
+     "Si alguien insiste o vuelve varias veces a mirar, avisa a los vecinos y a la policía."]],
+   ["tip","Decidan en familia, con calma y antes de que pase, qué y cuánto pueden compartir. Así nadie tiene que decidir nervioso en la puerta."]]},
+  {id:"vecinos-seg", t:"Los vecinos: la mejor protección", min:4, b:[
+   ["p","Una cuadra organizada protege más que cualquier reja. Los que roban eligen lugares donde nadie mira y nadie avisa."],
+   ["ul",["Conozcan a los vecinos de la cuadra: quién vive en cada casa, quién está solo, quién es mayor.",
+     "Armen un grupo para avisarse. Si no hay señal, una señal acordada: tres pitadas de silbato es «vengan, hay problemas».",
+     "Turnos para mirar la cuadra de día y avisar movimientos raros. No para enfrentar a nadie: para avisar y llamar al 911.",
+     "Una luz encendida en algunas casas por turno ayuda a que la cuadra no quede toda a oscuras."]],
+   ["tip","Esta semana, presenta a la familia a los vecinos de al lado y de enfrente. Intercambien teléfonos."]]}
+ ]},
+ {id:"familia", t:"Familia unida y ánimo", sub:"Roles, rutinas, cómo hablar del miedo con las chicas y cómo no pelearse.", ic:"heart", lec:[
+  {id:"roles", t:"Cada uno con su tarea", min:3, b:[
+   ["p","En una crisis, sentirse útil calma. Una tarea clara para cada uno, según la edad, reparte el trabajo y da sensación de control."],
+   ["ul",["Agua: llenar y controlar los bidones.",
+     "Despensa: anotar lo que se usa en el inventario de la app.",
+     "Energía: cargar celulares, linternas y powerbanks con sol.",
+     "El gato: comida, agua y piedras sanitarias.",
+     "Ánimo: proponer un juego o una lectura cada noche."]],
+   ["p","Una reunión corta por día, de diez minutos y siempre a la misma hora: cómo estamos, qué falta, qué hacemos mañana."],
+   ["tip","Repartan hoy las tareas y escríbanlas en un papel en la heladera. Cambien los roles cada semana para que todos aprendan todo."]]},
+  {id:"rutina", t:"Una rutina que ordena el día", min:3, b:[
+   ["p","Cuando todo cambia, los horarios fijos dan seguridad, sobre todo a los chicos. Aprovechen la luz del día y dejen la noche para descansar."],
+   ["ul",["Mañana: levantarse a la misma hora, desayunar juntos, tareas de la casa y del agua.",
+     "Mediodía: comida principal, cocinada con gas para todos a la vez. Cargar todo con sol.",
+     "Tarde: un rato de estudio o de aprender algo, otro de juego o de aire libre si es seguro.",
+     "Noche: cena liviana temprano, reunión de diez minutos, juego o lectura con una sola luz, y a dormir."]],
+   ["tip","Mantengan algo de la vida de siempre: el mate de la tarde, la música del domingo, la comida que les gusta."]]},
+  {id:"miedo", t:"Hablar del miedo con las chicas", min:5, b:[
+   ["p","Los chicos se dan cuenta de todo. Si no les explicamos, imaginan algo peor. Hablar con calma y con la verdad los ayuda."],
+   ["ul",["Busquen un momento tranquilo y pónganse a su altura. Pregunten qué saben y qué sienten antes de explicar.",
+     "Digan la verdad con palabras simples, adaptadas a la edad. No prometan lo que no saben: «no sé cuándo vuelve la luz, pero estamos preparados».",
+     "Todo lo que sienten es normal: miedo, enojo, aburrimiento. No los apuren ni los obliguen a hablar.",
+     "Limiten las noticias y las redes: mucha información asusta, y no todo lo que circula es cierto.",
+     "Cuéntenles qué están haciendo para cuidarlos y denles una tarea: ayudar los hace sentir más seguros.",
+     "Recuérdenles que mucha gente se ayuda en las emergencias."]],
+   ["h","Señales de que les está costando"],
+   ["ul",["Cambios en el sueño o en el apetito, pesadillas.","Irritabilidad, llanto fácil o encerrarse.","Dolores de panza o de cabeza sin causa clara.","Volver a conductas de cuando eran más chicas."]],
+   ["p","Si las señales duran semanas o empeoran, consulten con el médico o el psicólogo de la escuela cuando se pueda."],
+   ["tip","Cada noche, una ronda: «lo mejor y lo más difícil del día». Empiecen los adultos."]]},
+  {id:"peleas", t:"Cuando hay tensión y peleas", min:3, b:[
+   ["p","Hambre, frío, cansancio y encierro ponen a cualquiera de mal humor. Es esperable: lo importante es cómo se resuelve."],
+   ["ul",["Las decisiones importantes, nunca enojados ni con hambre. Primero comer y descansar.",
+     "Hablar de a uno y sin gritar. Quien está muy enojado puede pedir una pausa y volver en diez minutos.",
+     "Hablar del problema, no de la persona: «faltó agua» en vez de «sos un desastre».",
+     "Después de una pelea, reparar: pedir perdón también enseña.",
+     "Cada uno necesita un rato a solas por día, aunque sea en un rincón."]],
+   ["tip","Acuerden tres reglas de convivencia entre todos y escríbanlas junto a las tareas."]]},
+  {id:"cuidar", t:"Cuidar al que cuida", min:3, b:[
+   ["p","Los adultos sostienen al resto. Si papá o mamá se agotan, la familia entera lo siente. Cuidarse no es egoísmo: es parte del plan."],
+   ["ul",["Turnos para descansar: nadie puede estar alerta todo el día.",
+     "Comer y tomar agua aunque no haya ganas. Dormir lo más posible.",
+     "Hablar con otro adulto de confianza de lo que preocupa, no solo de lo práctico.",
+     "Pedir ayuda a tiempo: a la familia, a los vecinos, al médico."]],
+   ["ojo","Si alguien de la casa habla de no querer vivir o de hacerse daño, no lo dejen solo. Llamen al 911 o a la Línea de Prevención del Suicidio: desde Azul y el resto del país, 0800 345 1435; en Buenos Aires y el Gran Buenos Aires, 135."]]},
+  {id:"juegos", t:"Juegos y aprender sin luz", min:3, b:[
+   ["p","Las noches sin luz pueden ser los mejores recuerdos de la familia si se llenan de juegos e historias."],
+   ["ul",["Cartas: truco, chinchón, escoba de 15, carta alta.","Juegos sin nada: tutti frutti, veo veo, adivinanzas, 20 preguntas, el teléfono descompuesto.",
+     "Contar historias por turnos: cada uno agrega una frase.","Leer en voz alta un capítulo por noche.","Un diario de la familia: cada día escribe o dibuja uno distinto.",
+     "Cada uno enseña algo que sabe: un nudo, una receta, una canción, un truco de cartas."]],
+   ["tip","Armen hoy una caja de «noches sin luz» con cartas, un libro, lápices y una linterna. Que no se use para otra cosa."]]}
+ ]},
+ {id:"saberes", t:"Saberes prácticos", sub:"Huerta, conservar alimentos, ahorrar gas, nudos, reparaciones, orientarse y primeros auxilios.", ic:"pot", lec:[
+  {id:"huerta", t:"Una huerta chica en casa", min:5, b:[
+   ["p","Con macetas, cajones o un pedazo de patio se pueden tener verduras frescas en pocas semanas. Además, es una tarea linda para hacer con las chicas."],
+   ["h","Lo que crece rápido"],
+   ["ul",["Rabanitos: listos en un mes.","Rúcula, lechuga y espinaca: de cuatro a seis semanas, y se cortan las hojas de afuera para que sigan dando.","Acelga: dura meses y aguanta el frío.","Perejil, cebolla de verdeo y albahaca, en macetas."]],
+   ["h","Cuándo sembrar en Azul"],
+   ["ul",["Otoño e invierno: acelga, espinaca, lechuga, rabanitos, arvejas, habas, ajo.","Primavera y verano: tomate, zapallito, choclo, porotos, albahaca."]],
+   ["h","Lo básico"],
+   ["ul",["Al menos seis horas de sol por día.","Tierra suelta con compost: restos de verdura, yerba usada y cáscaras, sin carne ni grasa.","Regar temprano o al atardecer, al pie de la planta.","Guarden semillas de lo que cosechan: tomate, zapallo y porotos dan semillas fáciles de secar."]],
+   ["tip","Siembren esta semana un cajón de rabanitos y otro de rúcula. En un mes van a comer algo que plantaron ustedes."]]},
+  {id:"conservar", t:"Conservar alimentos sin heladera", min:5, b:[
+   ["p","Antes de la heladera, las familias conservaban con sol, sal, azúcar y vinagre. Sirve para que nada se eche a perder."],
+   ["ul",["Secar al sol: rodajas finas de tomate, manzana, zapallo o hierbas, sobre una rejilla tapada con tela fina para las moscas. Se guardan en frascos secos.",
+     "Dulces y mermeladas: el azúcar en cantidad conserva la fruta. Frascos limpios, hervidos y bien cerrados.",
+     "Escabeches y encurtidos: el vinagre conserva verduras y carnes cocidas.",
+     "Salar: la carne o el pescado bien cubiertos de sal se secan y duran."]],
+   ["ojo","El botulismo puede venir de conservas caseras mal hechas. No guardes conservas caseras en aceite fuera de la heladera. Usa vinagre, cocina en olla a presión cuando se pueda y hierve 10 minutos antes de comer cualquier conserva casera. Si un frasco está abombado, huele raro o la tapa salta, tíralo sin probarlo."],
+   ["tip","Hagan una mermelada juntos con fruta de estación. Etiqueten el frasco con la fecha."]]},
+  {id:"gas", t:"Cocinar gastando poco gas", min:3, b:[
+   ["p","Si el gas baja de presión o pasan a usar garrafa, cada minuto de hornalla cuenta."],
+   ["ul",["Siempre con tapa: hierve más rápido y gasta menos.","Legumbres y arroz en remojo desde la noche anterior: se cocinan en la mitad del tiempo.",
+     "Olla a presión: ahorra mucho gas en guisos y legumbres.",
+     "Cocción con calor guardado: hervir 5 minutos, tapar y envolver la olla en frazadas o meterla en una caja con diarios. En una o dos horas termina de cocinarse sola.",
+     "Cocinar una vez para varias comidas y para todos a la vez.","Llama justa: que no salga por los costados de la olla."]],
+   ["tip","Prueben un domingo hacer arroz o lentejas con calor guardado. ¿Cuánto tardó?"]]},
+  {id:"nudos", t:"Cuatro nudos que sirven", min:4, b:[
+   ["p","Con una soga y estos nudos se arma un tendedero, se ata una lona, se asegura una carga o se rescata a alguien."],
+   ["h","As de guía: un lazo que no se cierra"],
+   ["ol",["Haz un ojo chico en la soga, con la punta larga por debajo.","Pasa la punta por el ojo, de abajo hacia arriba.","Rodea por detrás la parte larga de la soga.","Vuelve a meter la punta por el ojo, de arriba hacia abajo, y ajusta."]],
+   ["p","Para recordarlo: «el conejo sale del pozo, da la vuelta al árbol y vuelve al pozo»."],
+   ["h","Ballestrinque: para atar a un poste"],
+   ["ol",["Da una vuelta alrededor del poste.","Cruza por encima de esa vuelta y da otra vuelta.","Pasa la punta por debajo del cruce y ajusta."]],
+   ["h","Nudo llano: para unir dos sogas iguales"],
+   ["p","Derecha sobre izquierda y por debajo; después izquierda sobre derecha y por debajo. Si queda torcido, hiciste el «nudo de vieja»: desarma y repite."],
+   ["h","Tensor: para tensar un tendedero o una lona"],
+   ["p","Rodea el poste, vuelve hacia la soga y da dos vueltas alrededor de ella hacia adentro y una más hacia afuera. El nudo se desliza para tensar y se traba solo."],
+   ["tip","Una soga de dos metros por persona y un concurso: quién hace el as de guía con los ojos cerrados."]]},
+  {id:"reparar", t:"Reparaciones básicas", min:4, b:[
+   ["p","Sin servicios ni negocios abiertos, saber arreglar lo simple hace la diferencia."],
+   ["h","Saber dónde está y cómo se cierra"],
+   ["ul",["La llave de paso del agua de la casa.","La llave del gas, junto al medidor y en cada artefacto.","El tablero de la luz: bajar la llave general cuando hay un corte, para que la vuelta de la luz no queme nada."]],
+   ["h","Caja de herramientas mínima"],
+   ["ul",["Destornilladores, pinza, martillo, llave francesa.","Cinta aisladora, cinta de embalar ancha, precintos y alambre.","Clavos y tornillos surtidos, una lona y una soga."]],
+   ["h","Arreglos que conviene saber"],
+   ["ul",["Una canilla que gotea: cerrar la llave de paso, desarmar y cambiar el cuerito.","Un vidrio roto: cinta de embalar o una lona y madera por fuera.","Un inodoro tapado sin químicos: agua caliente, no hirviendo, y una sopapa."]],
+   ["ojo","Con el gas, nunca improvises: si hay olor, cierra la llave, abre las ventanas, no prendas nada y llama a Camuzzi."],
+   ["tip","Recorran la casa y que todos encuentren la llave de paso del agua, la del gas y el tablero."]]},
+  {id:"orientarse", t:"Orientarse sin GPS", min:4, b:[
+   ["p","Si el celular se queda sin batería, el cielo sigue ahí."],
+   ["ul",["El sol sale por el este y se pone por el oeste. En el hemisferio sur, al mediodía el sol está hacia el norte.",
+     "Con un reloj de agujas: apunta el 12 hacia el sol. La línea que pasa justo por el medio entre el 12 y la aguja de la hora señala el norte.",
+     "De noche, la Cruz del Sur: prolonga cuatro veces y media el palo largo de la cruz. Desde ese punto, baja la vista derecho al horizonte: ahí está el sur."]],
+   ["h","En la ciudad"],
+   ["ul",["Aprendan los nombres y el orden de las calles cercanas.","Elijan puntos de referencia que se vean de lejos: la iglesia, el tanque de agua, la plaza.","Antes de salir, miren el mapa de la app y fíjense hacia dónde queda la casa."]],
+   ["tip","Una noche despejada, busquen juntos la Cruz del Sur y el sur."]]},
+  {id:"clima", t:"Leer el cielo y el clima", min:3, b:[
+   ["ul",["Nubes altas y enormes, como coliflores oscuras: tormenta en pocas horas.","El viento que cambia de golpe y refresca: la tormenta está cerca.",
+     "En la zona, días de viento del sudeste suelen traer lluvia y frío.","Cielo despejado y sin viento en invierno: noche muy fría y helada.",
+     "Rayo y trueno: cuenta los segundos entre los dos y divide por tres. Es la distancia en kilómetros. Menos de diez segundos: adentro ya."]],
+   ["tip","Durante una semana, que alguien anote cada mañana cómo está el cielo y qué tiempo hizo. Se aprende a predecir."]]},
+  {id:"auxilios", t:"Primeros auxilios sin médico cerca", min:5, b:[
+   ["p","Lo básico para resolver lo común mientras llega la ayuda. Ante algo grave, siempre el 107 o el 911."],
+   ["h","Heridas"],
+   ["ul",["Lavar con mucha agua limpia y jabón. Sin algodón directo en la herida.","Si sangra, apretar fuerte con una gasa o un trapo limpio durante 10 minutos, sin levantar a mirar.","Tapar con una gasa y cambiarla cada día. Si se pone roja, caliente, con pus o hay fiebre, buscar atención."]],
+   ["h","Quemaduras"],
+   ["ul",["Agua fresca, no helada, durante 20 minutos.","Nada de pasta dental, manteca ni hielo. No reventar las ampollas.","Tapar con un paño limpio y húmedo."]],
+   ["h","Deshidratación por diarrea o calor"],
+   ["p","Suero casero: 1 litro de agua segura, 6 cucharaditas rasas de azúcar y media cucharadita rasa de sal. Tomar de a sorbos durante el día. Si hay sangre en la diarrea, vómitos que no paran, mucho sueño o no orina, buscar atención urgente."],
+   ["h","Fiebre"],
+   ["ul",["Ropa liviana, mucho líquido y descanso.","El antifebril, según el prospecto y el peso.","En bebés, o si dura más de dos días, consultar."]],
+   ["tip","Revisen juntos el botiquín y que cada uno sepa dónde está y qué hay."]]},
+  {id:"higiene", t:"Higiene para no enfermarse", min:3, b:[
+   ["p","En una crisis larga, muchas enfermedades vienen del agua, las manos y la basura."],
+   ["ul",["Lavarse las manos con agua y jabón antes de cocinar y comer, y después del baño. Si falta agua, alcohol en gel.",
+     "El agua para tomar, siempre segura: hervida o con lavandina.",
+     "La basura, en bolsas cerradas y lejos de la casa, para no atraer moscas ni ratas.",
+     "Si no anda el inodoro, sigan la guía «Baño sin agua y basura».",
+     "Ventilar la casa todos los días, aunque haga frío."]]]}
+ ]},
+ {id:"comunidad", t:"Comunidad y trueque", sub:"Organizarse con la cuadra, intercambiar sin dinero, compartir y cuidarse de los rumores.", ic:"pack", lec:[
+  {id:"organizar", t:"Organizarse con la cuadra", min:4, b:[
+   ["p","Ninguna familia sabe hacer todo ni tiene todo. Juntas, una cuadra tiene médico, electricista, cocinera, herramientas y huerta."],
+   ["ol",["Una reunión corta con los vecinos, de día y en la vereda.","Una lista de quién sabe qué (salud, mecánica, electricidad, cocina, cuidar chicos) y quién tiene qué (generador, herramientas, huerta, auto).",
+     "Otra lista de quién necesita ayuda: personas mayores, bebés, alguien con medicación o que vive solo.","Un lugar y una hora fijos para reunirse cada día, aunque no haya señal.","Una cartelera en un lugar visible con avisos y novedades."]],
+   ["tip","Ofrezcan primero lo que ustedes saben hacer. La confianza se arma dando."]]},
+  {id:"trueque", t:"Trueque: intercambiar sin dinero", min:4, b:[
+   ["p","En la crisis de 2001, miles de argentinos se organizaron en clubes de trueque para cambiar productos y servicios sin pesos. Funciona si hay reglas claras."],
+   ["h","Qué vale en una crisis"],
+   ["ul",["Agua segura, comida no perecedera, pilas y velas.","Artículos de higiene, semillas y verduras de la huerta.","Saber hacer: arreglar, coser, cocinar, cuidar chicos, enseñar."]],
+   ["h","Reglas para cambiar seguro"],
+   ["ul",["De día, en un lugar público o en el punto de la cuadra, nunca en tu casa.","Lleva solo lo que vas a cambiar: no muestres todo lo que tienes.","Acuerda antes qué das y qué recibes.",
+     "Nunca intercambies medicamentos con receta sin consultar a un médico."]],
+   ["tip","Hagan una lista de tres cosas que la familia sabe hacer bien y que podría ofrecer."]]},
+  {id:"compartir", t:"Compartir sin quedarse sin nada", min:3, b:[
+   ["p","Ayudar a otros es parte de mantenerse humano, y también de que la cuadra sea segura. Se puede hacer con orden."],
+   ["ul",["Decidan en familia una parte de las reservas para compartir y no la pasen.",
+     "Mejor juntar entre todos: una olla comunitaria en la cuadra alimenta a más gente con menos gas y menos trabajo.",
+     "Compartan saberes, no solo cosas: enseñar a potabilizar el agua o a hacer una huerta rinde más que un paquete de arroz.",
+     "Prioridad para quien más lo necesita: chicos, personas mayores y enfermos."]]]},
+  {id:"rumores", t:"Información confiable y rumores", min:3, b:[
+   ["p","En una emergencia circulan muchos rumores, y algunos causan pánico o hacen que la gente tome malas decisiones."],
+   ["ul",["Las fuentes: la radio, el municipio, Defensa Civil, la policía, CEAL y Camuzzi por sus canales oficiales.",
+     "Antes de reenviar algo, pregúntate: ¿quién lo dice? ¿de cuándo es? ¿lo confirma alguien oficial?",
+     "Una radio a pilas y una persona encargada de escuchar las noticias dos veces por día. Que cuente a la familia solo lo importante.",
+     "Desconfía de mensajes que piden datos, dinero o que vayas a un lugar con urgencia."]],
+   ["tip","Anoten en un papel las radios de Azul y de la zona, con su frecuencia, y péguenlo junto a la radio."]]}
+ ]}
+];
+const APR_ALL = () => APRENDER.flatMap(t => t.lec.map(l => Object.assign({tema:t}, l)));
+function aprBlock([k, v]){
+  if(k === "p") return `<p>${v}</p>`;
+  if(k === "h") return `<h3>${v}</h3>`;
+  if(k === "ul") return `<ul>${v.map(x => `<li>${x}</li>`).join("")}</ul>`;
+  if(k === "ol") return `<ol>${v.map(x => `<li>${x}</li>`).join("")}</ol>`;
+  if(k === "tip") return `<aside class="apr-tip"><strong>Para hacer en familia</strong><p>${v}</p></aside>`;
+  if(k === "ojo") return `<aside class="apr-ojo"><strong>Cuidado</strong><p>${v}</p></aside>`;
+  return "";
+}
+function renderAprender(){
+  const a = ui.apr || (ui.apr = {lec:null, q:"", open:"casa"});
+  if(a.lec){
+    const all = APR_ALL(), i = all.findIndex(l => l.id === a.lec), l = all[i];
+    if(l){
+      const prev = all[i - 1], next = all[i + 1];
+      return `<section class="stack apr-read">
+        <button class="back" data-action="apr-back">${icon("back")}${l.tema.t}</button>
+        <article class="apr-art"><p class="phase">${l.tema.t} · ${l.min} min de lectura</p><h1>${l.t}</h1>${l.b.map(aprBlock).join("")}</article>
+        <nav class="apr-nav" aria-label="Otras lecturas">${prev ? `<button class="btn btn-ghost" data-action="apr-lec" data-id="${prev.id}">← ${prev.t}</button>` : "<span></span>"}${next ? `<button class="btn btn-primary" data-action="apr-lec" data-id="${next.id}">${next.t} →</button>` : ""}</nav>
+      </section>`;
+    }
+    a.lec = null;
+  }
+  const q = norm(a.q || "");
+  const hits = q.length > 1 ? APR_ALL().filter(l => norm(l.t + " " + l.b.map(([, v]) => Array.isArray(v) ? v.join(" ") : v).join(" ")).includes(q)) : null;
+  const row = l => `<li><button class="apr-row" data-action="apr-lec" data-id="${l.id}"><span>${l.t}</span><span class="mono">${l.min} min</span></button></li>`;
+  return `<section class="stack">
+    <div class="intro"><h1>Aprender</h1><p class="lede">Lecturas cortas para que la familia sepa más, se cuide y se mantenga unida.</p></div>
+    <div class="field"><label class="lbl" for="apr-q">Buscar</label><input id="apr-q" type="search" autocomplete="off" value="${esc(a.q || "")}" placeholder="Ej.: huerta, nudos, puerta"></div>
+    <div id="apr-list">${hits ? (hits.length ? `<ul class="apr-list">${hits.map(row).join("")}</ul>` : `<p class="fine">No encontré «${esc(a.q)}».</p>`) :
+      `<div class="hsecs">${APRENDER.map(t => `<details class="hsec apr-t" data-apr="${t.id}"${a.open === t.id ? " open" : ""}><summary><span class="g-ic">${icon(t.ic)}</span><span class="hs-t"><strong>${t.t}</strong><span>${t.sub}</span></span><span class="hs-chev" aria-hidden="true"></span></summary><div class="hs-body"><ul class="apr-list">${t.lec.map(row).join("")}</ul></div></details>`).join("")}</div>`}</div>
+    ${srcBox(["botulismo","robosMza","sroCasero","stcChicos"], "Lecturas de referencia. Ante una emergencia, llama al 911.")}
+  </section>`;
 }
 
 /* ---------- Plan 30 días sin luz ---------- */
@@ -4618,6 +4897,7 @@ function render(top){
   else if(ui.tab === "guias") html = ui.guide ? renderGuide() : renderGuides();
   else if(ui.tab === "preparar") html = renderPrep();
   else if(ui.tab === "linterna") html = renderTools();
+  else if(ui.tab === "aprender") html = renderAprender();
   else html = renderPlanTab();
   view.innerHTML = html;
   view.querySelectorAll("[data-pct]").forEach(el => { el.style.width = el.dataset.pct + "%"; });
@@ -4943,6 +5223,8 @@ document.addEventListener("click", e => {
     case "go-mapa": go("inicio", {sub:"mapa"}); break;
     case "go-ayuda": goAyuda(); break;
     case "go-mes": go("inicio", {sub:"mes"}); break;
+    case "apr-lec": { const a = ui.apr || (ui.apr = {lec:null, q:"", open:"casa"}); a.lec = el.dataset.id; const l = APR_ALL().find(x => x.id === a.lec); if(l) a.open = l.tema.id; render(true); break; }
+    case "apr-back": ui.apr.lec = null; render(true); { const d = document.querySelector(`[data-apr="${ui.apr.open}"]`); if(d) d.scrollIntoView({block:"start"}); } break;
     case "mes-ficha": ui.planSeg = "ficha"; go("numeros"); break;
     case "mes-step": { const c = mesCfg(), k = el.dataset.k, lim = {p:[1,12], g:[0,6], pb:[0,10]}[k]; state.mes[k] = Math.max(lim[0], Math.min(lim[1], c[k] + Number(el.dataset.d))); save(); const y = window.scrollY; render(false); window.scrollTo(0, y); break; }
     case "mes-print": printDoc(mesPrintHTML()); break;
@@ -5169,6 +5451,11 @@ document.addEventListener("click", e => {
 });
 document.addEventListener("toggle", e => {
   const d = e.target;
+  if(d.matches && d.matches("details.apr-t")){
+    if(d.open){ ui.apr.open = d.dataset.apr; document.querySelectorAll("details.apr-t[open]").forEach(o => { if(o !== d) o.open = false; }); }
+    else if(ui.apr.open === d.dataset.apr) ui.apr.open = "";
+    return;
+  }
   if(!d.matches || !d.matches("details.hsec")) return;
   if(d.open){
     ui.homeOpen = d.dataset.sec;
@@ -5245,6 +5532,10 @@ document.addEventListener("input", e => {
   }else if(e.target.id === "aviso-extra"){
     ui.aviso.extra = e.target.value.slice(0, 140);
     updAviso();
+  }else if(e.target.id === "apr-q"){
+    ui.apr.q = e.target.value.slice(0, 40);
+    const pos = e.target.selectionStart; render(false);
+    const i = document.getElementById("apr-q"); if(i){ i.focus(); try{ i.setSelectionRange(pos, pos); }catch(err){} }
   }else if(e.target.id === "ay-extra"){
     ui.ayuda.extra = e.target.value.slice(0, 140);
     updAyuda();
@@ -5314,7 +5605,7 @@ document.addEventListener("visibilitychange", () => { if(document.hidden && ui.s
 /* ---------- Inicio ---------- */
 load();
 const hash = (location.hash || "").slice(1);
-if(["guias","preparar","linterna","numeros"].includes(hash)) ui.tab = hash;
+if(["guias","preparar","linterna","numeros","aprender"].includes(hash)) ui.tab = hash;
 else if(hash === "inventario"){ ui.tab = "preparar"; ui.prep = "inv"; }
 else if(hash === "plan"){ ui.tab = "numeros"; ui.planSeg = "familia"; }
 else if(hash === "ficha"){ ui.tab = "numeros"; ui.planSeg = "ficha"; }
