@@ -521,6 +521,33 @@ textarea{min-height:76px;resize:vertical}
 .mes-plan .inline{margin-top:4px}
 .mes-prog{font-size:18px;color:var(--ink-2)}
 .check strong{font-weight:700}.check .mono{white-space:nowrap}
+.sos-bar{display:grid;grid-template-columns:1fr 1.5fr 1fr;gap:8px}
+.sb{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:76px;padding:8px 6px;border-radius:var(--r);font-weight:700;font-size:16px;line-height:1.15;text-align:center;text-decoration:none}
+.sb .ic{width:26px;height:26px}
+.sb-911{background:var(--surface);color:var(--crit);border:2px solid var(--crit)}.sb-911 span{font-family:var(--font-data);font-size:22px}
+.sb-ayuda{background:var(--crit);color:var(--on-crit);font-size:18px}
+.sb-bien{background:var(--surface);color:var(--ok);border:2px solid var(--ok)}
+.ahora{display:flex;flex-direction:column;gap:8px}
+.net-line{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:var(--surface-2);font-size:15px;text-align:left;color:var(--ink)}
+.hsecs{display:flex;flex-direction:column;gap:8px}
+.hsec{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.hsec>summary{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 14px;cursor:pointer;list-style:none;min-height:64px}
+.hsec>summary::-webkit-details-marker{display:none}
+.hs-t{display:flex;flex-direction:column;line-height:1.25;min-width:0}
+.hs-t strong{font-family:var(--font-display);font-size:22px;font-weight:700}
+.hs-t span{font-size:14px;color:var(--ink-2)}
+.hs-alert{color:var(--crit);font-weight:700}
+.hs-chev{width:12px;height:12px;border-right:3px solid var(--ink-2);border-bottom:3px solid var(--ink-2);transform:rotate(45deg);margin:0 6px 6px}
+.hsec[open]>summary .hs-chev{transform:rotate(-135deg);margin:6px 6px 0}
+.hsec[open]>summary{border-bottom:1px solid var(--line)}
+.hs-main>summary{background:var(--tile)}.hs-main .hs-t strong{color:var(--tile-ink)}.hs-main .hs-t span{color:var(--tile-sub)}.hs-main>summary .hs-chev{border-color:var(--tile-ink)}
+.hs-body{display:flex;flex-direction:column;gap:12px;padding:14px}
+.hs-body .btn .ic{width:20px;height:20px}
+.q911{border:2px solid var(--crit)}.q911 .ic{color:var(--crit)}
+.tools4{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.tool4{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 4px;border-radius:12px;background:var(--surface-2);font-size:14px;font-weight:700;line-height:1.2;text-align:center;min-height:84px;justify-content:center}
+.tool4 .ic{width:26px;height:26px;color:var(--signal)}
+@media (max-width:340px){.tools4{grid-template-columns:repeat(2,minmax(0,1fr))}.sb{font-size:14px}}
 .msgprev{padding:14px;border-radius:12px;background:var(--surface-2);font-size:17px;line-height:1.45;overflow-wrap:anywhere}
 .fb{display:flex;flex-direction:column;gap:14px;padding:20px 18px;border-radius:16px;background:var(--surface);border:2px solid var(--crit)}
 .fb h1{font-size:40px}
@@ -2446,38 +2473,64 @@ let installEvt = null;
 window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); installEvt = e; if(ui.tab === "inicio" && !ui.sub) render(false); });
 window.addEventListener("appinstalled", () => { installEvt = null; if(ui.tab === "inicio" && !ui.sub) render(false); });
 const installCard = () => installEvt ? `<button class="banner inst" data-action="install"><span class="dot" aria-hidden="true"></span><span class="banner-txt"><strong>Instalar Preparados en este celular</strong><span>Abre sin internet y el GPS funciona.</span></span>${icon("chev")}</button>` : "";
+/* Inicio: arriba lo urgente; abajo secciones que se abren de a una */
+const HOME_KEY = "preparados.inicio";
+function homeOpen(){
+  if(ui.homeOpen !== undefined) return ui.homeOpen;
+  try{ const v = localStorage.getItem(HOME_KEY); ui.homeOpen = v === null ? "pasa" : v; }catch(e){ ui.homeOpen = "pasa"; }
+  return ui.homeOpen;
+}
+function hsec(id, ic, title, sub, body, extra){
+  return `<details class="hsec${extra ? " " + extra : ""}" data-sec="${id}"${homeOpen() === id ? " open" : ""}><summary><span class="g-ic">${icon(ic)}</span><span class="hs-t"><strong>${title}</strong><span>${sub}</span></span><span class="hs-chev" aria-hidden="true"></span></summary><div class="hs-body">${body}</div></details>`;
+}
 function renderHome(){
-  let banner = "";
-  if(state.corte){
-    banner = `<button class="banner" data-action="go-corte"><span class="dot" aria-hidden="true"></span><span class="banner-txt"><strong>Sin luz hace <span data-live="short">${fmtDur(elapsed())}</span></strong><span>Ver el contador de la heladera</span></span>${icon("chev")}</button>`;
-  }
+  const ahora = [];
+  if(state.corte) ahora.push(`<button class="banner" data-action="go-corte"><span class="dot" aria-hidden="true"></span><span class="banner-txt"><strong>Sin luz hace <span data-live="short">${fmtDur(elapsed())}</span></strong><span>Ver el contador de la heladera</span></span>${icon("chev")}</button>`);
+  if(navigator.onLine === false) ahora.push(`<button class="net-line" data-action="go-compartir" data-to="qs"><span class="dot" aria-hidden="true"></span>Sin conexión: la app funciona igual. Para pasar datos, Quick Share.</button>`);
+  const av = homeAvisos(); if(av) ahora.push(av);
   const tiles = TILES.map(t => t.corte
     ? `<button class="tile signal" data-action="go-corte" aria-label="${t.label}: ${t.hint}">${icon(t.icon)}<span class="t-label">${t.label}</span></button>`
     : `<button class="tile" data-action="guide" data-id="${t.guide}" aria-label="${t.label}: ${t.hint}">${icon(t.icon)}<span class="t-label">${t.label}</span></button>`).join("");
-  return `<section class="stack">
-    ${banner}
-    ${navigator.onLine === false ? offlineCard(true) : ""}
+  const zona = state.provincia ? zonaSug(state.provincia).map(id => GUIDES.find(x => x.id === id)).filter(Boolean) : [];
+  const pasa = `<div class="tiles">${tiles}</div>
+    ${zona.length ? `<span class="lbl">En ${esc(state.provincia)}, también</span><div class="chips">${zona.map(g => `<button class="chip" data-action="guide" data-id="${g.id}">${g.title}</button>`).join("")}</div>` : `<button class="btn btn-ghost btn-sm" data-action="go-zona">Guías para tu provincia</button>`}
+    <button class="btn btn-ghost btn-sm" data-action="tab" data-tab="guias">Ver todas las guías</button>`;
+  const ext = GUIDES.filter(g => g.group === "extremo");
+  const extremo = `<button class="btn btn-primary" data-action="go-mes">${icon("cal")}Plan 30 días sin luz</button>
+    <div class="chips">${ext.map(g => `<button class="chip" data-action="guide" data-id="${g.id}">${g.title}</button>`).join("")}</div>`;
+  const c = CIUDADES[state.ciudad];
+  const tops = c ? c.nums.filter(x => x.top) : [];
+  const tels = `<ul class="quick"><li><a class="qcall q911" href="tel:911">${icon("phone")}<span><strong>Emergencias</strong><span class="mono">911</span></span></a></li>${tops.map(x => `<li><a class="qcall" href="tel:${x.tel}">${icon(x.ic || "phone")}<span><strong>${x.sh}</strong><span class="mono">${x.n}</span></span></a></li>`).join("")}</ul>
+    <button class="btn btn-ghost btn-sm" data-action="go-locales">Todos los números y tus contactos</button>`;
+  const herr = `<div class="tools4">
+      <button class="tool4" data-action="go-mapa">${icon("compass")}<span>Mapa y brújula</span></button>
+      <button class="tool4" data-action="linterna">${icon("torch")}<span>Linterna</span></button>
+      <button class="tool4" data-action="sos-start">${icon("sos")}<span>Luz SOS</span></button>
+      <button class="tool4" data-action="silbato">${icon("whistle")}<span>Silbato</span></button>
+      <button class="tool4" data-action="go-corte">${icon("bolt")}<span>Contador de corte</span></button>
+      <button class="tool4" data-action="go-compartir" data-to="qs">${icon("phone")}<span>Compartir sin internet</span></button></div>`;
+  const pm = progress(MOCHILA, true), pb = progress(BOTIQUIN, true), pk = progress(KIT);
+  const alerts = invAlert() + backupAlert();
+  const prep = `${alerts}
+      ${bar("Mochila: lo mínimo", pm, "mochila")}
+      ${bar("Botiquín: lo mínimo", pb, "botiquin")}
+      ${bar("Kit del hogar", pk, "kit")}
+      <div class="inline"><button class="btn btn-ghost btn-sm" data-action="tab" data-tab="preparar">Seguir preparando</button><button class="btn btn-ghost btn-sm" data-action="go-inv">Inventario</button><button class="btn btn-ghost btn-sm" data-action="act" data-type="ficha">Fichas</button></div>`;
+  return `<section class="stack home">
+    <div class="sos-bar" role="group" aria-label="Acciones urgentes">
+      <a class="sb sb-911" href="tel:911">${icon("phone")}<span>911</span></a>
+      <button class="sb sb-ayuda" data-action="go-ayuda">${icon("sos")}<span>Necesito ayuda</span></button>
+      <button class="sb sb-bien" data-action="go-aviso">${icon("heart")}<span>Estoy bien</span></button>
+    </div>
+    ${ahora.length ? `<div class="ahora">${ahora.join("")}</div>` : ""}
+    <div class="hsecs">
+      ${hsec("pasa", "storm", "¿Qué está pasando?", "Toca la situación y sigue los pasos", pasa, "hs-main")}
+      ${hsec("tel", "phone", "Teléfonos", c ? `911 y los de ${esc(state.ciudad)}: hospital, luz, agua, gas` : "911 y tus contactos", tels)}
+      ${hsec("herr", "compass", "Herramientas", "Mapa, linterna, SOS, silbato y más", herr)}
+      ${hsec("extremo", "flame", "Caso extremo", "Días sin luz, gas ni agua: plan de 30 días", extremo)}
+      ${hsec("prep", "pack", "Tu preparación", `Mochila ${pm.pct}% · Botiquín ${pb.pct}% · Kit ${pk.pct}%${alerts ? ` · <b class="hs-alert">hay cosas para revisar</b>` : ""}`, prep)}
+    </div>
     ${installCard()}
-    <button class="ay-home" data-action="go-ayuda"><span class="ay-home-ic">${icon("sos")}</span><span><strong>Necesito ayuda · Me perdí</strong><span>Tu ubicación y un SMS a la familia</span></span>${icon("chev")}</button>
-    ${homeAvisos()}
-    <div class="intro"><h1>¿Qué está pasando?</h1><p class="lede">Toca la situación y sigue los pasos.</p></div>
-    <div class="tiles">${tiles}</div>
-    ${zonaHome()}
-    <details class="card ext-d"><summary><span class="g-ic">${icon("flame")}</span><span class="ext-t"><strong>Caso extremo</strong><span>Días sin luz, gas ni agua: fuego, agua, energía, cocina, abrigo, baño y señales.</span></span></summary>
-      <button class="btn btn-primary" data-action="go-mes">${icon("cal")}Plan 30 días sin luz</button><div class="chips">${GUIDES.filter(g => g.group === "extremo").map(g => `<button class="chip" data-action="guide" data-id="${g.id}">${g.title}</button>`).join("")}</div></details>
-    <div class="card call"><div class="call-txt"><span class="mono call-num">911</span><span class="call-label">Emergencias: policía y ambulancia</span></div><a class="btn btn-primary" href="tel:911">${icon("phone")}Llamar</a></div>
-    ${localHome()}
-    <button class="card call maprow" data-action="go-mapa"><span class="g-ic">${icon("compass")}</span><span class="call-txt"><strong>Mapa y brújula</strong><span class="call-label">Dónde estás y hacia dónde ir, sin internet.</span></span>${icon("chev")}</button>
-    <div class="card call"><div class="call-txt"><strong>¿Pasó algo?</strong><span class="call-label">Avisa a tu familia que estás bien, con tu ubicación.</span></div><button class="btn btn-signal" data-action="go-aviso">Estoy bien</button></div>
-    <section class="card" aria-labelledby="prep-h">
-      <h2 id="prep-h">Tu preparación</h2>
-      ${bar("Mochila: lo mínimo", progress(MOCHILA, true), "mochila")}
-      ${bar("Botiquín: lo mínimo", progress(BOTIQUIN, true), "botiquin")}
-      ${bar("Kit del hogar", progress(KIT), "kit")}
-      ${invAlert()}
-      ${backupAlert()}
-      <div class="inline"><button class="btn btn-ghost" data-action="tab" data-tab="preparar">Seguir preparando</button><button class="btn btn-ghost" data-action="go-inv">Inventario</button></div>
-    </section>
     <p class="fine">Información de referencia basada en fuentes oficiales. No reemplaza las indicaciones de las autoridades ni la atención médica. En una emergencia, llama al 911.</p>
   </section>`;
 }
@@ -5114,6 +5167,19 @@ document.addEventListener("click", e => {
     }
   }
 });
+document.addEventListener("toggle", e => {
+  const d = e.target;
+  if(!d.matches || !d.matches("details.hsec")) return;
+  if(d.open){
+    ui.homeOpen = d.dataset.sec;
+    document.querySelectorAll("details.hsec[open]").forEach(o => { if(o !== d) o.open = false; });
+    requestAnimationFrame(() => {
+      const hdr = document.querySelector(".topbar"), off = (hdr ? hdr.getBoundingClientRect().bottom : 0) + 8, top = d.getBoundingClientRect().top;
+      if(top < off || top > window.innerHeight * 0.55) window.scrollTo({top:window.scrollY + top - off, behavior:matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"});
+    });
+  }else if(ui.homeOpen === d.dataset.sec) ui.homeOpen = "";
+  try{ localStorage.setItem(HOME_KEY, ui.homeOpen || ""); }catch(err){}
+}, true);
 document.addEventListener("change", e => {
   if(e.target.matches("[data-mes]")){ state.mes.checks[e.target.dataset.mes] = e.target.checked; save(); e.target.closest(".check").classList.toggle("on", e.target.checked); const pr = document.querySelector(".mes-prog"); if(pr){ const [, tot] = pr.textContent.split("/"); pr.textContent = `${Object.keys(state.mes.checks).filter(k => state.mes.checks[k]).length}/${tot}`; } return; }
   if(e.target.matches("[data-ay-tel]")){ ui.ayuda.off[e.target.dataset.ayTel] = !e.target.checked; render(false); return; }
