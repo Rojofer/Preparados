@@ -850,6 +850,9 @@ const SRC = {
   rcp:["Ministerio de Salud: RCP en adultos","https://www.argentina.gob.ar/node/7664"],
   fca:["Fundación Cardiológica Argentina, vía LM Neuquén","https://www.lmneuquen.com/todos-podemos-salvar-una-vida-la-muerte-subita-n603302"],
   amepla:["AMEPLA: RCP y DEA","https://amepla.org.ar/uploads/adjuntos/D%C3%ADptico%20Cardio%20y%20Muerte%20S%C3%BAbita%202023.pdf"],
+  legitima:["Qué dice la ley sobre la legítima defensa, Diario de Cuyo","https://www.diariodecuyo.com.ar/noticias/conoce-que-dice-la-ley-sobre-la-legitima-defensa-562083.html"],
+  taser:["Pistolas Taser: proyecto para habilitar su uso civil (2023), iProfesional","https://www.iprofesional.com/politica/379645-pistolas-taser-presentan-proyecto-para-habilitar-su-uso-civil"],
+  pimienta:["El gas pimienta es un arma impropia (RENAR, Disposición 44/2000), Diario Judicial","https://www.diariojudicial.com/news-62198-el-gas-pimienta-es-un-arma-impropia"],
   ponzonosos:["Animales ponzoñosos: qué hacer, vía Unidiversidad (UNCuyo)","https://www.unidiversidad.com.ar/como-prevenir-y-actuar-frente-a-picaduras-de-aranas-escorpiones-y-viboras"],
   sodis:["Desinfección solar del agua (SODIS), SSWM","https://sswm.info/es/gass-perspective-es/tecnologias-de/tecnologias-de-abastecimiento-de-agua/manejo-seguro-en-el-hogar/desinfecci%C3%B3n-solar-%28m%C3%A9todo-sodis%29"],
   sinagir:["SINAGIR, vía Crónica","https://www.cronica.com.ar/fmq/noticias-locales/alerta-por-crecida-del-rio-en-quilmes-cuando-y-que-precauciones-tener-20240819-0009.html"],
@@ -2574,6 +2577,7 @@ const ICON = {
   help:'<circle cx="12" cy="12" r="9.5"/><path d="M9.3 9.2a2.8 2.8 0 1 1 3.9 2.6c-.8.4-1.2 1-1.2 1.8v.6"/><path d="M12 17.3h.01"/>',
   smile:'<circle cx="12" cy="12" r="9.5"/><path d="M8.3 14.2a4.6 4.6 0 0 0 7.4 0"/><path d="M9 9.5h.01M15 9.5h.01"/>',
   cash:'<rect x="2.5" y="6" width="19" height="12" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M6 9.5v5M18 9.5v5"/>',
+  shield:'<path d="M12 2.5 4.5 5.5v6c0 4.6 3.2 8.6 7.5 10 4.3-1.4 7.5-5.4 7.5-10v-6z"/><path d="m9 12 2 2 4-4"/>',
   back:'<path d="m15 5-7 7 7 7"/>',
   chev:'<path d="m9 5 7 7-7 7"/>'
 };
@@ -3571,6 +3575,101 @@ const APRENDER = [
      "Una luz encendida en algunas casas por turno ayuda a que la cuadra no quede toda a oscuras."]],
    ["tip","Esta semana, presenta a la familia a los vecinos de al lado y de enfrente. Intercambien teléfonos."]]}
  ]},
+ {id:"fuerte", t:"Un fuerte: defender la casa", ic:"shield", sub:"Patio, puertas y ventanas, alarmas caseras, el cuarto seguro, qué hacer de noche, defenderte sin armas de fuego y la ley.", lec:[
+  {id:"df-capas", t:"La casa como un fuerte: cuatro capas", min:4, b:[
+   ["p","El que entra a robar busca una casa fácil: rápida, silenciosa y sin gente atenta. Un fuerte no es una casa imposible de entrar, sino una que da mucho trabajo, hace ruido y avisa. Casi siempre, eso alcanza para que elijan otra."],
+   ["h","Las cuatro capas, de afuera hacia adentro"],
+   ["ol",["<strong>El patio y el frente:</strong> que cueste llegar a la casa sin ser visto. Luz con sensor, nada que sirva de escalera, ruido al pisar.","<strong>Puertas y ventanas:</strong> que no se abran rápido. Cerraduras buenas, trabas y refuerzos.","<strong>Las alarmas:</strong> que, si alguien empieza a forzar algo, suene y se despierte la casa.","<strong>El cuarto seguro:</strong> si a pesar de todo entran, la familia junta detrás de una puerta trabada, con el celular, mientras llega la policía."]],
+   ["p","Cada capa suma minutos. Y con los minutos, el 911 y los vecinos llegan a tiempo."],
+   ["h","Más importante que comprar"],
+   ["ul",["Que se vea gente en la casa: luces, ruido, la radio.","Que no se note lo que tienen: la reserva, el generador, las cajas de compras.","Los vecinos atentos: un grupo de la cuadra vale más que una reja."]],
+   ["tip","Den una vuelta a la casa desde la vereda y desde el patio, de día y de noche, mirándola como la miraría un ladrón: ¿por dónde entraría? Empiecen por ahí."]]},
+  {id:"df-patio", t:"El patio y los tapiales", min:5, b:[
+   ["p","Un patio sin rejas es la entrada más usada: nadie ve desde la calle, y las puertas y ventanas de atrás suelen ser las más débiles."],
+   ["h","Que cueste entrar al patio"],
+   ["ul",["Tapiales de 1,80 m o más. Si son bajos, se pueden subir con una hilera de ladrillos o un cerco.","Arriba del tapial, pinches o alambre. Antes de poner alambre de púas o concertina, pregunten en la municipalidad qué se permite y a qué altura, y que no dé a la vereda ni lastime a un vecino.","Plantas con espinas contra el tapial: bugambilia, crataegus o rosales trepadores. Tardan, pero son baratas y efectivas.","Portón o puerta del patio con candado de buena calidad y pasador por dentro."]],
+   ["h","Que no haya escaleras"],
+   ["ul",["Guarden o encadenen escaleras, tachos, sillas y mesas de jardín, cajones y la parrilla portátil: todo lo que sirve para trepar.","Poden las ramas de árboles que pasen cerca del tapial o del techo.","Ojo con los techos bajos, tanques y medianeras del vecino: desde ahí también se baja."]],
+   ["h","Que no se pueda llegar sin ser visto"],
+   ["ul",["Luces solares con sensor de movimiento en cada rincón del patio y en la puerta de atrás: se prenden solas y no dependen de la luz de la calle.","Piedra partida o canto rodado en los pasillos laterales: hace ruido al pisarla.","Las plantas altas, cortadas: que no haya dónde esconderse."]],
+   ["tip","Esta noche, apaguen las luces de adentro y miren el patio desde la ventana: ¿dónde podría esconderse alguien? Ahí va una luz con sensor."]]},
+  {id:"df-puerta", t:"La puerta de entrada, a fondo", min:5, b:[
+   ["p","Una puerta es tan fuerte como su parte más débil: la cerradura, el marco o las bisagras."],
+   ["h","La cerradura"],
+   ["ul",["Una cerradura de seguridad de doble paleta o con cilindro de alta seguridad. Las de una sola paleta se abren fácil.","Además, un cerrojo o pasador de seguridad arriba o abajo: dos puntos de cierre son mucho mejor que uno.","Si se perdió una llave o se mudaron, cambien el cilindro."]],
+   ["h","El marco y las bisagras"],
+   ["ul",["El marco es lo que más se rompe a patadas. Refuércenlo con una chapa metálica donde entra la lengüeta, atornillada al muro con tornillos de 8 cm.","Si las bisagras quedan del lado de afuera, pongan pernos antipalanca: así no se puede sacar la puerta aunque corten las bisagras.","Una puerta hueca de madera se refuerza con una chapa del lado de adentro. Si es muy débil, conviene cambiarla."]],
+   ["h","Para la noche"],
+   ["ul",["Una barra traba-puerta: se apoya bajo el picaporte y en el piso, y aguanta mucho más que cualquier cerradura. Se pone y se saca en segundos.","Una mirilla gran angular, para ver quién está sin abrir.","La cadena no frena a nadie: sirve solo para hablar sin abrir del todo."]],
+   ["ojo","Todo lo que traba la puerta tiene que poder sacarse rápido desde adentro: en un incendio, por esa puerta salen todos. La llave, siempre en el mismo lugar, cerca de la puerta pero fuera del alcance de una mano por la ventana."],
+   ["tip","Que todos sepan poner y sacar la barra traba-puerta y dónde está la llave, también a oscuras."]]},
+  {id:"df-ventanas", t:"Ventanas y puerta al patio sin rejas", min:5, b:[
+   ["p","En una casa con patio sin rejas, las ventanas de planta baja y la puerta al patio son los puntos más débiles."],
+   ["h","Ventanas corredizas"],
+   ["ul",["Una traba para el riel, o un palo de escoba cortado a medida en el riel de abajo: así no se abre aunque fuercen la cerradura.","Trabas que impiden levantar la hoja: muchas corredizas se sacan del riel levantándolas desde afuera."]],
+   ["h","Ventanas de abrir y persianas"],
+   ["ul",["Pasadores de seguridad arriba y abajo.","Persianas de enrollar con trabas que no dejen levantarlas desde afuera.","Postigos de madera, cerrados de noche y con la falleba puesta."]],
+   ["h","Rejas: la mejor solución"],
+   ["ul",["Rejas fijas en las ventanas de planta baja que dan al patio. Las hace un herrero a medida.","En los dormitorios, que al menos una reja tenga una hoja que se abra desde adentro con candado, con la llave colgada cerca: si hay un incendio, es la salida.","La puerta al patio: una reja o una puerta de chapa con dos puntos de cierre."]],
+   ["h","El vidrio"],
+   ["p","Un film de seguridad pegado del lado de adentro hace que el vidrio no se rompa fácil y no caiga: cuesta mucho más pasar, y hace ruido."],
+   ["ojo","No cierren con rejas fijas todas las salidas de un dormitorio: en un incendio, la ventana puede ser la única salida."],
+   ["tip","Hagan una lista de cada ventana de planta baja y qué tiene hoy. Arranquen por las que no se ven desde la calle."]]},
+  {id:"df-alarmas", t:"Alarmas caseras: que avisen, no que lastimen", min:4, b:[
+   ["p","La mejor «trampa» no lastima: hace ruido y despierta a la casa. El que entra a robar quiere silencio; si algo suena, casi siempre se va."],
+   ["h","Por qué no trampas que lastiman"],
+   ["p","Una trampa que hiere es ilegal: la ley no la considera legítima defensa, porque no responde a un ataque en ese momento. Y quien más riesgo corre es la familia: una de las chicas que se levanta de noche, un adulto con la luz cortada, un vecino o un bombero que entra a ayudar."],
+   ["h","Alarmas que pueden armar"],
+   ["ul",["Alarmas magnéticas a pilas en cada puerta y ventana de planta baja: suenan fuerte cuando se abren. Son baratas y no necesitan instalación.","Una cuña de puerta con alarma, detrás de la puerta de entrada y de la del patio.","Latas con piedritas o un juego de llaves colgados del picaporte o del portón.","Piedra partida en los pasillos del patio.","Luces solares con sensor de movimiento.","Un perro, si pueden: es la mejor alarma que existe."]],
+   ["h","Cámaras"],
+   ["p","Una cámara a batería con wifi les avisa al celular y graba. Sin luz, el wifi se corta, salvo que el módem esté conectado a un powerbank o a la estación de energía."],
+   ["tip","Armen juntos las alarmas una noche: que cada uno sepa cuál es el sonido y qué hacer si suena."]]},
+  {id:"df-cuarto", t:"El cuarto seguro de la familia", min:4, b:[
+   ["p","Si alguien logra entrar, la familia se junta en un cuarto, traba la puerta y llama al 911. Las cosas se recuperan; las personas no."],
+   ["h","Elegir el cuarto"],
+   ["ul",["El que tenga la puerta más firme y esté más lejos de las entradas. Muchas veces conviene el de las chicas, para no tener que ir a buscarlas.","Que tenga, si se puede, una ventana para salir en caso de incendio."]],
+   ["h","Prepararlo"],
+   ["ul",["Puerta maciza, o reforzada, con un cerrojo del lado de adentro.","Una barra traba-puerta o una cuña.","Un cargador y un powerbank siempre cargado en ese cuarto, para el celular.","Una linterna potente, el silbato, el gas pimienta y una botella de agua.","La lista de teléfonos en papel."]],
+   ["h","El plan"],
+   ["ol",["Una palabra clave que significa «todos al cuarto, ya».","Todos entran, se traba la puerta y nadie sale a mirar.","Se llama al 911: dirección, cuántos son, qué se escucha, y que hay chicos.","Luz prendida y ruido: que sepan que hay gente despierta y que la policía viene.","Se sale cuando llega la policía y lo dice."]],
+   ["tip","Practiquen el plan una tarde, como un juego: palabra clave, todos al cuarto, trabar y simular la llamada. Cuanto más rápido, mejor."]]},
+  {id:"df-noche", t:"Si escuchas a alguien de noche", min:4, b:[
+   ["p","Este es el plan para el adulto que se despierta con un ruido. La regla de oro: no ir a buscar al ladrón."],
+   ["ol",["Despierta al otro adulto y escucha: ¿es adentro o afuera? ¿se repite?","Si es afuera: prende las luces de adentro y del patio, haz ruido, habla fuerte. Casi siempre se van.","Si es adentro o están forzando algo: la palabra clave, todos al cuarto seguro y se traba la puerta.","Llama al 911 en voz baja si hace falta: dirección, «hay alguien adentro», cuántas personas y que hay chicos. No cortes.","Desde el cuarto, en voz alta: «Ya llamamos a la policía, está viniendo». Muchas veces eso alcanza.","Avisa a los vecinos: un mensaje al grupo de la cuadra o el silbato desde la ventana.","No salgas del cuarto hasta que llegue la policía."]],
+   ["h","Si te encuentras cara a cara"],
+   ["ul",["Si está armado, entrégale lo que pide. Habla poco y despacio, manos a la vista, sin mirarlo fijo ni hacer movimientos bruscos.","Si no está armado y te ataca, tu objetivo es frenarlo y alejarte, no ganar la pelea: luz fuerte a los ojos, gas pimienta, grito, y salir hacia donde está la familia o afuera.","Si se va, déjalo ir. No lo persigas: afuera puede haber otros, y ya no es defensa."]],
+   ["h","Después"],
+   ["p","Llama al 911 si no lo hiciste, no toques ni ordenes nada hasta que venga la policía, y anota todo lo que recuerdes."],
+   ["tip","Repasen el plan entre los dos adultos: quién va a buscar a quién y quién llama."]]},
+  {id:"df-defensa", t:"Defenderte sin armas de fuego", min:5, b:[
+   ["p","Sin armas de fuego, lo que más sirve es lo que te permite frenar a alguien desde lejos y ganar tiempo para escapar o trabar una puerta."],
+   ["h","Gas pimienta: lo más efectivo"],
+   ["ul",["En la Argentina, los aerosoles de gas pimienta de menos de 500 cm³ están fuera de la ley de armas (RENAR, Disposición 44/2000), y por eso se venden sin permiso. Los chicos, de 20 a 60 ml, entran en la mano.","Se tira a la cara, en disparos cortos de un segundo, desde 1 a 3 metros. Después, alejarse y trabar una puerta: el efecto dura unos 30 a 45 minutos.","En un lugar cerrado, también te afecta a ti: úsalo y sal de ese cuarto. Con viento en contra, vuelve a tu cara.","Vence en 2 a 4 años: mira la fecha. Prueba uno de entrenamiento o tira un disparo corto afuera, a favor del viento, para saber cómo sale.","Guárdalo en un lugar fijo, alto y fuera del alcance de las chicas, y con el seguro puesto."]],
+   ["ojo","Es una herramienta de defensa. Usado para amenazar o atacar, la ley lo trata como un arma, y el delito se agrava."],
+   ["h","Una linterna potente"],
+   ["p","Una linterna táctica de más de 500 lúmenes, a los ojos, encandila unos segundos en la oscuridad: alcanza para que el otro frene, y para ver qué pasa. Sirve todos los días, es legal y no lastima."],
+   ["h","Lo que no recomiendo"],
+   ["ul",["Cuchillos, bates o palos como plan: te obligan al cuerpo a cuerpo, el otro te los puede sacar, y en una pelea con un cuchillo el que más arriesga eres tú.","Picanas y armas de electroshock: en la Argentina los civiles no pueden usarlas, ni siquiera con permiso de portación, y además hay que tocar al agresor."]],
+   ["h","Un curso de defensa personal"],
+   ["p","Unas clases de defensa personal o Krav Maga enseñan a soltarse, a cubrirse y a salir, y sobre todo a no paralizarse. Es lo que más sirve para usar bien todo lo anterior."],
+   ["tip","Elijan un lugar fijo en el cuarto seguro para la linterna y el gas pimienta, y que solo los adultos lo usen."]]},
+  {id:"df-ley", t:"Legítima defensa: lo que dice la ley", min:4, b:[
+   ["p","Lo que sigue es información general, no un consejo legal. Si alguna vez pasa algo, lo primero es llamar al 911 y a un abogado."],
+   ["h","Qué hace falta para que sea legítima defensa"],
+   ["p","El Código Penal (artículo 34, inciso 6) dice que no es punible quien se defiende a sí mismo o a su familia si se dan tres cosas juntas:"],
+   ["ol",["Una agresión ilegítima: alguien te ataca o ataca a tu familia en ese momento.","Necesidad razonable del medio que usaste para frenarla: que la respuesta guarde relación con el ataque.","Que no lo hayas provocado."]],
+   ["h","De noche, en tu casa"],
+   ["p","La ley presume que se cumplen esas condiciones si de noche rechazas a alguien que trepa o rompe las paredes, cercos o entradas de tu casa, o si encuentras a un extraño adentro y se resiste. Aun así, siempre lo revisa un juez, que mira cómo pasó todo."],
+   ["h","Lo que deja de ser defensa"],
+   ["ul",["Perseguir al ladrón cuando ya se va.","Seguir atacando cuando el otro ya no puede hacer daño.","Las trampas preparadas de antemano que lastiman."]],
+   ["h","Si pasa algo"],
+   ["ol",["Llama al 911 enseguida y cuenta lo que pasó.","No muevas ni limpies nada.","Habla con un abogado antes de declarar."]],
+   ["tip","Si quieres saber más, consulta a un abogado de tu confianza: la ley se interpreta según cada caso."]]},
+  {id:"df-corte", t:"Seguridad durante un corte largo", min:4, b:[
+   ["p","Con la ciudad a oscuras por varios días, la inseguridad sube. Lo que más protege es la cuadra unida y no llamar la atención."],
+   ["ul",["Que no se note lo que tienen: el generador, el panel y la reserva, lo menos visibles posible. El generador, encadenado.","Luces solares con sensor afuera, y una luz chica adentro toda la noche: que la casa no parezca vacía.","Grupo de la cuadra con un aviso acordado: un silbato, un mensaje o una luz.","Turnos entre vecinos para estar atentos de noche, sin salir a patrullar armados.","Las puertas y ventanas trabadas también de día, y nadie le abre a desconocidos, aunque digan que vienen de la empresa de luz.","Si alguien pide ayuda en la puerta, se habla sin abrir y se ayuda por la reja o a través de un vecino."]],
+   ["tip","Antes de un corte, hablen con dos o tres vecinos de confianza y armen el grupo: teléfonos, señal de alarma y quién tiene qué."]]}
+ ]},
  {id:"familia", t:"Familia unida y ánimo", sub:"Roles, rutinas, cómo hablar del miedo con las chicas y cómo no pelearse.", ic:"heart", lec:[
   {id:"roles", t:"Cada uno con su tarea", min:3, b:[
    ["p","En una crisis, sentirse útil calma. Una tarea clara para cada uno, según la edad, reparte el trabajo y da sensación de control."],
@@ -3990,7 +4089,7 @@ function renderAprender(){
     <div class="field"><label class="lbl" for="apr-q">Buscar</label><input id="apr-q" type="search" autocomplete="off" value="${esc(a.q || "")}" placeholder="Ej.: huerta, nudos, puerta"></div>
     <div id="apr-list">${hits ? (hits.length ? `<ul class="apr-list">${hits.map(row).join("")}</ul>` : `<p class="fine">No encontré «${esc(a.q)}».</p>`) :
       `<div class="hsecs">${APRENDER.map(t => `<details class="hsec apr-t" data-apr="${t.id}"${a.open === t.id ? " open" : ""}><summary><span class="g-ic">${icon(t.ic)}</span><span class="hs-t"><strong>${t.t}</strong><span>${t.sub}</span></span><span class="hs-chev" aria-hidden="true"></span></summary><div class="hs-body"><ul class="apr-list">${t.lec.map(row).join("")}</ul></div></details>`).join("")}</div>`}</div>
-    ${srcBox(["botulismo","robosMza","sroCasero","stcChicos","lavandinaDil","sodis","ponzonosos"], "Lecturas de referencia. Ante una emergencia, llama al 911.")}
+    ${srcBox(["botulismo","robosMza","sroCasero","stcChicos","lavandinaDil","sodis","ponzonosos","legitima","pimienta","taser"], "Lecturas de referencia. Ante una emergencia, llama al 911.")}
   </section>`;
 }
 
@@ -5137,7 +5236,7 @@ async function recNotif(){
 
 /* ---------- Configuración: todos los ajustes en un lugar (engranaje arriba a la derecha) ----------
    En un celular con control parental se ve todo; para cambiar algo, salvo voz y vibración, pide el PIN. */
-const APP_VER = 29;
+const APP_VER = 30;
 const GEAR_SVG = `<svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>`;
 function renderConfig(){
   const lc = lockCfg(), lockOn = !!(lc && lc.on), f = miFicha(), fp = fpCfg(), aqui = recsAqui(), nRec = REMINDERS.filter(recOn).length;
@@ -5517,6 +5616,14 @@ const PROBLEMAS = [
       "Si hay humo, salgan agachados: cerca del piso hay más aire.",
       "Aunque se apague, que lo revisen los bomberos."],
    tel:["100", "911"], ir:[["l","ca-matafuegos"]]},
+  {id:"intruso", c:"casa", t:"Alguien está forzando la puerta o entró a la casa", kw:"ladron robo entraron intruso forzando puerta ventana rompen asalto",
+   urg:true, kid:"Si eres una de las chicas: ve al cuarto seguro con tu familia, en silencio, y no salgas a mirar.", pri:"No vayas a buscarlo. Todos al cuarto seguro, trabado, y llamen al 911.",
+   p:["Dicen la palabra clave y van todos al cuarto seguro. Traben la puerta: cerrojo, barra o cuña, y algo pesado contra la puerta.",
+      "Llamen al 911: la dirección, que hay alguien adentro o forzando, cuántos parecen y que hay chicos.",
+      "Prendan la luz del cuarto y hagan ruido: silbato, alarma o hablen fuerte. Que sepan que hay gente y que la policía viene.",
+      "No salgan hasta que llegue la policía y se identifique.",
+      "Si te encuentras cara a cara: si está armado, entrégale lo que pide. Si no, aléjate y traba una puerta. Las cosas se recuperan."],
+   tel:["911"], ir:[["l","df-cuarto"], ["l","df-noche"], ["a","silbato"], ["l","df-ley"]]},
   {id:"cable", c:"casa", t:"Hay un cable caído o salen chispas", kw:"cable caido chispas poste electricidad electrocutado",
    urg:true, kid:true, pri:"No te acerques ni lo toques, aunque parezca que no hay luz. Tampoco el agua que lo rodea.",
    p:["Aléjense por lo menos 10 metros y avisen a los demás que no pasen.",
@@ -5538,7 +5645,7 @@ const PROBLEMAS = [
       "Hagan ruido y prendan una linterna desde adentro: casi siempre se van.",
       "Avisen a los vecinos por mensaje o con el silbato.",
       "No enfrenten a nadie: las cosas se recuperan, las personas no."],
-   tel:["911"], ir:[["a","silbato"], ["l","intruso"], ["l","vecinos-seg"]]},
+   tel:["911"], ir:[["l","df-noche"], ["l","df-cuarto"], ["a","silbato"], ["l","intruso"], ["l","vecinos-seg"]]},
 
   /* ---- Ánimo y familia ---- */
   {id:"miedo", c:"animo", t:"Alguien de la familia tiene miedo", kw:"miedo angustia nervios llanto chicas ansiedad",
