@@ -29,6 +29,10 @@
  ],
  "shortcuts": [
   {
+   "name": "Llevarme a casa",
+   "url": "./#llevar"
+  },
+  {
    "name": "Necesito ayuda",
    "url": "./#ayuda"
   },
@@ -39,10 +43,6 @@
   {
    "name": "Mapa y brújula",
    "url": "./#mapa"
-  },
-  {
-   "name": "30 días sin luz",
-   "url": "./#30dias"
   }
  ]
 }

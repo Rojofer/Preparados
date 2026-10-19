@@ -523,7 +523,8 @@ textarea{min-height:76px;resize:vertical}
 .mes-plan .inline{margin-top:4px}
 .mes-prog{font-size:18px;color:var(--ink-2)}
 .check strong{font-weight:700}.check .mono{white-space:nowrap}
-.sos-bar{display:grid;grid-template-columns:1fr 1.5fr 1fr;gap:8px}
+.sos-bar{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.sb-llevar{background:var(--blue);color:var(--on-blue,#fff);font-size:18px}
 .sb{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:76px;padding:8px 6px;border-radius:var(--r);font-weight:700;font-size:16px;line-height:1.15;text-align:center;text-decoration:none}
 .sb .ic{width:26px;height:26px}
 .sb-911{background:var(--surface);color:var(--crit);border:2px solid var(--crit)}.sb-911 span{font-family:var(--font-data);font-size:22px}
@@ -2618,9 +2619,9 @@ function renderHome(){
     <div class="sos-bar" role="group" aria-label="Acciones urgentes">
       <a class="sb sb-911" href="tel:911">${icon("phone")}<span>911</span></a>
       <button class="sb sb-ayuda" data-action="go-ayuda">${icon("sos")}<span>Necesito ayuda</span></button>
+      <button class="sb sb-llevar" data-action="go-llevar">${icon("compass")}<span>Llevarme</span></button>
       <button class="sb sb-bien" data-action="go-aviso">${icon("heart")}<span>Estoy bien</span></button>
     </div>
-    ${navRow()}
     ${ahora.length ? `<div class="ahora">${ahora.join("")}</div>` : ""}
     <div class="hsecs">
       ${hsec("pasa", "storm", "¿Qué está pasando?", "Toca la situación y sigue los pasos", pasa, "hs-main")}
@@ -4061,7 +4062,13 @@ function navInfo(){
   if(!NAV.route || (pr && pr.d > 40 + Math.min(60, f.acc / 2)) || Date.now() - NAV.routeAt > 30000){
     const r = ruta(p, q);
     NAV.routeAt = Date.now();
-    if(r){ NAV.route = r; pr = navProject(r.pts, p); }
+    if(r){
+      // sacar el ida y vuelta del principio y del final: si estás en medio de una cuadra, se sigue derecho
+      const pts = r.pts.slice(), proj = (a, b, c) => { const dx = (b[0] - a[0]) * KX, dy = (b[1] - a[1]) * KY, L = dx * dx + dy * dy; return L ? (((c[0] - a[0]) * KX) * dx + ((c[1] - a[1]) * KY) * dy) / L : -1; };
+      if(pts.length > 3){ const t = proj(pts[1], pts[2], pts[0]); if(t > 0 && t < 1) pts.splice(1, 1); }
+      if(pts.length > 3){ const n = pts.length, t = proj(pts[n - 2], pts[n - 3], pts[n - 1]); if(t > 0 && t < 1) pts.splice(n - 2, 1); }
+      NAV.route = {pts, m:r.m}; pr = navProject(pts, p);
+    }
   }
   if(!NAV.route || !pr) return Object.assign(directo, {modo:"directo"});
   const pts = NAV.route.pts;
@@ -4072,13 +4079,13 @@ function navInfo(){
   // próxima vuelta
   let acc = segM(pr.pt, pts[pr.i]), giro = null;
   const calle0 = calleCerca(pr.pt[0], pr.pt[1]);
-  for(let i = pr.i; i < pts.length - 1; i++){
+  for(let i = pr.i; i < pts.length - 2; i++){
     const bin = brg(i === pr.i ? pr.pt : pts[i - 1], pts[i]), bout = brg(pts[i], pts[i + 1]);
     const delta = ((bout - bin + 540) % 360) - 180;
     if(Math.abs(delta) > 35 && segM(pts[i], pts[i + 1]) > 12){
       const after = navAhead(pts, {i:i + 1, pt:pts[i]}, 20), nueva = calleCerca(after[0], after[1]);
       if(!(nueva && calle0 && nueva === calle0) && acc > 8){
-        giro = {m:acc, dir:delta > 0 ? "derecha" : "izquierda", calle:nueva, fuerte:Math.abs(delta) > 120};
+        giro = {m:acc, dir:delta > 0 ? "derecha" : "izquierda", calle:nueva, fuerte:Math.abs(delta) > 160};
         break;
       }
     }
@@ -4094,6 +4101,7 @@ function navArrowRot(info){
 }
 function navArrow(){
   const g = document.getElementById("nav-arrow");
+  if(!NAV.info) return;
   if(!g || !NAV.info) return;
   g.setAttribute("transform", `rotate(${navArrowRot(NAV.info).toFixed(0)})`);
   const s = document.getElementById("nav-src"); if(s) s.textContent = navSrcTxt();
@@ -4118,9 +4126,11 @@ function navUpdate(){
 }
 function accTxt(a){ return a <= 15 ? ["buena", "ok"] : a <= 40 ? ["aceptable", "mid"] : ["baja: sal al aire libre y espera", "bad"]; }
 function navBoxHTML(){
-  const f = NAV.fix, d = NAV.dest, info = NAV.info;
+  const f = NAV.fix, d = NAV.dest;
+  if(f && d && !NAV.info) NAV.info = navInfo();
+  const info = NAV.info;
   if(!d) return "";
-  if(!f){
+  if(!f || !info){
     return `<div class="nav-wait"><p class="nav-big">Buscando tu ubicación…</p><p>${NAV.err === "perm" ? "No hay permiso para usar la ubicación. Actívalo en los ajustes de Chrome para esta app." : "Sal al aire libre o acércate a una ventana. La primera vez puede tardar un minuto."}</p></div>`;
   }
   if(NAV.arrived) return `<div class="nav-ok"><p class="nav-big">Llegaste a ${esc(d.nombre)}</p><button class="btn btn-primary" data-action="nav-stop">Terminar</button></div>`;
@@ -4157,6 +4167,16 @@ function renderNav(){
     <p class="fine">El GPS funciona sin internet. La pantalla queda encendida mientras navegas. Si la flecha y el plano no coinciden, confía en los nombres de las calles.</p>
   </section>`;
 }
+function renderLlevar(){
+  const hay = state.lugares.length;
+  return `<section class="stack">
+    <button class="back" data-action="tab" data-tab="inicio">${icon("back")}Inicio</button>
+    <div class="intro"><h1>Llevarme</h1><p class="lede">Elige adónde ir: la app te guía calle por calle, sin internet.</p></div>
+    ${hay ? navRow(99) : `<div class="card"><p>Todavía no guardaste lugares. Agrega la dirección de tu casa y la de tus familiares.</p></div>`}
+    ${hay ? `<div class="azwrap"><canvas id="azmap" tabindex="0" aria-label="Plano con tus lugares"></canvas><div class="mapbtns"><button class="btn btn-ghost" data-action="map-z" data-f="1.4" aria-label="Acercar">+</button><button class="btn btn-ghost" data-action="map-z" data-f="0.7" aria-label="Alejar">−</button></div></div>` : ""}
+    <div class="inline"><button class="btn btn-primary" data-action="dir-abrir">+ Agregar una dirección</button><button class="btn btn-ghost" data-action="go-lugares">Editar lugares</button><button class="btn btn-ghost" data-action="go-mapa">Abrir el mapa</button></div>
+  </section>`;
+}
 /* Distancia por las calles desde donde estás hasta cada lugar guardado */
 const DIST_CACHE = new Map();
 function distLugar(pos, l){
@@ -4176,12 +4196,13 @@ function pedirPos(){
   try{
     navigator.geolocation.getCurrentPosition(p => {
       state.ultimaPos = {lat:p.coords.latitude, lng:p.coords.longitude, acc:p.coords.accuracy || 0, at:Date.now()}; save();
-      document.querySelectorAll("[data-navrow]").forEach(el => { el.outerHTML = navRow(); });
+      if(ui.tab === "inicio" && ui.sub === "llevar"){ const y = window.scrollY; render(false); window.scrollTo(0, y); }
+      else document.querySelectorAll("[data-navrow]").forEach(el => { el.outerHTML = navRow(); });
     }, () => { document.querySelectorAll("[data-navrow] .nr-pos").forEach(el => { el.textContent = "No pude ubicarte: sal al aire libre o activa la ubicación."; }); }, {enableHighAccuracy:true, timeout:20000, maximumAge:60000});
   }catch(e){}
 }
-function navRow(){
-  const ds = navDestinos().slice(0, 5);
+function navRow(max){
+  const ds = navDestinos().slice(0, max || 5);
   if(!ds.length) return `<button class="nav-row empty" data-action="dir-abrir">${icon("compass")}<span><strong>Llevarme a casa</strong><span>Primero agrega la dirección de tu casa y la de un familiar</span></span>${icon("chev")}</button>`;
   const pos = state.ultimaPos, edad = pos ? Date.now() - (pos.at || 0) : Infinity;
   if(edad > 2 * 60000) setTimeout(pedirPos, 0);
@@ -5652,6 +5673,13 @@ function renderMapa(){
 }
 function afterMapaRender(){
   if(ui.tab !== "inicio") return;
+  if(ui.sub === "llevar" && document.getElementById("azmap")){
+    const m = ui.mapa, pos = state.ultimaPos; m.sel = null; m.ruta = null; m.calle = null;
+    if(pos) m.yo = {lat:pos.lat, lng:pos.lng, acc:pos.acc || 0, gps:true};
+    const pts = state.lugares.filter(enAzul).map(toXY).concat(pos && enAzul(pos) ? [toXY(pos)] : []);
+    if(pts.length){ const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]); MAP.cx = (Math.min(...xs) + Math.max(...xs)) / 2; MAP.cy = (Math.min(...ys) + Math.max(...ys)) / 2; bindMap(); drawMapa(); const span = Math.max((Math.max(...xs) - Math.min(...xs)) * KX / (MAP.w || 350), (Math.max(...ys) - Math.min(...ys)) * KY / (MAP.h || 350), 1); MAP.z = Math.max(0.2, Math.min(1.2, 0.85 / span)); drawMapa(); }
+    return;
+  }
   if(ui.sub === "ir"){ bindMap(); navUpdate(); return; }
   if(ui.sub !== "mapa" || ui.mapa.tab === "arg") return;
   bindMap(); drawMapa();
@@ -5677,7 +5705,7 @@ function render(top){
   if(!(ui.tab === "inicio" && ui.sub === "ir")) navStop();
   applyAhorro();
   if(ui.tab === "inicio" && !ui.sub && state.ahorro) html = renderAhorro();
-  else if(ui.tab === "inicio") html = ui.sub === "corte" ? renderCorte() : ui.sub === "aviso" ? renderAviso() : ui.sub === "mapa" ? renderMapa() : ui.sub === "ayuda" ? renderAyuda() : ui.sub === "mes" ? renderMes() : ui.sub === "radio" ? renderRadio() : ui.sub === "manual" ? renderManual() : ui.sub === "ir" ? renderNav() : renderHome();
+  else if(ui.tab === "inicio") html = ui.sub === "corte" ? renderCorte() : ui.sub === "aviso" ? renderAviso() : ui.sub === "mapa" ? renderMapa() : ui.sub === "ayuda" ? renderAyuda() : ui.sub === "mes" ? renderMes() : ui.sub === "radio" ? renderRadio() : ui.sub === "manual" ? renderManual() : ui.sub === "ir" ? renderNav() : ui.sub === "llevar" ? renderLlevar() : renderHome();
   else if(ui.tab === "guias") html = ui.guide ? renderGuide() : renderGuides();
   else if(ui.tab === "preparar") html = renderPrep();
   else if(ui.tab === "linterna") html = renderTools();
@@ -6081,6 +6109,7 @@ document.addEventListener("click", e => {
     case "pantalla": openOverlay("linterna"); break;
     case "nav-go": goNav(el.dataset.id); break;
     case "dir-abrir": ui.mapa.tab = "azul"; ui.mapa.dir = Object.assign({}, ui.mapa.dir, {open:true, msg:""}); if(!(ui.tab === "inicio" && ui.sub === "mapa")) go("inicio", {sub:"mapa"}); else render(false); { const f = document.getElementById("d-nombre"); if(f){ f.scrollIntoView({block:"center"}); try{ f.focus({preventScroll:true}); }catch(err){} } } break;
+    case "go-llevar": go("inicio", {sub:"llevar"}); break;
     case "go-lugares": ui.mapa.tab = "azul"; go("inicio", {sub:"mapa"}); { const l = document.getElementById("map-lugares"); if(l) l.scrollIntoView({block:"start"}); } break;
     case "dir-cerrar": ui.mapa.dir = {open:false}; render(false); break;
     case "dir-nom": { const i = document.getElementById("d-nombre"); if(i){ const v = el.dataset.n === "Casa de un familiar" ? "Casa de " : el.dataset.n; i.value = v; if(v.endsWith(" ")){ i.focus(); try{ i.setSelectionRange(v.length, v.length); }catch(err){} } } break; }
@@ -6424,6 +6453,7 @@ else if(hash === "extremo"){ ui.tab = "guias"; ui.extOpen = true; }
 else if(hash === "mapa") ui.sub = "mapa";
 else if(hash === "aviso") ui.sub = "aviso";
 else if(hash === "ayuda") ui.sub = "ayuda";
+else if(hash === "llevar") ui.sub = "llevar";
 else if(hash === "30dias") ui.sub = "mes";
 else if(hash === "radio") ui.sub = "radio";
 else if(hash === "manual") ui.sub = "manual";
