@@ -34,6 +34,7 @@
   --focus:#1F4FB8;
   --ok:#17672F;
   --ok-soft:#DDF0E3;
+  --pl-casa:#17672F; --pl-fam:#0B7285; --pl-pe:#C2185B; --pl-otro:#5B6475;
   --warn:#8A5A00;
   --warn-fill:#F6C744;
   --warn-soft:#FCEFC7;
@@ -79,6 +80,7 @@
     --signal:#FF8A3D; --on-signal:#0A1324; --signal-ink:#FFA466;
     --blue:#8DB2FF; --on-blue:#0A1324; --focus:#8DB2FF;
     --ok:#5BD08A; --ok-soft:#173A28;
+    --pl-casa:#5BD08A; --pl-fam:#3BC9DB; --pl-pe:#F06595; --pl-otro:#A9B4C6;
     --warn:#F6C744; --warn-fill:#F6C744; --warn-soft:#3A3115;
     --crit:#FF7A70; --crit-soft:#41201F; --on-crit:#0A1324;
     --il-bg:#16233C; --il-ink:#DCE4F2; --il-fill:#22324F; --il-fill-2:#34476A; --il-accent:#FF8A3D;
@@ -96,6 +98,7 @@
   --signal:#FF8A3D; --on-signal:#0A1324; --signal-ink:#FFA466;
   --blue:#8DB2FF; --on-blue:#0A1324; --focus:#8DB2FF;
   --ok:#5BD08A; --ok-soft:#173A28;
+  --pl-casa:#5BD08A; --pl-fam:#3BC9DB; --pl-pe:#F06595; --pl-otro:#A9B4C6;
   --warn:#F6C744; --warn-fill:#F6C744; --warn-soft:#3A3115;
   --crit:#FF7A70; --crit-soft:#41201F; --on-crit:#0A1324;
   --il-bg:#16233C; --il-ink:#DCE4F2; --il-fill:#22324F; --il-fill-2:#34476A; --il-accent:#FF8A3D;
@@ -484,6 +487,10 @@ textarea{min-height:76px;resize:vertical}
 .ay-dest input{width:22px;height:22px}
 .ay-uno summary{cursor:pointer;color:var(--blue);font-size:15px;padding:6px 0}
 .ay-pe{font-size:18px;font-weight:700}
+.ay-stick{position:fixed;left:0;right:0;bottom:calc(var(--tabbar-h) + env(safe-area-inset-bottom,0px));z-index:26;padding:8px max(16px,env(safe-area-inset-left,0px)) 10px;background:linear-gradient(to top,var(--bg) 70%,transparent)}
+.ay-stick .btn{max-width:560px;margin:0 auto;display:flex;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+body:has(#livebar:not([hidden])) .ay-stick{bottom:calc(var(--tabbar-h) + 64px + env(safe-area-inset-bottom,0px))}
+body:has(input:focus,textarea:focus) .ay-stick{display:none}
 .ay-tools{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}
 .ay-sin summary{cursor:pointer;list-style:none}
 .ay-sin summary h2{display:inline}
@@ -606,6 +613,11 @@ html.ahorro *{animation:none!important;transition:none!important}
 .nav-row{display:flex;flex-direction:column;gap:8px;padding:12px 14px;border-radius:var(--r);background:var(--surface);border:2px solid var(--blue)}
 .nav-row-t{display:flex;align-items:center;gap:8px;font-weight:700;font-size:18px;color:var(--blue)}.nav-row-t .ic{width:22px;height:22px}
 .nav-row-b{display:flex;flex-wrap:wrap;gap:8px}.nav-row-b .btn{min-height:44px;font-size:16px}
+.pl-dot{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:8px;vertical-align:1px;box-shadow:0 0 0 2px var(--surface)}
+.pl-casa{background:var(--pl-casa)}.pl-fam{background:var(--pl-fam)}.pl-pe{background:var(--pl-pe)}.pl-otro{background:var(--pl-otro)}
+.map-ley{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:13px;color:var(--ink-2);margin:8px 2px 0}
+.map-ley span{display:inline-flex;align-items:center;gap:6px}.map-ley i{width:11px;height:11px;border-radius:50%;box-shadow:0 0 0 2px var(--surface)}
+.ml-yo{background:var(--blue)}.ml-casa{background:var(--pl-casa)}.ml-fam{background:var(--pl-fam)}.ml-pe{background:var(--pl-pe)}.ml-otro{background:var(--pl-otro)}.ml-hosp{background:var(--crit)}.map-ley .ml-pol{background:var(--map-police);border-radius:2px}
 .nr-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .nr-pos{margin-top:-4px}
 .nr-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
@@ -614,15 +626,18 @@ html.ahorro *{animation:none!important;transition:none!important}
 .nr-go{display:flex;align-items:center;gap:6px;padding:8px 12px;border-radius:10px;background:var(--blue);color:var(--on-blue,#fff);font-weight:700}.nr-go .ic{width:18px;height:18px}
 .nav-row.empty{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:12px;text-align:left;color:var(--ink)}
 .nav-row.empty strong{display:block;color:var(--blue)}.nav-row.empty span span{font-size:14px;color:var(--ink-2)}
-.nav-main{display:grid;grid-template-columns:150px minmax(0,1fr);gap:14px;align-items:center}
-.nav-dial{width:150px;height:150px}.nav-dial .ring{fill:var(--surface-2);stroke:var(--line);stroke-width:2}.nav-dial .needle{fill:var(--blue)}
+.nav-main{display:grid;grid-template-columns:124px minmax(0,1fr);gap:14px;align-items:center;margin-top:12px}
+.nav-dial{width:124px;height:124px}.nav-dial .ring{fill:var(--surface-2);stroke:var(--line);stroke-width:2}.nav-dial .needle{fill:var(--blue)}
 #nav-arrow{transition:transform .25s ease}
 .nav-big{font-family:var(--font-display);font-weight:700;font-size:40px;line-height:1}
-.nav-instr{font-size:19px;line-height:1.4}
+.nav-instr{font-size:21px;line-height:1.35;padding-bottom:12px;border-bottom:1px solid var(--line)}
 .nav-acc{font-size:14px;font-weight:700}.nav-acc.ok{color:var(--ok)}.nav-acc.mid{color:var(--signal-ink)}.nav-acc.bad{color:var(--crit)}
 .nav-ok .nav-big{color:var(--ok);margin-bottom:10px}
 .nav-v #azmap{height:min(42vh,340px)}
-@media (max-width:360px){.nav-main{grid-template-columns:1fr}.nav-dial{margin:auto}}
+@media (max-width:380px),(max-height:740px){.nav-main{grid-template-columns:92px minmax(0,1fr);gap:12px;margin-top:10px}.nav-dial{width:92px;height:92px}.nav-big{font-size:34px}.nav-instr{font-size:19px}.nav-v .intro h1{font-size:26px}.nav-v{gap:12px}}
+/* Mientras navegas no hay pestañas: más lugar y nada que tocar sin querer */
+body.navegando .tabbar{display:none}
+body.navegando .view{padding-bottom:calc(28px + env(safe-area-inset-bottom,0px))}
 @media (prefers-reduced-motion: reduce){#nav-arrow{transition:none}}
 .dir-card{border:2px solid var(--blue)}
 .ren-form{display:flex;flex-direction:column;gap:8px;width:100%}
@@ -3379,6 +3394,7 @@ async function setFoto(file){
 function newFicha(nombre){
   const f = {id:"f" + Date.now().toString(36) + Math.floor(Math.random() * 1e6).toString(36), nombre:nombre.slice(0, 40), upd:Date.now()};
   state.fichas.push(f);
+  if(ui.miaNueva){ try{ localStorage.setItem(MIA_KEY, f.id); }catch(e){} ui.miaNueva = false; }
   save();
   ui.fichaEdit = f.id;
   render(false);
@@ -3902,7 +3918,7 @@ const MANUAL_SEC = [
   ["aprender","Lecturas de Aprender","Proteger la casa, familia, saberes y comunidad. Son muchas páginas.",false]
 ];
 function manualSel(){ const s = state.manual || {}; const o = {}; MANUAL_SEC.forEach(([k, , , d]) => { o[k] = s[k] === undefined ? d : !!s[k]; }); return o; }
-const PRINT_COL = {"--map-bg":"#F4F6F2","--map-road":"#FFFFFF","--map-main":"#F2CC7A","--map-edge":"#9AA3B2","--map-park":"#CFE6C6","--map-water":"#8DB8E8","--map-rail":"#555","--map-label":"#222","--map-poi":"#7A5BC2","--map-police":"#1F4FB8","--signal":"#E0561B","--crit":"#B3261E","--ok":"#17672F","--blue":"#1F4FB8","--ink":"#111","--font-body":"Arial, Helvetica, sans-serif","--font-data":"Courier New, monospace"};
+const PRINT_COL = {"--map-bg":"#F4F6F2","--map-road":"#FFFFFF","--map-main":"#F2CC7A","--map-edge":"#9AA3B2","--map-park":"#CFE6C6","--map-water":"#8DB8E8","--map-rail":"#555","--map-label":"#222","--map-poi":"#7A5BC2","--map-police":"#1F4FB8","--signal":"#E0561B","--crit":"#B3261E","--ok":"#17672F","--pl-casa":"#17672F","--pl-fam":"#0B7285","--pl-pe":"#C2185B","--pl-otro":"#5B6475","--blue":"#1F4FB8","--ink":"#111","--font-body":"Arial, Helvetica, sans-serif","--font-data":"Courier New, monospace"};
 let MAP_PRINT = false;
 function mapImage(cx, cy, z, w, h){
   const keep = {cx:MAP.cx, cy:MAP.cy, z:MAP.z, w:MAP.w, h:MAP.h};
@@ -4172,7 +4188,7 @@ function navAnunciar(){
 function voyEnCaminoHref(){
   const d = NAV.dest, f = NAV.fix, info = NAV.info;
   const tels = ayudaDest().map(x => x.tel).join(",");
-  const partes = [`Voy en camino a ${d ? d.nombre : "casa"}.`, state.yo ? `Soy ${state.yo}.` : ""];
+  const partes = [`Voy en camino a ${d ? d.nombre : "casa"}.`, yoN() ? `Soy ${yoN()}.` : ""];
   if(f){ const donde = dondeEstoy(f); if(donde) partes.push(`Estoy en ${donde}.`); }
   if(info){ const c = Math.max(1, Math.round(info.km * 1000 / 110)); const mn = Math.max(1, Math.round(info.km / 4.5 * 60)); partes.push(`Me faltan ${c === 1 ? "1 cuadra" : `${c} cuadras`}, ${mn === 1 ? "1 minuto" : `unos ${mn} minutos`}.`); }
   if(f) partes.push(`Ubicación: https://maps.google.com/?q=${f.lat.toFixed(5)},${f.lng.toFixed(5)}`);
@@ -4214,11 +4230,11 @@ function navBoxHTML(){
   }else instr = enAzul(f) && enAzul(d)
     ? `En línea recta, hacia ${cardinal(info.brg)}. Sigue la flecha por las calles y fíjate que la distancia baje.`
     : `En línea recta, hacia ${cardinal(info.brg)}. Fuera del plano de Azul no hay calles: usa la app de mapas si tienes una descargada.`;
-  return `<div class="nav-main">
+  return `<p class="nav-instr">${instr}</p>
+    <div class="nav-main">
       <svg viewBox="-60 -60 120 120" class="nav-dial" aria-hidden="true"><circle r="56" class="ring"/><g id="nav-arrow" transform="rotate(${navArrowRot(info).toFixed(0)})"><path class="needle" d="M0 -48l20 44-20-12-20 12z"/></g></svg>
       <div class="nav-txt"><p class="nav-big">${fmtKm(info.km)}</p><p>unas ${cuadras === 1 ? "1 cuadra" : `${cuadras} cuadras`} · ${min} min a pie</p></div>
     </div>
-    <p class="nav-instr">${instr}</p>
     <p class="nav-acc ${ac}">Precisión del GPS: ${Math.round(f.acc)} m, ${at}${f.old ? " (última posición guardada)" : ""}.</p>
     <p class="fine" id="nav-src">${navSrcTxt()}</p>`;
 }
@@ -4256,9 +4272,12 @@ function renderMiFicha(){
   if(!f){
     return `<section class="stack"><button class="back" data-action="tab" data-tab="inicio">${icon("back")}Inicio</button>
       <div class="intro"><h1>Mi ficha</h1><p class="lede">Tus datos médicos y documentos, a un toque.</p></div>
-      ${state.fichas.length ? `<div class="card"><h2>¿Cuál es tu ficha?</h2><div class="chips">${state.fichas.map(x => `<button class="chip" data-action="mia-set" data-id="${esc(x.id)}">${esc(x.nombre)}</button>`).join("")}</div></div>` : ""}
-      <div class="inline"><button class="btn btn-primary" data-action="plan-seg" data-id="ficha">${state.fichas.length ? "Crear otra ficha" : "Crear mi ficha"}</button></div>
-      ${clave}</section>`;
+      ${state.fichas.length ? `<div class="card"><h2>¿Cuál es tu ficha?</h2><div class="chips">${state.fichas.map(x => `<button class="chip" data-action="mia-set" data-id="${esc(x.id)}">${esc(x.nombre)}</button>`).join("")}</div></div>
+      <div class="inline"><button class="btn btn-ghost" data-action="mia-crear">Crear otra ficha</button></div>
+      ${clave}`
+      : `<div class="card"><h2>Dos pasos</h2><ol class="kv-list"><li><strong>Crea tu ficha:</strong> grupo sanguíneo, alergias, medicación, a quién llamar y tus documentos.</li><li><strong>Ponle una clave</strong> de 4 números, para que nadie vea tus documentos si pierdes el celular.</li></ol>
+        <button class="btn btn-primary btn-big" data-action="mia-crear">Crear mi ficha</button></div>`}
+      </section>`;
   }
   return `<section class="stack mi-ficha"><button class="back" data-action="tab" data-tab="inicio">${icon("back")}Inicio</button>
     ${fichaBig(f).replace(/<button class="back"[^>]*>[\s\S]*?<\/button>/, "")}
@@ -4280,7 +4299,7 @@ function renderLlevar(){
     <button class="back" data-action="tab" data-tab="inicio">${icon("back")}Inicio</button>
     <div class="intro"><h1>Llevarme</h1><p class="lede">Elige adónde ir: la app te guía calle por calle, sin internet.</p></div>
     ${hay ? navRow(99) : `<div class="card"><p>Todavía no guardaste lugares. Agrega la dirección de tu casa y la de tus familiares.</p></div>`}
-    ${hay ? `<div class="azwrap"><canvas id="azmap" tabindex="0" aria-label="Plano con tus lugares"></canvas><div class="mapbtns"><button class="btn btn-ghost" data-action="map-z" data-f="1.4" aria-label="Acercar">+</button><button class="btn btn-ghost" data-action="map-z" data-f="0.7" aria-label="Alejar">−</button></div></div>` : ""}
+    ${hay ? `<div class="azwrap"><canvas id="azmap" tabindex="0" aria-label="Plano con tus lugares"></canvas><div class="mapbtns"><button class="btn btn-ghost" data-action="map-z" data-f="1.4" aria-label="Acercar">+</button><button class="btn btn-ghost" data-action="map-z" data-f="0.7" aria-label="Alejar">−</button></div></div>${mapLeyenda()}` : ""}
     <div class="inline"><button class="btn btn-primary" data-action="dir-abrir">+ Agregar una dirección</button><button class="btn btn-ghost" data-action="go-lugares">Editar lugares</button><button class="btn btn-ghost" data-action="go-mapa">Abrir el mapa</button></div>
   </section>`;
 }
@@ -4308,6 +4327,21 @@ function pedirPos(){
     }, () => { document.querySelectorAll("[data-navrow] .nr-pos").forEach(el => { el.textContent = "No pude ubicarte: sal al aire libre o activa la ubicación."; }); }, {enableHighAccuracy:true, timeout:20000, maximumAge:60000});
   }catch(e){}
 }
+/* Tipo de lugar por su nombre: color propio en el mapa y en las listas */
+function tipoLugar(l){
+  const n = norm(l && l.nombre);
+  if(/encuentro/.test(n)) return "pe";
+  if(/^(mi |nuestra )?casa$|^casa (mia|nuestra|principal|de la familia)$|^hogar$/.test(n)) return "casa";
+  if(/^casa de|(^| )(tio|tia|tios|abuel\w*|prim[oa]s?|herman\w*|famil\w*|papa|mama|padre|madre|padrino|madrina|suegr\w*|cunad\w*|sobrin\w*|nono|nona)( |$)/.test(n)) return "fam";
+  return "otro";
+}
+function mapLeyenda(todo){
+  const tipos = new Set(state.lugares.map(tipoLugar));
+  const it = [["yo","Tú"], ...[["casa","Casa"], ["fam","Familiares"], ["pe","Punto de encuentro"], ["otro","Otros lugares"]].filter(([k]) => tipos.has(k))];
+  if(todo) it.push(["hosp","Hospital"], ["pol","Policía"]);
+  return `<p class="map-ley" aria-label="Referencias del mapa">${it.map(([k, t]) => `<span><i class="ml-${k}"></i>${t}</span>`).join("")}</p>`;
+}
+const plDot = l => `<i class="pl-dot pl-${tipoLugar(l)}" aria-hidden="true"></i>`;
 function navRow(max){
   const ds = navDestinos(state.ultimaPos).slice(0, max || 5);
   if(!ds.length) return `<button class="nav-row empty" data-action="dir-abrir">${icon("compass")}<span><strong>Llevarme a casa</strong><span>Primero agrega la dirección de tu casa y la de un familiar</span></span>${icon("chev")}</button>`;
@@ -4317,7 +4351,7 @@ function navRow(max){
   const rows = ds.map(l => {
     const d = pos ? distLugar(pos, l) : null;
     const det = !d ? "" : d.m < 30 ? "Estás acá" : `${fmtKm(d.m / 1000)} · ${cuadrasTxt(d.m)}${d.calles ? "" : " en línea recta"} · hacia ${cardinal(d.brg)}`;
-    return `<li><button class="nr-item" data-action="nav-go" data-id="${esc(l.id)}"><span class="nr-t"><strong>${esc(l.nombre)}</strong>${det ? `<span>${det}</span>` : ""}</span><span class="nr-go">${icon("compass")}Ir</span></button></li>`;
+    return `<li><button class="nr-item" data-action="nav-go" data-id="${esc(l.id)}"><span class="nr-t"><strong>${plDot(l)}${esc(l.nombre)}</strong>${det ? `<span>${det}</span>` : ""}</span><span class="nr-go">${icon("compass")}Ir</span></button></li>`;
   }).join("");
   return `<div class="nav-row" data-navrow><div class="nr-head"><span class="nav-row-t">${icon("compass")}Llevarme a</span><span class="inline"><button class="btn btn-ghost btn-sm" data-action="go-lugares">Editar</button><button class="btn btn-ghost btn-sm" data-action="dir-abrir" aria-label="Agregar una dirección">+ Agregar</button></span></div>
     <p class="nr-pos fine">${posTxt}</p><ul class="nr-list">${rows}</ul></div>`;
@@ -4506,6 +4540,7 @@ document.addEventListener("click", e => {
   askPin(() => a.click(), "ficha");
 }, true);
 const FICHA_VITAL = new Set(["grupo","alergias","condiciones","medicacion","dispositivos","comunica","contacto"]);
+const yoN = () => { const f = miFicha(), n = state.yo || (f && !/^(yo|mi ficha|mia)$/.test(norm(f.nombre)) ? f.nombre : ""); return String(n || "").trim().slice(0, 40); };
 function miFicha(){ let id = null; try{ id = localStorage.getItem(MIA_KEY); }catch(e){} return state.fichas.find(f => f.id === id) || null; }
 function lockChip(){
   let ch = document.getElementById("lock-chip");
@@ -4835,7 +4870,7 @@ function puntoEncuentro(){
 function ayudaText(){
   const a = ui.ayuda, g = a.geo, pe = puntoEncuentro();
   const base = {ayuda:"NECESITO AYUDA.", perdido:"ME PERDÍ, necesito ayuda.", punto:`Estoy bien. Voy al punto de encuentro${pe.texto ? `: ${pe.texto}` : pe.lugar ? `: ${pe.lugar.nombre}` : ""}.`}[a.estado];
-  const quien = state.yo ? `Soy ${state.yo}.` : "";
+  const quien = yoN() ? `Soy ${yoN()}.` : "";
   const calle = g && dondeEstoy(g) ? `Estoy en ${dondeEstoy(g)}.` : "";
   const link = g ? [`Ubicación: https://maps.google.com/?q=${g.lat.toFixed(5)},${g.lng.toFixed(5)}`, g.acc ? `(±${Math.round(g.acc)} m)` : ""].filter(Boolean).join(" ") : "";
   let extra = a.extra.trim(); if(extra){ extra = extra[0].toUpperCase() + extra.slice(1); if(!/[.!?]$/.test(extra)) extra += "."; }
@@ -4866,7 +4901,7 @@ function getAyudaGeo(){
 }
 function recordAyuda(){
   const a = ui.ayuda;
-  state.miAviso = {id:newId("a"), from:state.yo || "", estado:a.estado === "punto" ? "punto" : "ayuda", extra:[a.estado === "perdido" ? "Me perdí." : "", a.extra.trim(), a.geo ? dondeEstoy(a.geo) : ""].filter(Boolean).join(" ").slice(0, 200), geo:a.geo ? {lat:a.geo.lat, lng:a.geo.lng} : null, at:Date.now()};
+  state.miAviso = {id:newId("a"), from:yoN(), estado:a.estado === "punto" ? "punto" : "ayuda", extra:[a.estado === "perdido" ? "Me perdí." : "", a.extra.trim(), a.geo ? dondeEstoy(a.geo) : ""].filter(Boolean).join(" ").slice(0, 200), geo:a.geo ? {lat:a.geo.lat, lng:a.geo.lng} : null, at:Date.now()};
   save();
 }
 function ayudaPunto(){
@@ -4886,7 +4921,7 @@ function renderAyudaMostrar(){
   const a = ui.ayuda, d = ayudaDest()[0], donde = a.geo ? dondeEstoy(a.geo) : "";
   return `<section class="stack ay-show" aria-label="Pantalla para mostrar a otra persona">
     <p class="ay-show-k">${a.estado === "perdido" ? "Me perdí" : "Necesito ayuda"}</p>
-    ${state.yo ? `<p class="ay-show-n">Me llamo ${esc(state.yo)}</p>` : ""}
+    ${yoN() ? `<p class="ay-show-n">Me llamo ${esc(yoN())}</p>` : ""}
     ${d ? `<p class="ay-show-t">Por favor, llamen a ${esc(d.nombre)}:</p><a class="ay-show-tel mono" href="tel:${esc(d.tel)}">${esc(d.ver)}</a>` : `<p class="ay-show-t">Por favor, llamen al 911.</p>`}
     ${donde ? `<p class="ay-show-t">Estoy en ${esc(donde)}.</p>` : ""}
     <a class="btn btn-danger btn-big" href="tel:911">${icon("phone")}Llamar al 911</a>
@@ -4912,7 +4947,7 @@ function renderAyuda(){
     <div class="card">
       <h2>2. Qué pasa</h2>
       <div class="chips" role="group" aria-label="Qué pasa">${AYUDA_ESTADOS.map(([k, t]) => `<button class="chip" data-action="ayuda-estado" data-k="${k}" aria-pressed="${a.estado === k}">${t}</button>`).join("")}</div>
-      ${state.yo ? "" : `<div class="field"><label class="lbl" for="ay-yo">Tu nombre</label><input id="ay-yo" data-yo maxlength="40" autocomplete="off" value="${esc(state.yo)}" placeholder="Ej.: Sofía"></div>`}
+      ${yoN() ? "" : `<div class="field"><label class="lbl" for="ay-yo">Tu nombre</label><input id="ay-yo" data-yo maxlength="40" autocomplete="off" value="${esc(state.yo)}" placeholder="Ej.: Sofía"></div>`}
       <div class="field"><label class="lbl" for="ay-extra">Algo más (opcional)</label><input id="ay-extra" maxlength="140" autocomplete="off" value="${esc(a.extra)}" placeholder="Ej.: estoy frente a una farmacia"></div>
     </div>
     <div class="card">
@@ -4924,6 +4959,7 @@ function renderAyuda(){
       : `<p>Todavía no hay teléfonos de la familia guardados. Cárgalos en <strong>Plan → Números</strong> para mandarles el SMS con un toque.</p><a class="btn btn-signal" id="ay-sms" href="${ayudaSmsHref([])}" data-action="ayuda-sent">Escribir un SMS</a><button class="btn btn-ghost btn-sm" data-action="go-numeros">Cargar teléfonos</button>`}
       <div class="inline"><a class="btn btn-ghost btn-sm" id="ay-wa" href="https://wa.me/?text=${encodeURIComponent(ayudaText())}" target="_blank" rel="noopener" data-action="ayuda-sent">WhatsApp</a><button class="btn btn-ghost btn-sm" data-action="ayuda-copy">Copiar</button></div>
       <p class="saved" id="ay-ok" role="status"></p>
+      ${dest.length ? `<div class="ay-stick" id="ay-stick" hidden><a class="btn btn-signal btn-big" id="ay-sms2" href="${ayudaSmsHref(sel.map(d => d.tel))}" data-action="ayuda-sent">Mandar SMS${sel.length > 1 ? ` a ${sel.length} personas` : sel.length ? ` a ${esc(sel[0].nombre)}` : ""}</a></div>` : ""}
       <p class="fine">El SMS no usa internet: alcanza con un poco de señal. Si no sale, el celular lo vuelve a intentar cuando aparece señal.</p>
     </div>
     ${ayudaPunto()}
@@ -4943,7 +4979,7 @@ function renderAyuda(){
 }
 function updAyuda(){
   const p = document.getElementById("ay-prev"); if(p) p.textContent = ayudaText();
-  const s = document.getElementById("ay-sms"); if(s) s.href = ayudaSmsHref(ayudaSel().map(d => d.tel));
+  ["ay-sms", "ay-sms2"].forEach(id => { const s = document.getElementById(id); if(s) s.href = ayudaSmsHref(ayudaSel().map(d => d.tel)); });
   document.querySelectorAll("[data-ay-one]").forEach(el => { el.href = ayudaSmsHref([el.dataset.ayOne]); });
   const w = document.getElementById("ay-wa"); if(w) w.href = "https://wa.me/?text=" + encodeURIComponent(ayudaText());
 }
@@ -5209,7 +5245,7 @@ const avisoBase = a => ({bien:"Estoy bien.", punto:"Estoy bien, voy al punto de 
 const fmtWhen = t => { const d = new Date(t); return `${fmtDate(d)} a las ${hhmm(d)}`; };
 function recordAviso(){
   const a = ui.aviso;
-  state.miAviso = {id:newId("a"), from:state.yo || "", estado:a.estado, extra:a.extra.trim(), geo:a.geo ? {lat:a.geo.lat, lng:a.geo.lng} : null, at:Date.now()};
+  state.miAviso = {id:newId("a"), from:yoN(), estado:a.estado, extra:a.extra.trim(), geo:a.geo ? {lat:a.geo.lat, lng:a.geo.lng} : null, at:Date.now()};
   save();
 }
 function sharePayload(){
@@ -5864,12 +5900,29 @@ function drawMapa(target){
       c.save(); c.translate(mx, my); c.rotate(ang); c.strokeText(w.n, 0, 0); c.fillText(w.n, 0, 0); c.restore(); });
   }
   if(m.ruta){ c.strokeStyle = css("--blue"); c.lineWidth = Math.max(4, 8 * z); c.lineCap = "round"; poly(m.ruta.pts); c.stroke(); }
-  const pin = (x, y, col, label, big) => { const X = sx(x), Y = sy(y); if(X < -20 || Y < -20 || X > MAP.w + 20 || Y > MAP.h + 20) return;
-    const R = big ? 9 : 6.5; c.beginPath(); c.arc(X, Y, R, 0, 7); c.fillStyle = col; c.fill(); c.lineWidth = 2; c.strokeStyle = "#fff"; c.stroke();
-    if(label && (z >= 0.9 || big)){ c.font = `700 12px ${css("--font-body")}`; c.textAlign = "left"; c.textBaseline = "middle"; c.lineWidth = 3; c.strokeStyle = css("--map-bg"); c.fillStyle = css("--ink"); c.strokeText(label, X + R + 4, Y); c.fillText(label, X + R + 4, Y); } };
+  const pin = (x, y, col, label, big, sq) => { const X = sx(x), Y = sy(y); if(X < -20 || Y < -20 || X > MAP.w + 20 || Y > MAP.h + 20) return;
+    const R = big ? 9 : 6.5; c.beginPath(); if(sq) c.rect(X - R, Y - R, 2 * R, 2 * R); else c.arc(X, Y, R, 0, 7); c.fillStyle = col; c.fill(); c.lineWidth = 2; c.strokeStyle = "#fff"; c.stroke();
+    if(label && (z >= 0.9 || big)) etiquetas.push({X, Y, R, label, big}); };
+  /* Nombres sin pisarse: primero tus lugares; cada uno prueba a la derecha, izquierda, arriba y abajo */
+  const etiquetas = [];
+  const ponerEtiquetas = () => {
+    c.font = `700 12px ${css("--font-body")}`; c.textBaseline = "middle"; c.lineWidth = 3; c.strokeStyle = css("--map-bg"); c.fillStyle = css("--ink");
+    const usados = etiquetas.map(e => [e.X - e.R, e.Y - e.R, e.X + e.R, e.Y + e.R]);
+    const choca = r => usados.some(u => r[0] < u[2] && r[2] > u[0] && r[1] < u[3] && r[3] > u[1]);
+    etiquetas.sort((a, b) => (b.big ? 1 : 0) - (a.big ? 1 : 0)).forEach(e => {
+      const w = c.measureText(e.label).width, h = 14, g = e.R + 4;
+      const opts = [[e.X + g, e.Y - h / 2], [e.X - g - w, e.Y - h / 2], [e.X - w / 2, e.Y - g - h], [e.X - w / 2, e.Y + g]];
+      const libre = opts.map(([x, y]) => [x, y, x + w, y + h]).find(r => !choca(r) && r[0] > 2 && r[2] < MAP.w - 2);
+      if(!libre && !e.big) return;
+      const r = libre || [opts[0][0], opts[0][1], opts[0][0] + w, opts[0][1] + h];
+      usados.push(r); c.textAlign = "left";
+      c.strokeText(e.label, r[0], r[1] + h / 2); c.fillText(e.label, r[0], r[1] + h / 2);
+    });
+  };
   az.pois.forEach(p => { const imp = ["hospital","fire_station","police","townhall"].includes(p.t); if(!imp && z < 1.1) return;
-    pin(p.x, p.y, p.t === "hospital" || p.t === "clinic" ? css("--crit") : p.t === "fire_station" ? css("--signal") : p.t === "police" ? css("--map-police") : css("--map-poi"), p.t === "hospital" ? p.n.replace("Hospital Municipal Dr. Ángel ", "Hospital ") : p.n, false); });
-  state.lugares.forEach(l => { if(!enAzul(l)) return; const [x, y] = toXY(l); pin(x, y, css("--ok"), l.nombre, true); });
+    pin(p.x, p.y, p.t === "hospital" || p.t === "clinic" ? css("--crit") : p.t === "fire_station" ? css("--signal") : p.t === "police" ? css("--map-police") : css("--map-poi"), p.t === "hospital" ? p.n.replace("Hospital Municipal Dr. Ángel ", "Hospital ") : p.n, false, p.t === "police"); });
+  state.lugares.forEach(l => { if(!enAzul(l)) return; const [x, y] = toXY(l); pin(x, y, css("--pl-" + tipoLugar(l)), l.nombre, true); });
+  ponerEtiquetas();
   if(m.sel){ const X = sx(m.sel.x), Y = sy(m.sel.y); c.beginPath(); c.moveTo(X, Y); c.arc(X, Y - 22, 10, Math.PI * 0.75, Math.PI * 2.25); c.closePath(); c.fillStyle = css("--signal"); c.fill(); c.lineWidth = 2; c.strokeStyle = "#fff"; c.stroke(); c.beginPath(); c.arc(X, Y - 22, 4, 0, 7); c.fillStyle = "#fff"; c.fill(); }
   if(m.yo && enAzul(m.yo)){ const [x, y] = toXY(m.yo), X = sx(x), Y = sy(y); c.beginPath(); c.arc(X, Y, 16, 0, 7); c.fillStyle = css("--blue"); c.globalAlpha = 0.22; c.fill(); c.globalAlpha = 1; c.beginPath(); c.arc(X, Y, 7, 0, 7); c.fillStyle = css("--blue"); c.fill(); c.lineWidth = 3; c.strokeStyle = "#fff"; c.stroke(); }
   // escala
@@ -5987,7 +6040,7 @@ function lugaresHTML(){
   const orden = m.yo ? state.lugares.slice().sort((a, b) => distKm(m.yo, a) - distKm(m.yo, b)) : state.lugares;
   return `<ul class="nums lugares">${orden.map(l => { const d = m.yo ? distKm(m.yo, l) : null;
     if(m.ren === l.id) return `<li><form class="ren-form" data-ren="${esc(l.id)}"><label class="lbl" for="ren-${esc(l.id)}">Nombre del lugar</label><input id="ren-${esc(l.id)}" maxlength="40" autocomplete="off" value="${esc(l.nombre)}" placeholder="Ej.: Casa de la tía Ana"><div class="inline"><button class="btn btn-primary btn-sm" type="submit">Guardar</button><button class="btn btn-ghost btn-sm" type="button" data-action="lugar-ren-x">Cancelar</button></div></form></li>`;
-    return `<li><div class="n-main"><span class="n-label">${esc(l.nombre)}</span><span class="n-desc">${esc(l.desc || "")}${d !== null ? `${l.desc ? " · " : ""}a ${fmtKm(d)}, hacia ${cardinal(rumbo(m.yo, l))}` : ""}</span></div>
+    return `<li><div class="n-main"><span class="n-label">${plDot(l)}${esc(l.nombre)}</span><span class="n-desc">${esc(l.desc || "")}${d !== null ? `${l.desc ? " · " : ""}a ${fmtKm(d)}, hacia ${cardinal(rumbo(m.yo, l))}` : ""}</span></div>
       <div class="n-actions"><button class="btn btn-primary btn-sm" data-action="nav-go" data-id="${esc(l.id)}">Llevarme</button><button class="btn btn-ghost btn-sm" data-action="lugar-ren" data-id="${esc(l.id)}">Cambiar nombre</button><button class="btn btn-ghost btn-sm" data-action="lugar-ver" data-id="${esc(l.id)}">Ver</button><button class="btn btn-ghost btn-sm" data-action="lugar-del" data-id="${esc(l.id)}" aria-label="Borrar ${esc(l.nombre)}">Borrar</button></div></li>`; }).join("")}</ul>`;
 }
 function drawMapPanel(){
@@ -6016,6 +6069,7 @@ function renderMapa(){
       <ul class="map-res" id="map-res"></ul>
       <div class="azwrap"><canvas id="azmap" tabindex="0" aria-label="Plano de las calles de Azul. Arrastra para moverlo y toca para elegir un lugar."></canvas>
         <div class="mapbtns"><button class="btn btn-ghost" data-action="map-z" data-f="1.4" aria-label="Acercar">+</button><button class="btn btn-ghost" data-action="map-z" data-f="0.7" aria-label="Alejar">−</button><button class="btn btn-ghost" data-action="map-centro" aria-label="Ver todo Azul">⌂</button></div></div>
+      ${mapLeyenda(true)}
       <div id="map-yo">${yoHTML()}</div>
       <div id="map-panel" aria-live="polite">${selHTML()}</div></div>
     <div class="card-h"><h2 class="sec">Mis lugares</h2><button class="btn btn-ghost btn-sm" data-action="dir-abrir">+ Agregar dirección</button></div><div id="map-lugares">${lugaresHTML()}</div>`;
@@ -6039,7 +6093,13 @@ function afterMapaRender(){
   }
   if(ui.sub === "ir"){ bindMap(); navUpdate(); return; }
   if(ui.sub !== "mapa" || ui.mapa.tab === "arg") return;
-  bindMap(); drawMapa();
+  bindMap(); drawMapa(); autoGeo();
+}
+/* Si el GPS ya tiene permiso, el mapa lo usa solo (salvo que lo hayas apagado o marcado a mano) */
+function autoGeo(){
+  const m = ui.mapa;
+  if(geoWatch !== null || m.gpsNo || (m.yo && !m.yo.gps) || !navigator.geolocation || !(navigator.permissions && navigator.permissions.query)) return;
+  navigator.permissions.query({name:"geolocation"}).then(r => { if(r.state === "granted" && ui.sub === "mapa" && geoWatch === null && !m.gpsNo) startGeo(); }).catch(() => {});
 }
 window.addEventListener("resize", () => { if(document.getElementById("azmap")) scheduleDraw(); });
 function addLugar(){
@@ -6083,7 +6143,17 @@ function render(top){
   syncQrTimer();
   syncStory();
   afterMapaRender();
+  ayStick();
+  document.body.classList.toggle("navegando", ui.tab === "inicio" && ui.sub === "ir");
   histSync();
+}
+let ayObs = null;
+function ayStick(){
+  if(ayObs){ ayObs.disconnect(); ayObs = null; }
+  const b = document.getElementById("ay-sms"), st = document.getElementById("ay-stick");
+  if(!b || !st || !("IntersectionObserver" in window)) return;
+  ayObs = new IntersectionObserver(es => { es.forEach(e => { st.hidden = e.isIntersecting; }); }, {rootMargin:"0px 0px -70px 0px"});
+  ayObs.observe(b);
 }
 function go(tab, opts){
   opts = opts || {};
@@ -6092,6 +6162,7 @@ function go(tab, opts){
   ui.guide = opts.guide || null;
   if(opts.prep) ui.prep = opts.prep;
   ui.resetAsk = null; ui.delAsk = null; ui.sosAsk = false; ui.invEdit = null; ui.invDel = null; ui.fichaEdit = null; ui.fichaBig = null; ui.fichaDel = null;
+  ui.miaNueva = false; ui.miaVolver = false;
   render(true);
   if(opts.scrollTo){
     const el = document.getElementById(opts.scrollTo);
@@ -6413,8 +6484,8 @@ document.addEventListener("click", e => {
     case "ayuda-ir": ayudaIr(el.dataset.id); break;
     case "ayuda-mapa": { const g = ui.ayuda.geo; if(g){ ui.mapa.tab = "azul"; ui.mapa.yo = {lat:g.lat, lng:g.lng, acc:g.acc || 0, gps:true}; go("inicio", {sub:"mapa"}); if(enAzul(g)){ const [x, y] = toXY(g); MAP.cx = x; MAP.cy = y; MAP.z = 1.1; drawMapa(); drawMapPanel(); } } break; }
     case "ayuda-plan": ui.planSeg = "familia"; go("numeros"); break;
-    case "geo-start": startGeo(); break;
-    case "geo-stop": stopGeo(); ui.mapa.gpsMsg = ""; drawMapPanel(); break;
+    case "geo-start": ui.mapa.gpsNo = false; startGeo(); break;
+    case "geo-stop": stopGeo(); ui.mapa.gpsNo = true; ui.mapa.gpsMsg = ""; drawMapPanel(); break;
     case "map-tab": ui.mapa.tab = el.dataset.t; render(false); break;
     case "map-z": if(MAP.zoomAt) MAP.zoomAt(Number(el.dataset.f), MAP.w / 2, MAP.h / 2); break;
     case "map-centro": MAP.cx = 6800; MAP.cy = 5500; MAP.z = 0.3; drawMapa(); break;
@@ -6611,7 +6682,9 @@ document.addEventListener("click", e => {
     case "aviso-copy": copyAviso(); break;
     case "ficha-from": { const m = state.plan.miembros.find(x => x.id === el.dataset.id); if(m) newFicha(m.nombre); break; }
     case "ficha-edit": ui.fichaEdit = el.dataset.id; ui.fichaDel = null; render(false); window.scrollTo(0, 0); break;
-    case "ficha-done": ui.fichaEdit = null; render(false); window.scrollTo(0, 0); break;
+    case "ficha-done": ui.fichaEdit = null; if(ui.miaVolver){ ui.miaVolver = false; go("inicio", {sub:"mificha"}); } else { render(false); window.scrollTo(0, 0); } break;
+    case "mia-crear": ui.planSeg = "ficha"; go("numeros"); ui.miaNueva = true; ui.miaVolver = true;
+      { const i = document.getElementById("f-nombre"); if(i){ i.placeholder = "Tu nombre, ej.: Sofía"; i.scrollIntoView({block:"center"}); } } break;
     case "ficha-print": printFichas([el.dataset.id]); break;
     case "ficha-dl": downloadFichas([el.dataset.id]); break;
     case "fichas-print": printFichas(state.fichas.map(f => f.id)); break;
