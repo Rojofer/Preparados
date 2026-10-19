@@ -635,6 +635,9 @@ html.ahorro *{animation:none!important;transition:none!important}
 .lock-chip{position:fixed;left:50%;transform:translateX(-50%);top:calc(env(safe-area-inset-top,0px) + 62px);z-index:150;padding:8px 14px;border-radius:99px;background:var(--signal);color:var(--on-signal,#fff);font-weight:700;font-size:14px;box-shadow:0 4px 14px rgba(0,0,0,.25)}
 .lock-chip[hidden]{display:none}
 .conf-card h2{display:flex;align-items:flex-start;gap:8px;color:var(--crit);font-size:22px;line-height:1.25}.conf-card h2 .ic{flex:none;width:26px;height:26px;margin-top:2px}.conf-card p{font-size:17px;line-height:1.45}
+.mf-btn{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:12px;width:100%;padding:10px 14px;border-radius:var(--r);background:var(--surface);border:1px solid var(--line);text-align:left;min-height:56px}
+.mf-btn>.ic{width:26px;height:26px;color:var(--crit)}.mf-btn strong{display:block;font-size:17px}.mf-btn span span{font-size:14px;color:var(--ink-2)}
+.fb-lock{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:12px;border-radius:12px;background:var(--surface-2);font-size:15px}.fb-lock .ic{width:22px;height:22px;color:var(--signal)}
 .msgprev{padding:14px;border-radius:12px;background:var(--surface-2);font-size:17px;line-height:1.45;overflow-wrap:anywhere}
 .fb{display:flex;flex-direction:column;gap:14px;padding:20px 18px;border-radius:16px;background:var(--surface);border:2px solid var(--crit)}
 .fb h1{font-size:40px}
@@ -2630,6 +2633,7 @@ function renderHome(){
       <button class="sb sb-llevar" data-action="go-llevar">${icon("compass")}<span>Llevarme</span></button>
       <button class="sb sb-bien" data-action="go-aviso">${icon("heart")}<span>Estoy bien</span></button>
     </div>
+    <button class="mf-btn" data-action="go-mificha">${icon("id")}<span><strong>Mi ficha</strong><span>${miFicha() ? esc(miFicha().nombre) + (fpCfg() ? " · con clave" : "") : "Datos médicos y documentos"}</span></span>${icon("chev")}</button>
     ${ahora.length ? `<div class="ahora">${ahora.join("")}</div>` : ""}
     <div class="hsecs">
       ${hsec("pasa", "storm", "¿Qué está pasando?", "Toca la situación y sigue los pasos", pasa, "hs-main")}
@@ -3279,7 +3283,8 @@ function fichaForm(f){
     <button class="btn btn-primary" data-action="ficha-done">Listo</button></div>`;
 }
 function fichaBig(f){
-  const rows = FICHA_FIELDS.filter(d => d.k !== "nombre" && d.k !== "contactoTel").map(d => {
+  const vital = fpLocked();
+  const rows = FICHA_FIELDS.filter(d => d.k !== "nombre" && d.k !== "contactoTel" && (!vital || FICHA_VITAL.has(d.k))).map(d => {
     const v = fichaVal(f, d);
     return v ? `<dt>${d.t}</dt><dd${d.alert ? ' class="alert"' : ""}>${esc(v)}</dd>` : "";
   }).join("");
@@ -3287,7 +3292,7 @@ function fichaBig(f){
     <article class="fb" aria-label="Ficha médica de ${esc(f.nombre)}"><p class="phase">Ficha médica de emergencia</p>
     <div class="fb-head">${fotoOk(f.foto) ? `<img class="foto" src="${f.foto}" alt="Foto de ${esc(f.nombre)}">` : ""}<h1>${esc(f.nombre)}</h1></div>
     ${rows ? `<dl>${rows}</dl>` : `<p>Esta ficha todavía no tiene datos.</p>`}
-    ${dniImgs(f, "fb-dni")}
+    ${vital ? `<div class="fb-lock">${icon("id")}<span>Documentos, domicilio y fotos del DNI están protegidos.</span><button class="btn btn-outline btn-sm" data-action="ficha-full">Ver todo con la clave</button></div>` : dniImgs(f, "fb-dni")}
     ${f.contactoTel ? `<a class="btn btn-danger btn-big" href="tel:${esc(telHref(f.contactoTel))}">${icon("phone")}Llamar a ${esc(f.contacto || "su contacto")}</a>` : ""}</article>
     <div class="card"><h2>Imprimir</h2><p class="fine">Una copia en papel, en la mochila y en la heladera, sirve aunque no haya batería.</p>
       <div class="inline"><button class="btn btn-primary" data-action="ficha-print" data-id="${esc(f.id)}">Imprimir</button><button class="btn btn-outline" data-action="ficha-dl" data-id="${esc(f.id)}">Descargar para imprimir</button></div>
@@ -4177,6 +4182,35 @@ function renderNav(){
     <p class="fine">El GPS funciona sin internet. La pantalla queda encendida mientras navegas. Si la flecha y el plano no coinciden, confía en los nombres de las calles.</p>
   </section>`;
 }
+function renderMiFicha(){
+  const f = miFicha(), fp = fpCfg();
+  const clave = !fp ? `<form class="card" id="form-fp" novalidate><h2>Ponle una clave</h2><p class="fine">4 números para que, si te roban o pierdes el celular, nadie vea tus documentos ni tu domicilio. Lo vital para una emergencia (grupo, alergias, medicación y a quién llamar) se sigue viendo sin clave.</p>
+      <div class="field"><label class="lbl" for="fp-a">Clave de 4 números</label><input id="fp-a" type="password" inputmode="numeric" maxlength="4" autocomplete="new-password"></div>
+      <div class="field"><label class="lbl" for="fp-b">Repetir la clave</label><input id="fp-b" type="password" inputmode="numeric" maxlength="4" autocomplete="new-password"></div>
+      <button class="btn btn-primary" type="submit">Guardar la clave</button><p class="st" id="fp-st" role="status"></p></form>`
+    : `<div class="card"><h2>Clave de las fichas activada</h2><p class="fine">Sin clave se ve solo lo vital. Con la clave, queda abierto 3 minutos.</p><div class="inline">${fpLocked() ? "" : `<button class="btn btn-ghost btn-sm" data-action="fp-lock">Cerrar ahora</button>`}<button class="btn btn-ghost btn-sm" data-action="fp-cambiar">Cambiar la clave</button><button class="btn btn-ghost btn-sm" data-action="fp-off">Quitar la clave</button></div>
+      ${ui.fpCambiar ? `<form id="form-fp" novalidate><div class="field"><label class="lbl" for="fp-a">Clave nueva</label><input id="fp-a" type="password" inputmode="numeric" maxlength="4" autocomplete="new-password"></div><div class="field"><label class="lbl" for="fp-b">Repetir</label><input id="fp-b" type="password" inputmode="numeric" maxlength="4" autocomplete="new-password"></div><button class="btn btn-primary btn-sm" type="submit">Guardar</button><p class="st" id="fp-st" role="status"></p></form>` : ""}</div>`;
+  if(!f){
+    return `<section class="stack"><button class="back" data-action="tab" data-tab="inicio">${icon("back")}Inicio</button>
+      <div class="intro"><h1>Mi ficha</h1><p class="lede">Tus datos médicos y documentos, a un toque.</p></div>
+      ${state.fichas.length ? `<div class="card"><h2>¿Cuál es tu ficha?</h2><div class="chips">${state.fichas.map(x => `<button class="chip" data-action="mia-set" data-id="${esc(x.id)}">${esc(x.nombre)}</button>`).join("")}</div></div>` : ""}
+      <div class="inline"><button class="btn btn-primary" data-action="plan-seg" data-id="ficha">${state.fichas.length ? "Crear otra ficha" : "Crear mi ficha"}</button></div>
+      ${clave}</section>`;
+  }
+  return `<section class="stack mi-ficha"><button class="back" data-action="tab" data-tab="inicio">${icon("back")}Inicio</button>
+    ${fichaBig(f).replace(/<button class="back"[^>]*>[\s\S]*?<\/button>/, "")}
+    <div class="inline"><button class="btn btn-primary" data-action="ficha-edit-mia" data-id="${esc(f.id)}">Editar mi ficha</button><button class="btn btn-ghost" data-action="mia-cambiar">No es mi ficha</button></div>
+    ${clave}</section>`;
+}
+async function fpSubmit(form){
+  const a = form.querySelector("#fp-a").value.trim(), b = form.querySelector("#fp-b").value.trim(), st = form.querySelector("#fp-st");
+  if(!/^\d{4}$/.test(a)){ st.textContent = "La clave tiene que tener 4 números."; return; }
+  if(a !== b){ st.textContent = "Las dos claves no coinciden."; return; }
+  const salt = Math.random().toString(36).slice(2, 10);
+  try{ localStorage.setItem(FP_KEY, JSON.stringify({salt, hash:await pinHash(a, salt), at:Date.now()})); }catch(e){}
+  ui.fpCambiar = false; ui.fpUntil = 0; render(false);
+}
+document.addEventListener("submit", e => { if(e.target.id === "form-fp"){ e.preventDefault(); e.stopImmediatePropagation(); fpSubmit(e.target); } }, true);
 function renderLlevar(){
   const hay = state.lugares.length;
   return `<section class="stack">
@@ -4364,14 +4398,15 @@ function lockProtected(el){
   return false;
 }
 let pinCb = null;
-function askPin(then){
-  pinCb = then;
+function askPin(then, mode){
+  pinCb = then; ui.pinMode = mode || "parental";
+  const fp = ui.pinMode === "ficha";
   let ov = document.getElementById("pin-ov");
   if(!ov){ ov = document.createElement("div"); ov.id = "pin-ov"; ov.className = "pin-ov"; document.body.appendChild(ov); }
   ov.innerHTML = `<form class="pin-card" id="form-pin" role="dialog" aria-modal="true" aria-labelledby="pin-h">
-    <h2 id="pin-h">${icon("id")}Protegido</h2>
-    <p>Para cambiar o borrar datos en este celular hace falta el PIN de un adulto.</p>
-    <input id="pin-in" type="password" inputmode="numeric" autocomplete="off" maxlength="8" aria-label="PIN" placeholder="PIN">
+    <h2 id="pin-h">${icon("id")}${fp ? "Clave de las fichas" : "Protegido"}</h2>
+    <p>${fp ? "Los documentos y datos personales de las fichas están protegidos. Escribe la clave de 4 números." : "Para cambiar o borrar datos en este celular hace falta el PIN de un adulto."}</p>
+    <input id="pin-in" type="password" inputmode="numeric" autocomplete="off" maxlength="8" aria-label="${fp ? "Clave" : "PIN"}" placeholder="${fp ? "Clave" : "PIN"}">
     <p class="st" id="pin-st" role="status"></p>
     <div class="inline"><button class="btn btn-primary" type="submit">Desbloquear</button><button class="btn btn-ghost" type="button" data-pin="x">Cancelar</button></div>
   </form>`;
@@ -4380,11 +4415,13 @@ function askPin(then){
 }
 function closePin(){ const ov = document.getElementById("pin-ov"); if(ov) ov.hidden = true; pinCb = null; }
 async function tryPin(){
-  const c = lockCfg(), i = document.getElementById("pin-in"), st = document.getElementById("pin-st");
+  const fp = ui.pinMode === "ficha";
+  const c = fp ? fpCfg() : lockCfg(), i = document.getElementById("pin-in"), st = document.getElementById("pin-st");
   if(!c || !i) return closePin();
   if(Date.now() < (ui.pinWait || 0)){ st.textContent = `Espera ${Math.ceil((ui.pinWait - Date.now()) / 1000)} segundos.`; return; }
   if(await pinHash(i.value.trim(), c.salt) === c.hash){
-    ui.unlockUntil = Date.now() + 5 * 60000; ui.pinFails = 0;
+    if(fp) ui.fpUntil = Date.now() + 3 * 60000; else ui.unlockUntil = Date.now() + 5 * 60000;
+    ui.pinFails = 0;
     const cb = pinCb; closePin(); lockChip(); if(cb) setTimeout(cb, 0);
   }else{
     ui.pinFails = (ui.pinFails || 0) + 1;
@@ -4393,6 +4430,20 @@ async function tryPin(){
     i.value = ""; i.focus();
   }
 }
+/* Clave de las fichas: 4 números, solo en este celular */
+const FP_KEY = "preparados.fpin", MIA_KEY = "preparados.mia";
+function fpCfg(){ try{ const c = JSON.parse(localStorage.getItem(FP_KEY) || "null"); return c && c.hash ? c : null; }catch(e){ return null; } }
+const fpLocked = () => !!fpCfg() && Date.now() > (ui.fpUntil || 0);
+const FP_ACTIONS = new Set(["ficha-edit","ficha-edit-mia","ficha-full","ficha-print","ficha-dl","fichas-print","fichas-dl","print-all","dl-all","manual-print","manual-dl","backup","share-file","share-qr","fp-off","fp-cambiar"]);
+document.addEventListener("click", e => {
+  if(!fpLocked()) return;
+  const a = e.target.closest && e.target.closest("[data-action]");
+  if(!a || !FP_ACTIONS.has(a.dataset.action)) return;
+  e.preventDefault(); e.stopImmediatePropagation();
+  askPin(() => a.click(), "ficha");
+}, true);
+const FICHA_VITAL = new Set(["grupo","alergias","condiciones","medicacion","dispositivos","comunica","contacto"]);
+function miFicha(){ let id = null; try{ id = localStorage.getItem(MIA_KEY); }catch(e){} return state.fichas.find(f => f.id === id) || null; }
 function lockChip(){
   let ch = document.getElementById("lock-chip");
   const on = lockCfg() && lockCfg().on && Date.now() < (ui.unlockUntil || 0);
@@ -4821,9 +4872,10 @@ function avisoText(){
   const base = {bien:"Estoy bien.", punto:`Estoy bien. Voy al punto de encuentro${cerca ? `: ${cerca}` : ""}.`, ayuda:"Necesito ayuda."}[a.estado] || "Estoy bien.";
   return [base, a.extra.trim(), a.geo ? `Mi ubicación: https://maps.google.com/?q=${a.geo.lat.toFixed(5)},${a.geo.lng.toFixed(5)}` : "", `(${hhmm(new Date())} h)`].filter(Boolean).join(" ");
 }
+const avisoSel = () => ayudaDest().filter(d => !(ui.aviso.off || {})[d.tel]);
 function avisoLinks(){
-  const txt = encodeURIComponent(avisoText()), tel = state.plan.contacto.tel ? telHref(state.plan.contacto.tel) : "";
-  return {wa:`https://wa.me/?text=${txt}`, sms:`sms:${tel}?&body=${txt}`};
+  const txt = encodeURIComponent(avisoText()), tels = avisoSel().map(d => d.tel).join(",");
+  return {wa:`https://wa.me/?text=${txt}`, sms:`sms:${tels}?body=${txt}`};
 }
 function renderAviso(){
   const a = ui.aviso, l = avisoLinks(), c = state.plan.contacto;
@@ -4839,9 +4891,10 @@ function renderAviso(){
       <p class="fine" id="geo-st" role="status">${a.geo ? `Ubicación agregada${a.geo.acc ? `, con una precisión de unos ${Math.round(a.geo.acc)} m` : ""}.` : ""}</p>
       <span class="lbl">Mensaje</span>
       <p class="msgprev" id="aviso-prev">${esc(avisoText())}</p>
+      ${ayudaDest().length ? `<span class="lbl">Le llega a</span><ul class="ay-dest">${ayudaDest().map(d => `<li><label><input type="checkbox" data-av-tel="${esc(d.tel)}"${(ui.aviso.off || {})[d.tel] ? "" : " checked"}> ${esc(d.nombre)} <span class="mono">${esc(d.ver)}</span></label></li>`).join("")}</ul>` : `<p class="fine">Carga los teléfonos de la familia en Plan → Números para mandarles el SMS a todos de un toque.</p>`}
       <div class="inline">
         <a class="btn btn-primary" id="aviso-wa" href="${l.wa}" target="_blank" rel="noopener" data-action="aviso-sent">WhatsApp</a>
-        <a class="btn btn-primary" id="aviso-sms" href="${l.sms}" data-action="aviso-sent">${c.tel ? `SMS a ${esc(c.nombre || c.tel)}` : "SMS"}</a>
+        <a class="btn btn-primary" id="aviso-sms" href="${l.sms}" data-action="aviso-sent">${(() => { const n = avisoSel(); return n.length > 1 ? `SMS a ${n.length} personas` : n.length ? `SMS a ${esc(n[0].nombre)}` : "SMS"; })()}</a>
         <button class="btn btn-ghost" data-action="aviso-share">Compartir</button>
         <button class="btn btn-ghost" data-action="aviso-copy">Copiar</button>
       </div>
@@ -4850,7 +4903,7 @@ function renderAviso(){
     <div class="card"><h2>Sin internet ni señal</h2>
       <p>El SMS no usa internet: alcanza con un poco de señal de celular. Si tampoco hay señal, pásale el aviso por Quick Share a alguien de la familia que esté cerca; cuando esa persona comparta con los demás, tu aviso también llega.</p>
       <button class="btn btn-outline" data-action="aviso-qs">Pasar el aviso sin internet</button></div>
-    <p class="fine">${c.tel ? "El SMS va al contacto fuera de la zona de tu plan familiar." : "Si cargas un contacto fuera de la zona en el plan familiar, el SMS le llega directo."} Si los botones no abren las apps, usa «Copiar» y pega el mensaje.</p>
+    <p class="fine">El SMS no usa internet: sale con muy poca señal. La app arma el mensaje con tu ubicación, pero el envío lo confirmas tú en Mensajes. Si los botones no abren las apps, usa «Copiar» y pega el mensaje.</p>
   </section>`;
 }
 function updAviso(){
@@ -5902,7 +5955,7 @@ function render(top){
   if(!(ui.tab === "inicio" && ui.sub === "ir")) navStop();
   applyAhorro();
   if(ui.tab === "inicio" && !ui.sub && state.ahorro) html = renderAhorro();
-  else if(ui.tab === "inicio") html = ui.sub === "corte" ? renderCorte() : ui.sub === "aviso" ? renderAviso() : ui.sub === "mapa" ? renderMapa() : ui.sub === "ayuda" ? renderAyuda() : ui.sub === "mes" ? renderMes() : ui.sub === "radio" ? renderRadio() : ui.sub === "manual" ? renderManual() : ui.sub === "ir" ? renderNav() : ui.sub === "llevar" ? renderLlevar() : renderHome();
+  else if(ui.tab === "inicio") html = ui.sub === "corte" ? renderCorte() : ui.sub === "aviso" ? renderAviso() : ui.sub === "mapa" ? renderMapa() : ui.sub === "ayuda" ? renderAyuda() : ui.sub === "mes" ? renderMes() : ui.sub === "radio" ? renderRadio() : ui.sub === "manual" ? renderManual() : ui.sub === "ir" ? renderNav() : ui.sub === "llevar" ? renderLlevar() : ui.sub === "mificha" ? renderMiFicha() : renderHome();
   else if(ui.tab === "guias") html = ui.guide ? renderGuide() : renderGuides();
   else if(ui.tab === "preparar") html = renderPrep();
   else if(ui.tab === "linterna") html = renderTools();
@@ -6307,6 +6360,14 @@ document.addEventListener("click", e => {
     case "nav-go": goNav(el.dataset.id); break;
     case "dir-abrir": ui.mapa.tab = "azul"; ui.mapa.dir = Object.assign({}, ui.mapa.dir, {open:true, msg:""}); if(!(ui.tab === "inicio" && ui.sub === "mapa")) go("inicio", {sub:"mapa"}); else render(false); { const f = document.getElementById("d-nombre"); if(f){ f.scrollIntoView({block:"center"}); try{ f.focus({preventScroll:true}); }catch(err){} } } break;
     case "go-llevar": go("inicio", {sub:"llevar"}); break;
+    case "go-mificha": go("inicio", {sub:"mificha"}); keepAwake(); break;
+    case "mia-set": try{ localStorage.setItem(MIA_KEY, el.dataset.id); }catch(err){} render(false); break;
+    case "mia-cambiar": try{ localStorage.removeItem(MIA_KEY); }catch(err){} render(false); break;
+    case "ficha-full": render(false); break;
+    case "ficha-edit-mia": ui.planSeg = "ficha"; ui.fichaEdit = el.dataset.id; ui.fichaBig = null; go("numeros"); break;
+    case "fp-lock": ui.fpUntil = 0; render(false); break;
+    case "fp-cambiar": ui.fpCambiar = true; render(false); break;
+    case "fp-off": try{ localStorage.removeItem(FP_KEY); }catch(err){} ui.fpUntil = 0; ui.fpCambiar = false; render(false); break;
     case "go-lugares": ui.mapa.tab = "azul"; go("inicio", {sub:"mapa"}); { const l = document.getElementById("map-lugares"); if(l) l.scrollIntoView({block:"start"}); } break;
     case "dir-cerrar": ui.mapa.dir = {open:false}; render(false); break;
     case "dir-nom": { const i = document.getElementById("d-nombre"); if(i){ const v = el.dataset.n === "Casa de un familiar" ? "Casa de " : el.dataset.n; i.value = v; if(v.endsWith(" ")){ i.focus(); try{ i.setSelectionRange(v.length, v.length); }catch(err){} } } break; }
@@ -6495,6 +6556,7 @@ document.addEventListener("toggle", e => {
   try{ localStorage.setItem(HOME_KEY, ui.homeOpen || ""); }catch(err){}
 }, true);
 document.addEventListener("change", e => {
+  if(e.target.matches("[data-av-tel]")){ ui.aviso.off = Object.assign({}, ui.aviso.off, {[e.target.dataset.avTel]:!e.target.checked}); render(false); return; }
   if(e.target.matches("[data-man]")){ state.manual[e.target.dataset.man] = e.target.checked; save(); e.target.closest(".check").classList.toggle("on", e.target.checked); return; }
   if(e.target.matches("[data-radio]")){ state.radioOk[e.target.dataset.radio] = e.target.checked; save(); e.target.closest("li").classList.toggle("on", e.target.checked); return; }
   if(e.target.matches("[data-mes]")){ state.mes.checks[e.target.dataset.mes] = e.target.checked; save(); e.target.closest(".check").classList.toggle("on", e.target.checked); const pr = document.querySelector(".mes-prog"); if(pr){ const [, tot] = pr.textContent.split("/"); pr.textContent = `${Object.keys(state.mes.checks).filter(k => state.mes.checks[k]).length}/${tot}`; } return; }
@@ -6651,6 +6713,7 @@ else if(hash === "mapa") ui.sub = "mapa";
 else if(hash === "aviso") ui.sub = "aviso";
 else if(hash === "ayuda") ui.sub = "ayuda";
 else if(hash === "llevar") ui.sub = "llevar";
+else if(hash === "mificha") ui.sub = "mificha";
 else if(hash === "30dias") ui.sub = "mes";
 else if(hash === "radio") ui.sub = "radio";
 else if(hash === "manual") ui.sub = "manual";
