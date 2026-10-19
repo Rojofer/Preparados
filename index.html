@@ -634,6 +634,7 @@ html.ahorro *{animation:none!important;transition:none!important}
 .pin-card input{font-size:28px;letter-spacing:.3em;text-align:center;font-family:var(--font-data)}
 .lock-chip{position:fixed;left:50%;transform:translateX(-50%);top:calc(env(safe-area-inset-top,0px) + 62px);z-index:150;padding:8px 14px;border-radius:99px;background:var(--signal);color:var(--on-signal,#fff);font-weight:700;font-size:14px;box-shadow:0 4px 14px rgba(0,0,0,.25)}
 .lock-chip[hidden]{display:none}
+.conf-card h2{display:flex;align-items:flex-start;gap:8px;color:var(--crit);font-size:22px;line-height:1.25}.conf-card h2 .ic{flex:none;width:26px;height:26px;margin-top:2px}.conf-card p{font-size:17px;line-height:1.45}
 .msgprev{padding:14px;border-radius:12px;background:var(--surface-2);font-size:17px;line-height:1.45;overflow-wrap:anywhere}
 .fb{display:flex;flex-direction:column;gap:14px;padding:20px 18px;border-radius:16px;background:var(--surface);border:2px solid var(--crit)}
 .fb h1{font-size:40px}
@@ -4470,6 +4471,50 @@ document.addEventListener("click", e => {
   if(k !== "lock" && isLocked()) askPin(run); else run();
 });
 document.addEventListener("submit", e => { if(e.target.id === "form-ctl"){ e.preventDefault(); const go = () => ctlSubmit(e.target); if(lockCfg() && isLocked()) askPin(go); else go(); } });
+
+/* ---------- Avisos antes de borrar ---------- */
+const PAPELERA = "Queda en la papelera 30 días (Plan → Compartir → Papelera), por si fue un error.";
+const BORRAR = {
+  "lugar-del":{to:"lugar-del", t:el => { const l = state.lugares.find(x => x.id === el.dataset.id); return `¿Borrar el lugar «${l ? l.nombre : ""}»?`; }, d:"Deja de aparecer en Llevarme y en el mapa. " + PAPELERA},
+  "del-ask":{to:"del-do", t:el => { const c = state.contacts.find(x => x.id === el.dataset.id); return `¿Borrar el contacto «${c ? c.nombre : ""}»?`; }, d:"Deja de recibir los SMS de «Necesito ayuda». " + PAPELERA},
+  "ficha-del-ask":{to:"ficha-del-do", t:el => { const f = state.fichas.find(x => x.id === el.dataset.id); return `¿Borrar la ficha médica de ${f ? f.nombre : ""}?`; }, d:"Se borran sus datos de salud y de documentos. " + PAPELERA},
+  "mem-del-ask":{to:"mem-del-do", t:el => { const m = state.plan.miembros.find(x => x.id === el.dataset.id); return `¿Quitar a ${m ? m.nombre : ""} del plan familiar?`; }, d:"Se quitan también sus tareas del plan. " + PAPELERA},
+  "inv-del-ask":{to:"inv-del-do", t:el => { const i = state.inv.find(x => x.id === el.dataset.id); return `¿Borrar «${i ? i.nombre : ""}» del inventario?`; }, d:PAPELERA},
+  "avisos-del-ask":{to:"avisos-del-do", t:() => "¿Borrar los avisos de la familia?", d:"Se borran los avisos «estoy bien» que recibiste. No se puede deshacer."},
+  "reset-ask":{to:"reset-do", t:el => `¿Desmarcar toda la lista «${(LISTS[el.dataset.id] || {}).label || ""}»?`, d:"Se pierden las marcas de lo que ya tienen. No se puede deshacer."},
+  "dni-del":{to:"dni-del", t:el => `¿Quitar la foto del DNI (${el.dataset.k === "f" ? "frente" : "dorso"})?`, d:"No se puede deshacer: vas a tener que sacar la foto de nuevo."},
+  "foto-del":{to:"foto-del", t:() => "¿Quitar la foto de la cara?", d:"No se puede deshacer: vas a tener que elegir la foto de nuevo."},
+  "trash-empty":{to:"trash-empty", t:() => "¿Vaciar la papelera?", d:"Lo que está en la papelera se borra para siempre. No se puede deshacer."},
+  "fam-del":{to:"fam-del", t:() => "¿Borrar esta copia de la familia?", d:"Si a esa persona se le rompe el celular, ya no vas a poder devolverle sus datos. No se puede deshacer."}
+};
+function askBorrar(el, def){
+  let ov = document.getElementById("conf-ov");
+  if(!ov){ ov = document.createElement("div"); ov.id = "conf-ov"; ov.className = "pin-ov"; document.body.appendChild(ov); }
+  ov.innerHTML = `<div class="pin-card conf-card" role="alertdialog" aria-modal="true" aria-labelledby="conf-h" aria-describedby="conf-d">
+    <h2 id="conf-h">${icon("sos")}${esc(def.t(el))}</h2>
+    <p id="conf-d">${esc(def.d)}</p>
+    <div class="inline"><button class="btn btn-danger" type="button" data-conf="si">Sí, borrar</button><button class="btn btn-ghost" type="button" data-conf="no">Cancelar</button></div></div>`;
+  ov.hidden = false;
+  ov._run = () => {
+    const b = document.createElement("button");
+    b.hidden = true; b.dataset.action = def.to; b.dataset.ok = "1";
+    Object.keys(el.dataset).forEach(k => { if(k !== "action") b.dataset[k] = el.dataset[k]; });
+    document.body.appendChild(b); b.click(); b.remove();
+  };
+  setTimeout(() => { const n = ov.querySelector('[data-conf="no"]'); if(n) n.focus(); }, 30);
+}
+function closeConf(){ const ov = document.getElementById("conf-ov"); if(ov){ ov.hidden = true; ov._run = null; } }
+document.addEventListener("click", e => {
+  const c = e.target.closest && e.target.closest("[data-conf]");
+  if(c){ e.preventDefault(); e.stopImmediatePropagation(); const ov = document.getElementById("conf-ov"), run = ov && ov._run; closeConf(); if(c.dataset.conf === "si" && run) run(); return; }
+  const a = e.target.closest && e.target.closest("[data-action]");
+  if(!a || a.dataset.ok === "1") return;
+  const def = BORRAR[a.dataset.action];
+  if(!def) return;
+  e.preventDefault(); e.stopImmediatePropagation();
+  askBorrar(a, def);
+}, true);
+document.addEventListener("keydown", e => { if(e.key === "Escape"){ const ov = document.getElementById("conf-ov"); if(ov && !ov.hidden) closeConf(); } });
 
 /* ---------- Plan 30 días sin luz ---------- */
 const MES_COMIDA = [
