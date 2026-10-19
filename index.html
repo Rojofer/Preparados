@@ -463,6 +463,9 @@ textarea{min-height:76px;resize:vertical}
 .rems{list-style:none;margin:0;padding:0;background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
 .rem{display:flex;flex-direction:column;gap:10px;padding:14px}
 .rem+.rem{border-top:1px solid var(--line)}
+.rec-sw{display:flex;gap:12px;align-items:flex-start;cursor:pointer}.rec-sw input{width:24px;height:24px;margin-top:2px;flex:none;accent-color:var(--blue)}
+.rem.on{background:var(--surface-2)}.rems .rem .inline .pill{align-self:center}
+.rec-aqui.on{border-color:var(--ok)}
 .rem-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
 .sel-sm{width:auto;min-height:40px;padding:6px 10px;font-size:15px}
 .sumrow{display:flex;flex-wrap:wrap;gap:8px}
@@ -2552,7 +2555,8 @@ function load(){
     if(Array.isArray(s.avisos)) state.avisos = s.avisos.filter(a => a && a.at && a.estado && a.from).slice(0, 20);
   }catch(e){}
 }
-function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
+let recsT = 0;
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} clearTimeout(recsT); recsT = setTimeout(() => { try{ recsSync(); }catch(e){} }, 1500); }
 
 const ui = {tab:"inicio", sub:null, guide:null, step:0, mode:"paso", quizAns:{}, prep:"indisp", verMin:true, invEdit:null, invDel:null, planSeg:"numeros", planStep:null, memDel:null, simStart:null, planTextShow:false, fichaEdit:null, fichaBig:null, fichaDel:null, aviso:{estado:"bien", extra:"", geo:null}, resetAsk:null, delAsk:null, sosAsk:false, summary:null, calc:{personas:2, dias:3, litros:10, diasC:14},
   story:{i:0, play:false}, persist:null, mapa:{tab:"azul", sel:null, yo:null, modo:null, ruta:null, calle:null, q:"", res:[], heading:null, gpsMsg:"", seguir:true, guardar:false, nombre:""},
@@ -2589,7 +2593,7 @@ function invAlert(){
   const s = invSummary(), parts = [];
   if(s.venc) parts.push(s.venc === 1 ? "1 cosa vencida" : `${s.venc} cosas vencidas`);
   if(s.pronto) parts.push(s.pronto === 1 ? "1 por vencer" : `${s.pronto} por vencer`);
-  if(s.recs) parts.push(s.recs === 1 ? "1 revisión pendiente" : `${s.recs} revisiones pendientes`);
+  if(s.recs && recsAqui()) parts.push(s.recs === 1 ? "1 revisión pendiente" : `${s.recs} revisiones pendientes`);
   return parts.length ? `<button class="banner" data-action="go-inv"><span class="dot" aria-hidden="true"></span><span class="banner-txt"><strong>Para revisar</strong><span>${parts.join(" · ")}</span></span>${icon("chev")}</button>` : "";
 }
 /* Instalar la app en el celular (solo en la versión publicada en internet) */
@@ -2613,6 +2617,7 @@ function renderHome(){
   if(navigator.onLine === false) ahora.push(`<button class="net-line" data-action="go-compartir" data-to="qs"><span class="dot" aria-hidden="true"></span>Sin conexión: la app funciona igual. Para pasar datos, Quick Share.</button>`);
   const bb = ahorroBanner(); if(bb) ahora.push(bb);
   const av = homeAvisos(); if(av) ahora.push(av);
+  const rb = recsBanner(); if(rb) ahora.push(rb);
   const tiles = TILES.map(t => t.corte
     ? `<button class="tile signal" data-action="go-corte" aria-label="${t.label}: ${t.hint}">${icon(t.icon)}<span class="t-label">${t.label}</span></button>`
     : `<button class="tile" data-action="guide" data-id="${t.guide}" aria-label="${t.label}: ${t.hint}">${icon(t.icon)}<span class="t-label">${t.label}</span></button>`).join("");
@@ -2645,7 +2650,7 @@ function renderHome(){
       ${bar("Mochila: lo mínimo", pm, "mochila")}
       ${bar("Botiquín: lo mínimo", pb, "botiquin")}
       ${bar("Kit del hogar", pk, "kit")}
-      <div class="inline"><button class="btn btn-ghost btn-sm" data-action="tab" data-tab="preparar">Seguir preparando</button><button class="btn btn-ghost btn-sm" data-action="go-inv">Inventario</button><button class="btn btn-ghost btn-sm" data-action="act" data-type="ficha">Fichas</button><button class="btn btn-ghost btn-sm" data-action="go-manual">Manual en papel</button></div>`;
+      <div class="inline"><button class="btn btn-ghost btn-sm" data-action="tab" data-tab="preparar">Seguir preparando</button><button class="btn btn-ghost btn-sm" data-action="go-inv">Inventario</button><button class="btn btn-ghost btn-sm" data-action="go-recs">Recordatorios</button><button class="btn btn-ghost btn-sm" data-action="act" data-type="ficha">Fichas</button><button class="btn btn-ghost btn-sm" data-action="go-manual">Manual en papel</button></div>`;
   return `<section class="stack home">
     <div class="sos-bar" role="group" aria-label="Acciones urgentes">
       <a class="sb sb-911" href="tel:911">${icon("phone")}<span>911</span></a>
@@ -2877,9 +2882,25 @@ function calcHTML(){
 const INV_CATS = ["Agua","Comida","Remedios","Pilas y linternas","Otros"];
 const INV_SUGG = [["Agua embotellada","Agua"],["Latas de comida","Comida"],["Leche larga vida","Comida"],["Pilas","Pilas y linternas"],["Remedios habituales","Remedios"],["Botiquín","Remedios"]];
 const REMINDERS = [
-  {id:"mochila",t:"Revisar la mochila",d:"Cambia lo vencido: agua, comida, pilas y remedios.",months:6},
-  {id:"agua",t:"Cambiar el agua guardada",d:"El agua de reserva se cambia cada 6 meses.",months:6},
-  {id:"comida",t:"Revisar la reserva de comida",d:"Lo que vence primero se consume primero.",months:6}
+  {id:"agua",g:"Agua y comida",t:"Cambiar el agua guardada",d:"El agua de reserva se cambia cada 6 meses.",months:6},
+  {id:"comida",g:"Agua y comida",t:"Revisar la reserva de comida",d:"Lo que vence primero se consume primero.",months:6},
+  {id:"gato",g:"Agua y comida",t:"Reponer la reserva del gato",d:"Alimento, agua y piedras para dos semanas.",months:3},
+  {id:"botiquin",g:"Salud",t:"Revisar el botiquín",d:"Cambia lo vencido y repón lo que se usó.",months:6},
+  {id:"remedios",g:"Salud",t:"Reponer la medicación habitual",d:"Que siempre haya para 30 días, con las recetas.",months:1},
+  {id:"fichas",g:"Salud",t:"Actualizar las fichas médicas",d:"Medicación, alergias y teléfonos al día.",months:6},
+  {id:"powerbanks",g:"Luz y energía",t:"Cargar los powerbanks",d:"Aunque no se usen, pierden carga con el tiempo.",months:1},
+  {id:"pilas",g:"Luz y energía",t:"Probar linternas y revisar pilas",d:"Cambia las pilas gastadas o sulfatadas.",months:3},
+  {id:"estacion",g:"Luz y energía",t:"Cargar la estación de energía",d:"Y probar el panel solar al sol.",months:3},
+  {id:"radio",g:"Luz y energía",t:"Probar la radio a pilas",d:"Que se escuchen LU10 y Radio Nacional.",months:3},
+  {id:"mochila",g:"La casa",t:"Revisar las mochilas de emergencia",d:"Cambia lo vencido: agua, comida, pilas y remedios.",months:6},
+  {id:"matafuegos",g:"La casa",t:"Revisar el matafuegos",d:"Que la aguja esté en verde y la carga no esté vencida.",months:12},
+  {id:"co",g:"La casa",t:"Probar el detector de monóxido",d:"Aprieta el botón de prueba. Pilas nuevas una vez por año.",months:1},
+  {id:"garrafa",g:"La casa",t:"Revisar la garrafa del anafe",d:"Que tenga gas y la manguera esté sana.",months:6},
+  {id:"plan",g:"La familia",t:"Repasar el plan con las chicas",d:"Punto de encuentro, a quién llamar y cómo usar la app.",months:6},
+  {id:"simulacro",g:"La familia",t:"Hacer un simulacro en familia",d:"Practicar «me perdí» o «se cortó la luz» con la app.",months:6},
+  {id:"copia",g:"La familia",t:"Hacer una copia de seguridad",d:"Se marca sola cuando guardas una copia de la app.",months:1},
+  {id:"mapas",g:"La familia",t:"Actualizar los mapas sin conexión",d:"Organic Maps o Google Maps, con wifi.",months:6},
+  {id:"inv",g:"Inventario",t:"Avisarme lo que vence",d:"Lo que cargaste con fecha en el inventario."}
 ];
 const today0 = () => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; };
 const isoOf = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
@@ -2897,12 +2918,23 @@ function invStatus(it){
   if(n <= 30) return {k:"warn", label:`Vence en ${enDias(n)}`, rank:1, days:n};
   return {k:"ok", label:`Vence el ${fmtDate(d)}`, rank:2, days:n};
 }
+function recNext(r){
+  const st = state.recs[r.id] || {};
+  let last = parseISO(st.last);
+  if(r.id === "copia" && state.lastBackup){ const b = new Date(state.lastBackup); b.setHours(0, 0, 0, 0); if(!last || b > last) last = b; }
+  if(!last) return null;
+  let next = addMonths(last, st.months || r.months);
+  const sn = parseISO(st.snooze); if(sn && sn > next) next = sn;
+  return next;
+}
 function recStatus(r){
   const st = state.recs[r.id] || {};
   const months = st.months || r.months;
-  const last = parseISO(st.last);
-  if(!last) return {k:"mute", label:"Sin registrar", due:false, months};
-  const next = addMonths(last, months), n = daysTo(next);
+  const next = recNext(r);
+  if(!next) return {k:"mute", label:"Sin registrar", due:false, months};
+  const sn = parseISO(st.snooze);
+  if(sn && daysTo(sn) > 0 && +sn === +next) return {k:"ok", label:`Te lo recuerdo el ${fmtDate(sn)}`, due:false, months};
+  const n = daysTo(next);
   if(n < 0) return {k:"crit", label:`Atrasado ${enDias(-n)}`, due:true, months};
   if(n <= 14) return {k:"warn", label:n === 0 ? "Toca hoy" : `Toca en ${enDias(n)}`, due:true, months};
   return {k:"ok", label:`Próxima: ${fmtDate(next)}`, due:false, months};
@@ -2910,12 +2942,12 @@ function recStatus(r){
 function invSummary(){
   let venc = 0, pronto = 0;
   state.inv.forEach(it => { const s = invStatus(it); if(s.rank === 0) venc++; else if(s.rank === 1) pronto++; });
-  return {venc, pronto, recs:REMINDERS.filter(r => recStatus(r).due).length};
+  return {venc, pronto, recs:REMINDERS.filter(r => r.id !== "inv" && recOn(r) && recStatus(r).due).length};
 }
 function renderInv(){
   const autoCard = autonomiaHTML(false);
   const sum = invSummary();
-  const recs = REMINDERS.map(r => {
+  const recs = [].map(r => {
     const s = recStatus(r), st = state.recs[r.id] || {};
     return `<li class="rem"><div class="rem-top"><div class="n-main"><span class="n-label">${r.t}</span><span class="n-desc">${r.d}</span></div><span class="pill ${s.k}">${s.label}</span></div>
       <div class="inline"><button class="btn btn-ghost btn-sm" data-action="rec-done" data-id="${r.id}">Lo hice hoy</button><select class="sel-sm" data-rec="${r.id}" aria-label="Frecuencia: ${r.t}">${[3, 6, 12].map(m => `<option value="${m}"${s.months === m ? " selected" : ""}>Cada ${m} meses</option>`).join("")}</select></div>
@@ -2933,9 +2965,8 @@ function renderInv(){
   const ed = ui.invEdit ? state.inv.find(x => x.id === ui.invEdit) : null;
   const v = k => ed ? esc(ed[k] || "") : "";
   const pl = (n, a, b) => `${n} ${n === 1 ? a : b}`;
-  return `${autoCard}<h2 class="sec">Recordatorios</h2>
-    <p class="fine">Cuando toca una revisión, también aparece en el inicio.</p>
-    <ul class="rems">${recs}</ul>
+  const nRec = REMINDERS.filter(recOn).length, nPend = recPend().length;
+  return `${autoCard}<button class="mf-btn" data-action="go-recs">${icon("cal")}<span><strong>Recordatorios</strong><span>${nRec ? `${nRec} elegidos${recsAqui() ? (nPend ? ` · ${nPend} para hacer` : " · al día") : " · apagados en este celular"}` : "Elige qué quieres que la app te recuerde"}</span></span>${icon("chev")}</button>
     <h2 class="sec">Inventario</h2>
     <div class="sumrow"><span class="pill crit">${pl(sum.venc, "vencido", "vencidos")}</span><span class="pill warn">${pl(sum.pronto, "vence", "vencen")} en 30 días</span><span class="pill mute">${pl(state.inv.length, "cosa cargada", "cosas cargadas")}</span></div>
     ${list}
@@ -4670,7 +4701,7 @@ document.addEventListener("keydown", e => { if(e.key === "Escape"){ const ov = d
 const scrKey = () => [ui.tab, ui.sub || "", ui.guide || "", ui.tab === "numeros" ? ui.planSeg || "" : "", ui.tab === "preparar" ? ui.prep || "" : "", ui.ayuda && ui.ayuda.mostrar && ui.sub === "ayuda" ? "m" : ""].join("|");
 let histPop = false;
 /* La dirección de cada pantalla: si Android recarga la app, vuelve a la misma pantalla */
-const SUB_HASH = {corte:"corte", aviso:"aviso", mapa:"mapa", ayuda:"ayuda", llevar:"llevar", ir:"llevar", mificha:"mificha", mes:"30dias", radio:"radio", manual:"manual"};
+const SUB_HASH = {recs:"recordatorios", corte:"corte", aviso:"aviso", mapa:"mapa", ayuda:"ayuda", llevar:"llevar", ir:"llevar", mificha:"mificha", mes:"30dias", radio:"radio", manual:"manual"};
 function screenHash(){
   if(ui.tab === "inicio") return SUB_HASH[ui.sub] || "";
   if(ui.tab === "guias") return ui.guide ? "guia-" + ui.guide : "guias";
@@ -4703,6 +4734,82 @@ window.addEventListener("popstate", e => {
   try{ render(true); }finally{ histPop = false; }
   if(!s || !s.k){ try{ history.replaceState(histState(), "", histUrl()); }catch(e){} }
 });
+
+/* ---------- Recordatorios: eliges cuáles y cada cuánto; cada celular decide si los muestra ---------- */
+const RECS_ON_KEY = "preparados.recsOn", RECS_DATA = "preparados-datos", RECS_URL = "./__recordatorios.json";
+const REC_MESES = [1, 3, 6, 12];
+const recsAqui = () => { try{ return localStorage.getItem(RECS_ON_KEY) === "1"; }catch(e){ return false; } };
+const recOn = r => { const st = state.recs[r.id] || {}; return st.on === true || (st.on === undefined && !!parseISO(st.last)); };
+const mesesTxt = m => m === 1 ? "Cada mes" : m === 12 ? "Cada año" : `Cada ${m} meses`;
+function recHoy(id){
+  state.recs[id] = Object.assign({}, state.recs[id], {last:isoOf(today0()), snooze:""});
+  save();
+}
+/* Lo que toca hacer: recordatorios prendidos y vencidos del inventario */
+function recPend(){
+  const out = [];
+  REMINDERS.forEach(r => { if(r.id === "inv" || !recOn(r)) return; const s = recStatus(r); if(s.due) out.push({r, s}); });
+  if(recOn(REMINDERS.find(r => r.id === "inv"))) state.inv.forEach(it => { const s = invStatus(it); if(s.rank <= 1) out.push({it, s}); });
+  return out;
+}
+function recsBanner(){
+  if(!recsAqui()) return "";
+  const p = recPend();
+  if(!p.length) return "";
+  const txt = p.slice(0, 2).map(x => x.r ? x.r.t : `${x.it.nombre}: ${x.s.label.toLowerCase()}`).join(" · ") + (p.length > 2 ? ` y ${p.length - 2} más` : "");
+  return `<button class="banner rec-ban" data-action="go-recs"><span class="dot" aria-hidden="true"></span><span class="banner-txt"><strong>${p.length === 1 ? "1 recordatorio" : `${p.length} recordatorios`}</strong><span>${esc(txt)}</span></span>${icon("chev")}</button>`;
+}
+function renderRecs(){
+  const aqui = recsAqui(), pend = recPend(), notif = "Notification" in window;
+  const pendHTML = pend.length ? `<div class="card rec-pend"><h2>Para hacer</h2><ul class="rems">${pend.map(x => x.r
+      ? `<li class="rem"><div class="rem-top"><div class="n-main"><span class="n-label">${x.r.t}</span><span class="n-desc">${x.r.d}</span></div><span class="pill ${x.s.k}">${x.s.label}</span></div>
+        <div class="inline"><button class="btn btn-primary btn-sm" data-action="rec-done" data-id="${x.r.id}">Hecho</button><button class="btn btn-ghost btn-sm" data-action="rec-snooze" data-id="${x.r.id}">Recordarme en una semana</button></div></li>`
+      : `<li class="rem"><div class="rem-top"><div class="n-main"><span class="n-label">${esc(x.it.nombre)}</span><span class="n-desc">Del inventario${x.it.cant ? ` · ${esc(x.it.cant)}` : ""}</span></div><span class="pill ${x.s.k}">${x.s.label}</span></div>
+        <div class="inline"><button class="btn btn-ghost btn-sm" data-action="go-inv">Ver el inventario</button></div></li>`).join("")}</ul></div>` : "";
+  const grupos = [...new Set(REMINDERS.map(r => r.g))].map(g => `<h2 class="sec">${g}</h2><ul class="rems">${REMINDERS.filter(r => r.g === g).map(r => {
+      const on = recOn(r), st = state.recs[r.id] || {}, s = r.id === "inv" ? null : recStatus(r);
+      const extra = !on ? "" : r.id === "inv"
+        ? `<p class="fine">Te avisa 30 días antes de que venza algo que cargaste con fecha en el inventario.</p>`
+        : `<div class="inline"><select class="sel-sm" data-rec="${r.id}" aria-label="Cada cuánto: ${r.t}">${REC_MESES.map(m => `<option value="${m}"${s.months === m ? " selected" : ""}>${mesesTxt(m)}</option>`).join("")}</select><button class="btn btn-ghost btn-sm" data-action="rec-done" data-id="${r.id}">Lo hice hoy</button><span class="pill ${s.k}">${s.label}</span></div>
+          <p class="fine">${st.last ? `Última vez: ${fmtDate(parseISO(st.last))}.` : "Toca «Lo hice hoy» la primera vez que lo hagas: desde ahí la app cuenta cuándo vuelve a tocar."}</p>`;
+      return `<li class="rem${on ? " on" : ""}"><label class="rec-sw" for="rs-${r.id}"><input type="checkbox" id="rs-${r.id}" data-rec-on="${r.id}"${on ? " checked" : ""}><span class="n-main"><span class="n-label">${r.t}</span><span class="n-desc">${r.d}${on || r.id === "inv" ? "" : ` · sugerido: ${mesesTxt(r.months).toLowerCase()}`}</span></span></label>${extra}</li>`;
+    }).join("")}</ul>`).join("");
+  const elegidos = REMINDERS.filter(recOn).length;
+  return `<section class="stack">
+    <button class="back" data-action="tab" data-tab="inicio">${icon("back")}Inicio</button>
+    <div class="intro"><h1>Recordatorios</h1><p class="lede">Elige qué quieres que la app te recuerde y cada cuánto. Lo que no elijas, no aparece.</p></div>
+    <div class="card rec-aqui${aqui ? " on" : ""}"><h2>En este celular</h2>
+      <label class="check${aqui ? " on" : ""}" for="rec-aqui"><input type="checkbox" id="rec-aqui" data-recs-aqui="1"${aqui ? " checked" : ""}><span><strong>Mostrar los recordatorios en este celular</strong><br><small>${aqui ? "Aparecen arriba en el Inicio cuando toca hacer algo." : "Apagado: en este celular no aparece ningún aviso."}</small></span></label>
+      ${aqui && notif ? (Notification.permission === "granted" ? `<p class="fine">Notificaciones activadas: si el celular lo permite, te avisa aunque no abras la app. Si no, los ves al abrirla.</p>`
+        : Notification.permission === "denied" ? `<p class="fine">Las notificaciones están bloqueadas para esta app. Si las quieres, actívalas en los ajustes de Chrome. Igual los ves al abrir la app.</p>`
+        : `<button class="btn btn-ghost btn-sm" data-action="rec-notif">Avisarme también con una notificación</button><p class="fine">Opcional. Android decide cuándo revisa: puede tardar unas horas. Siempre los ves al abrir la app.</p>`) : ""}
+      <p class="fine">Se elige en cada celular por separado: actívalo en el tuyo y deja apagado el de las chicas, si quieres. La lista de abajo viaja con las copias de la familia.</p></div>
+    ${aqui ? pendHTML : ""}
+    <p class="fine sec-lede">${elegidos ? `Elegiste ${elegidos === 1 ? "1 recordatorio" : `${elegidos} recordatorios`}.` : "Todavía no elegiste ninguno: marca los que quieras."}</p>
+    ${grupos}
+  </section>`;
+}
+/* Para avisar sin abrir la app: el service worker lee esta lista (no puede leer los datos de la página) */
+function recsSync(){
+  if(!("caches" in window)) return;
+  const items = [];
+  if(recsAqui()){
+    REMINDERS.forEach(r => { if(r.id === "inv" || !recOn(r)) return; const st = state.recs[r.id] || {};
+      const next = recNext(r), sn = parseISO(st.snooze); if(next) items.push({t:r.t, due:sn && +sn === +next ? next.getTime() : next.getTime() - 14 * 864e5}); });
+    if(recOn(REMINDERS.find(r => r.id === "inv"))) state.inv.forEach(it => { const d = parseISO(it.vence); if(d) items.push({t:`Vence: ${it.nombre}`, due:d.getTime() - 30 * 864e5}); });
+  }
+  caches.open(RECS_DATA).then(c => c.put(RECS_URL, new Response(JSON.stringify({on:recsAqui(), items, at:Date.now()}), {headers:{"Content-Type":"application/json"}}))).catch(() => {});
+}
+async function recNotif(){
+  try{
+    const p = await Notification.requestPermission();
+    if(p === "granted" && navigator.serviceWorker){
+      const reg = await navigator.serviceWorker.ready;
+      if(reg.periodicSync){ try{ await reg.periodicSync.register("recordatorios", {minInterval:12 * 3600e3}); }catch(e){} }
+    }
+  }catch(e){}
+  recsSync(); render(false);
+}
 
 /* ---------- Plan 30 días sin luz ---------- */
 const MES_COMIDA = [
@@ -5176,9 +5283,11 @@ const SHARE = [
      });
      if(x.recs && typeof x.recs === "object") Object.keys(x.recs).forEach(id => {
        const r = x.recs[id];
-       if(!REMINDERS.some(q => q.id === id) || !r || !parseISO(r.last)) return;
-       const mine = state.recs[id] || {};
-       if(!parseISO(mine.last) || r.last > mine.last) state.recs[id] = {last:r.last, months:[3, 6, 12].includes(r.months) ? r.months : mine.months};
+       if(!REMINDERS.some(q => q.id === id) || !r || typeof r !== "object") return;
+       const mine = Object.assign({}, state.recs[id]);
+       if(typeof r.on === "boolean" && mine.on === undefined) mine.on = r.on;
+       if(parseISO(r.last) && (!parseISO(mine.last) || r.last > mine.last)){ mine.last = r.last; if(REC_MESES.includes(r.months)) mine.months = r.months; }
+       state.recs[id] = mine;
      });
      if(n) res.push(plural(n, "cosa nueva en el inventario", "cosas nuevas en el inventario"));
      if(u) res.push(plural(u, "cosa actualizada", "cosas actualizadas"));
@@ -6122,7 +6231,7 @@ function render(top){
   if(!(ui.tab === "inicio" && ui.sub === "ir")) navStop();
   applyAhorro();
   if(ui.tab === "inicio" && !ui.sub && state.ahorro) html = renderAhorro();
-  else if(ui.tab === "inicio") html = ui.sub === "corte" ? renderCorte() : ui.sub === "aviso" ? renderAviso() : ui.sub === "mapa" ? renderMapa() : ui.sub === "ayuda" ? renderAyuda() : ui.sub === "mes" ? renderMes() : ui.sub === "radio" ? renderRadio() : ui.sub === "manual" ? renderManual() : ui.sub === "ir" ? renderNav() : ui.sub === "llevar" ? renderLlevar() : ui.sub === "mificha" ? renderMiFicha() : renderHome();
+  else if(ui.tab === "inicio") html = ui.sub === "corte" ? renderCorte() : ui.sub === "aviso" ? renderAviso() : ui.sub === "mapa" ? renderMapa() : ui.sub === "ayuda" ? renderAyuda() : ui.sub === "mes" ? renderMes() : ui.sub === "radio" ? renderRadio() : ui.sub === "manual" ? renderManual() : ui.sub === "ir" ? renderNav() : ui.sub === "llevar" ? renderLlevar() : ui.sub === "mificha" ? renderMiFicha() : ui.sub === "recs" ? renderRecs() : renderHome();
   else if(ui.tab === "guias") html = ui.guide ? renderGuide() : renderGuides();
   else if(ui.tab === "preparar") html = renderPrep();
   else if(ui.tab === "linterna") html = renderTools();
@@ -6564,11 +6673,10 @@ document.addEventListener("click", e => {
     case "del-cancel": ui.delAsk = null; render(false); break;
     case "del-do": trashPut("contacto", state.contacts.find(c => c.id === el.dataset.id)); state.contacts = state.contacts.filter(c => c.id !== el.dataset.id); ui.delAsk = null; save(); render(false); break;
     case "go-inv": go("preparar", {prep:"inv"}); break;
-    case "rec-done":
-      state.recs[el.dataset.id] = Object.assign({}, state.recs[el.dataset.id], {last:isoOf(today0())});
-      save();
-      render(false);
-      break;
+    case "rec-done": { const y = window.scrollY; recHoy(el.dataset.id); render(false); window.scrollTo(0, y); break; }
+    case "rec-snooze": { const d = today0(); d.setDate(d.getDate() + 7); state.recs[el.dataset.id] = Object.assign({}, state.recs[el.dataset.id], {snooze:isoOf(d)}); save(); render(false); break; }
+    case "rec-notif": recNotif(); break;
+    case "go-recs": go("inicio", {sub:"recs"}); break;
     case "inv-sugg": {
       const sg = INV_SUGG[Number(el.dataset.k)];
       const n = document.getElementById("i-nombre"), c = document.getElementById("i-cat");
@@ -6770,6 +6878,12 @@ document.addEventListener("change", e => {
     state.recs[t.dataset.rec] = Object.assign({}, state.recs[t.dataset.rec], {months:Number(t.value)});
     save();
     render(false);
+  }else if(t.matches("[data-rec-on]")){
+    state.recs[t.dataset.recOn] = Object.assign({}, state.recs[t.dataset.recOn], {on:t.checked});
+    save(); const y = window.scrollY; render(false); window.scrollTo(0, y);
+  }else if(t.matches("[data-recs-aqui]")){
+    try{ localStorage.setItem(RECS_ON_KEY, t.checked ? "1" : "0"); }catch(e){}
+    recsSync(); render(false);
   }else if(t.matches("[data-corte]") && state.corte){
     state.corte.done = state.corte.done || {};
     state.corte.done[t.dataset.corte] = t.checked;
@@ -6902,6 +7016,7 @@ function routeHash(hash){
   else if(hash === "radio") ui.sub = "radio";
   else if(hash === "manual") ui.sub = "manual";
   else if(hash === "corte") ui.sub = "corte";
+  else if(hash === "recordatorios") ui.sub = "recs";
   else if(hash.indexOf("guia-") === 0 && GUIDES.some(g => g.id === hash.slice(5))){ ui.tab = "guias"; ui.guide = hash.slice(5); }
 }
 const hash = (location.hash || "").slice(1);
@@ -6918,6 +7033,7 @@ window.addEventListener("hashchange", () => {
 updNet();
 render(false);
 ensurePersist(false);
+setTimeout(() => { try{ recsSync(); }catch(e){} }, 3000);
 if(hash === "extremo"){ const z = document.getElementById("extremo"); if(z) z.scrollIntoView({block:"start"}); }
 })();
 </script>
