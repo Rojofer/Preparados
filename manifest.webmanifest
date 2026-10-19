@@ -29,20 +29,56 @@
  ],
  "shortcuts": [
   {
-   "name": "Llevarme a casa",
-   "url": "./#llevar"
-  },
-  {
    "name": "Necesito ayuda",
-   "url": "./#ayuda"
+   "short_name": "Ayuda",
+   "description": "Avisar a la familia con tu ubicación",
+   "url": "./#ayuda",
+   "icons": [
+    {
+     "src": "icons/sc-ayuda.png",
+     "sizes": "96x96",
+     "type": "image/png"
+    }
+   ]
   },
   {
-   "name": "Mi ficha",
-   "url": "./#mificha"
+   "name": "Tengo un problema",
+   "short_name": "Un problema",
+   "description": "Qué hacer, paso a paso",
+   "url": "./#problema",
+   "icons": [
+    {
+     "src": "icons/sc-problema.png",
+     "sizes": "96x96",
+     "type": "image/png"
+    }
+   ]
   },
   {
-   "name": "Radio y comunicación",
-   "url": "./#radio"
+   "name": "¿Qué hago hoy?",
+   "short_name": "Qué hago hoy",
+   "description": "Las tareas de cada día del corte",
+   "url": "./#hoy",
+   "icons": [
+    {
+     "src": "icons/sc-hoy.png",
+     "sizes": "96x96",
+     "type": "image/png"
+    }
+   ]
+  },
+  {
+   "name": "Llevarme a casa",
+   "short_name": "Llevarme",
+   "description": "Volver a casa o al punto de encuentro",
+   "url": "./#llevar",
+   "icons": [
+    {
+     "src": "icons/sc-llevar.png",
+     "sizes": "96x96",
+     "type": "image/png"
+    }
+   ]
   }
  ]
 }

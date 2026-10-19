@@ -179,7 +179,8 @@ body.navegando .upd{bottom:calc(10px + env(safe-area-inset-bottom,0px))}
 .tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 .tile{display:flex;flex-direction:row;align-items:center;gap:10px;min-height:68px;padding:10px 12px;border-radius:14px;background:var(--tile);color:var(--tile-ink);border:1px solid var(--tile-edge);text-align:left}
 .tile .ic{flex:none;width:28px;height:28px;color:var(--signal)}
-.tile .t-label{font-family:var(--font-display);font-weight:700;font-size:20px;line-height:1.05;text-wrap:balance}
+.tile .t-label{font-family:var(--font-display);font-weight:700;font-size:20px;line-height:1.05;text-wrap:balance;hyphens:auto;overflow-wrap:break-word;min-width:0}
+@media (max-width:400px){.tile .t-label{font-size:18px}}
 .tile .t-hint{font-size:14px;line-height:1.3;color:var(--tile-sub)}
 .tile.signal{background:var(--signal);border-color:var(--signal);color:var(--on-signal)}
 .tile.signal .ic,.tile.signal .t-hint{color:var(--on-signal)}
@@ -687,6 +688,13 @@ body.navegando .view{padding-bottom:calc(28px + env(safe-area-inset-bottom,0px))
 .qd-it{display:grid;grid-template-columns:minmax(0,1fr) 46%;gap:10px;align-items:center}.qd-n{font-weight:700;line-height:1.3}
 .qd-falta{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
 .qd-ban{background:var(--crit-soft);border-color:var(--crit)}.qd-ban .dot{background:var(--crit)}
+.cc{display:flex;flex-direction:column;border-radius:var(--r);border:2px solid var(--warn-fill);background:var(--surface);overflow:hidden}
+.cc-h{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--warn-soft);font-size:16px}.cc-h .dot{flex:none}
+.cc-r{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 14px;text-align:left;border-top:1px solid var(--line);min-height:56px}
+.cc-r>span{display:flex;flex-direction:column;min-width:0}.cc-r>span span{font-size:14px;color:var(--ink-2)}
+.cc-r.crit>span span{color:var(--crit);font-weight:700}.cc-r>.ic:first-child{color:var(--ink-2)}
+.tools4.t3 .tool4{min-height:92px}
+.jump{flex-wrap:wrap;gap:6px}.jump .chip{min-height:40px;padding:6px 14px;font-size:15px}.add-c>summary{cursor:pointer;min-height:44px;display:flex;align-items:center}.add-c[open]>summary{margin-bottom:10px}.add-c form{display:flex;flex-direction:column;gap:12px}
 .mf-btn.pb-home{border-left:6px solid var(--signal)}.pb-home>.ic:first-child{color:var(--signal-ink)}
 .pb .quick{grid-template-columns:1fr}
 .pb-urgbox{display:flex;flex-direction:column;gap:6px}.pb-urg .g-ic{background:var(--crit);color:var(--on-crit)}
@@ -2667,9 +2675,7 @@ function hsec(id, ic, title, sub, body, extra){
 }
 function renderHome(){
   const ahora = [];
-  const qb = qdBanner(); if(qb) ahora.push(qb);
-  const hb = hoyBanner(); if(hb) ahora.push(hb);
-  if(state.corte) ahora.push(`<button class="banner" data-action="go-corte"><span class="dot" aria-hidden="true"></span><span class="banner-txt"><strong>Sin luz hace <span data-live="short">${fmtDur(elapsed())}</span></strong><span>Ver el contador de la heladera</span></span>${icon("chev")}</button>`);
+  if(state.corte) ahora.push(corteCard());
   if(navigator.onLine === false) ahora.push(`<button class="net-line" data-action="go-compartir" data-to="qs"><span class="dot" aria-hidden="true"></span>Sin conexión: la app funciona igual. Para pasar datos, Quick Share.</button>`);
   const bb = ahorroBanner(); if(bb) ahora.push(bb);
   const av = homeAvisos(); if(av) ahora.push(av);
@@ -2682,10 +2688,11 @@ function renderHome(){
     ${zona.length ? `<span class="lbl">En ${esc(state.provincia)}, también</span><div class="chips">${zona.map(g => `<button class="chip" data-action="guide" data-id="${g.id}">${g.title}</button>`).join("")}</div>` : `<button class="btn btn-ghost btn-sm" data-action="go-zona">Guías para tu provincia</button>`}
     <button class="btn btn-ghost btn-sm" data-action="tab" data-tab="guias">Ver todas las guías</button>`;
   const ext = GUIDES.filter(g => g.group === "extremo");
-  const extremo = `<button class="btn btn-primary" data-action="go-mes">${icon("cal")}Plan de corte largo: 7, 15 o 30 días</button>
-    <button class="btn btn-ghost" data-action="go-hoy">${icon("cal")}¿Qué hago hoy? Las tareas de cada día</button>
-    <button class="btn btn-ghost" data-action="go-queda">${icon("can")}¿Cuánto nos queda? Agua, comida y gas</button>
-    <button class="btn btn-ghost" data-action="go-prob">${icon("help")}Tengo un problema: qué hacer paso a paso</button>
+  const extremo = `<div class="tools4 t3">
+      <button class="tool4" data-action="go-hoy">${icon("cal")}<span>¿Qué hago hoy?</span></button>
+      <button class="tool4" data-action="go-queda">${icon("can")}<span>¿Cuánto nos queda?</span></button>
+      <button class="tool4" data-action="go-mes">${icon("pack")}<span>Plan de 7, 15 o 30 días</span></button></div>
+    <span class="lbl">Guías para muchos días sin luz, gas ni agua</span>
     <div class="chips">${ext.map(g => `<button class="chip" data-action="guide" data-id="${g.id}">${g.title}</button>`).join("")}</div>`;
   const c = CIUDADES[state.ciudad];
   const tops = c ? c.nums.filter(x => x.top) : [];
@@ -2717,14 +2724,14 @@ function renderHome(){
       <button class="sb sb-llevar" data-action="go-llevar">${icon("compass")}<span>Llevarme</span></button>
       <button class="sb sb-bien" data-action="go-aviso">${icon("heart")}<span>Estoy bien</span></button>
     </div>
-    <button class="mf-btn" data-action="go-mificha">${icon("id")}<span><strong>Mi ficha</strong><span>${miFicha() ? esc(miFicha().nombre) + (fpCfg() ? " · con clave" : "") : "Datos médicos y documentos"}</span></span>${icon("chev")}</button>
     ${ahora.length ? `<div class="ahora">${ahora.join("")}</div>` : ""}
+    <button class="mf-btn" data-action="go-mificha">${icon("id")}<span><strong>Mi ficha</strong><span>${miFicha() ? esc(miFicha().nombre) + (fpCfg() ? " · con clave" : "") : "Datos médicos y documentos"}</span></span>${icon("chev")}</button>
     <button class="mf-btn pb-home" data-action="go-prob">${icon("help")}<span><strong>Tengo un problema</strong><span>Qué hacer, paso a paso, con lo que hay en casa</span></span>${icon("chev")}</button>
     <div class="hsecs">
       ${hsec("pasa", "storm", "¿Qué está pasando?", "Toca la situación y sigue los pasos", pasa, "hs-main")}
       ${hsec("tel", "phone", "Teléfonos", c ? `911 y los de ${esc(state.ciudad)}: hospital, luz, agua, gas` : "911 y tus contactos", tels)}
       ${hsec("herr", "compass", "Herramientas", "Radio, mapa, linterna, SOS, silbato y más", herr)}
-      ${hsec("extremo", "flame", "Caso extremo", "Días sin luz, gas ni agua: plan de 7, 15 o 30 días", extremo)}
+      ${hsec("extremo", "flame", "Corte largo", "Qué hacer cada día, cuánto queda y el plan", extremo)}
       ${hsec("prep", "pack", "Tu preparación", `Mochila ${pm.pct}% · Botiquín ${pb.pct}% · Kit ${pk.pct}%${alerts ? ` · <b class="hs-alert">hay cosas para revisar</b>` : ""}`, prep)}
     </div>
     ${installCard()}
@@ -2747,6 +2754,7 @@ function renderGuides(){
   const row = g => `<li><button class="grow" data-action="guide" data-id="${g.id}"><span class="g-ic">${icon(g.icon)}</span><span class="g-txt"><strong>${g.title}</strong><span>${g.summary}</span></span><span class="g-meta"><span class="mono">${g.steps.length} pasos</span>${icon("chev")}</span></button></li>`;
   return `<section class="stack">
     <div class="intro"><h1>Guías</h1><p class="lede">Pasos cortos para seguir en el momento, sin señal.</p></div>
+    <button class="mf-btn pb-home" data-action="go-prob">${icon("help")}<span><strong>Tengo un problema</strong><span>Busca lo que pasa: «fiebre», «sin agua», «frío»</span></span>${icon("chev")}</button>
     <h2 class="sec">En la emergencia</h2>
     <ul class="glist">${GUIDES.filter(g => g.group === "emergencia").map(row).join("")}</ul>
     <h2 class="sec">Saber hacer</h2>
@@ -2878,7 +2886,7 @@ function renderCorte(){
     <button class="btn btn-primary btn-big" data-action="corte-end">Volvió la luz</button>`;
   }
   return `<section class="stack">
-    <button class="back" data-action="tab" data-tab="inicio">${icon("back")}Inicio</button>
+    ${backBtn()}
     <div class="intro"><h1>Se cortó la luz</h1></div>
     ${body}
     <button class="btn btn-outline" data-action="guide" data-id="corte-luz">Ver la guía ilustrada</button>
@@ -3160,19 +3168,22 @@ function renderNums(){
         ? `<button class="btn btn-danger btn-sm" data-action="del-do" data-id="${esc(c.id)}">Borrar</button><button class="btn btn-ghost btn-sm" data-action="del-cancel">No</button>`
         : `<a class="btn btn-primary btn-sm" href="tel:${esc(telHref(c.tel))}" aria-label="Llamar a ${esc(c.nombre)}">Llamar</a><button class="btn btn-ghost btn-sm" data-action="del-ask" data-id="${esc(c.id)}" aria-label="Borrar a ${esc(c.nombre)}">Borrar</button>`}</div></li>`).join("")}</ul>`
     : `<div class="empty"><p><strong>Todavía no cargaste contactos.</strong> Suma a quién avisar en una emergencia: familia, vecinos, tu médico, la distribuidora eléctrica y el hospital más cercano.</p></div>`;
-  return `<p class="fine">Si el botón Llamar no abre el teléfono, marca el número a mano.</p>
-    <ul class="nums">${list}</ul>
-    <p class="fine">El 107 atiende en la Ciudad de Buenos Aires y en localidades de la provincia. En otras zonas, llama al 911 o al número de emergencias médicas de tu provincia.</p>
-    ${localHTML()}
+  return `<nav class="chips jump" aria-label="Ir a"><button class="chip" data-action="jump" data-to="contactos">Mis contactos</button><button class="chip" data-action="jump" data-to="locales">${CIUDADES[state.ciudad] ? esc(state.ciudad) : "Mi ciudad"}</button><button class="chip" data-action="jump" data-to="nacionales">Nacionales</button></nav>
     <h2 class="sec" id="contactos">Mis contactos</h2>
     ${contacts}
-    <form class="card" id="form-contacto" novalidate>
+    <details class="card add-c"${state.contacts.length ? "" : " open"}><summary><strong>Agregar un contacto</strong></summary>
+    <form id="form-contacto" novalidate>
       <div class="field"><label class="lbl" for="c-nombre">Nombre</label><input id="c-nombre" name="nombre" autocomplete="off" maxlength="60" placeholder="Ej.: Mamá, la distribuidora, el hospital"></div>
       <div class="field"><label class="lbl" for="c-tel">Teléfono</label><input id="c-tel" name="tel" type="tel" inputmode="tel" autocomplete="off" maxlength="30" placeholder="Ej.: 11 2345 6789"></div>
       <div class="field"><label class="lbl" for="c-tipo">Tipo</label><select id="c-tipo" name="tipo"><option>Familia</option><option>Vecino o amigo</option><option>Salud</option><option>Servicio de luz, agua o gas</option><option>Municipio</option></select></div>
       <p class="form-err" id="c-err" hidden>Completa el nombre y un teléfono con al menos 3 números.</p>
       <button class="btn btn-primary" type="submit">Agregar contacto</button>
-    </form>
+    </form></details>
+    ${localHTML()}
+    <h2 class="sec" id="nacionales">Nacionales</h2>
+    <p class="fine">Si el botón Llamar no abre el teléfono, marca el número a mano.</p>
+    <ul class="nums">${list}</ul>
+    <p class="fine">El 107 atiende en la Ciudad de Buenos Aires y en localidades de la provincia. En otras zonas, llama al 911 o al número de emergencias médicas de tu provincia.</p>
     <div class="card"><p><strong>Puntos de encuentro y tareas de cada uno:</strong> están en el plan familiar.</p><button class="btn btn-ghost" data-action="plan-seg" data-id="familia">Abrir el plan familiar</button></div>`;
 }
 
@@ -3788,7 +3799,7 @@ function renderRadio(){
       <label class="r-ok"><input type="checkbox" data-radio="${id}"${ok[id] ? " checked" : ""}><span>La escucho bien</span></label></li>`).join("")}</ul>`).join("");
   const coms = COMS.map(([t, d, k], i) => `<li><h3><span class="mono">${i + 1}</span>${t}</h3><p>${d}</p>${k === "ayuda" ? `<div class="inline"><button class="btn btn-ghost btn-sm" data-action="go-ayuda">Necesito ayuda</button><button class="btn btn-ghost btn-sm" data-action="go-aviso">Estoy bien</button></div>` : k === "plan" ? `<div class="inline"><button class="btn btn-ghost btn-sm" data-action="ayuda-plan">Cargar el contacto en el plan</button></div>` : k.indexOf("guia:") === 0 ? `<div class="inline"><button class="btn btn-ghost btn-sm" data-action="guide" data-id="${k.slice(5)}">Comunicarse sin red</button></div>` : ""}</li>`).join("");
   return `<section class="stack">
-    <button class="back" data-action="tab" data-tab="inicio">${icon("back")}Inicio</button>
+    ${backBtn()}
     <div class="intro"><h1>Radio y comunicación</h1><p class="lede">Qué escuchar para saber qué pasa y cómo avisar afuera cuando no hay internet.</p></div>
     <div class="card"><h2>Qué escuchar</h2>
       <p>Una radio a pilas es lo más confiable cuando se corta todo. Prueben ahora cada una y marquen las que se escuchan bien en casa.</p>
@@ -3927,7 +3938,7 @@ function autonomia(){
     inv.filter(i => /gato|mascota/.test(norm(i.nombre))).forEach(i => { const c = parseCant(i.cant || ""); if(c && c.u === "kg") kg += c.n; else if(c && c.u === "g") kg += c.n / 1000; else no.push(i.nombre); });
     out.gato = {kg, dias:Math.floor(kg / (0.06 * G)), no};
   }
-  const lst = [["Agua", out.agua.dias, out.agua.hay], ["Comida", out.comida.dias, out.comida.total > 0], ["Remedios", out.remedios.dias, out.remedios.total > 0 && out.remedios.dias !== null]].concat(G ? [["Comida del gato", out.gato.dias, true]] : []);
+  const lst = [["Agua", out.agua.dias, out.agua.hay], ["Comida", out.comida.dias, out.comida.total > 0], ["Remedios", out.remedios.dias, out.remedios.total > 0 && out.remedios.dias !== null]].concat(G && state.inv.some(i => /gato|mascota/.test(norm(i.nombre))) ? [["Comida del gato", out.gato.dias, true]] : []);
   const cuenta = lst.filter(x => x[2]);
   out.min = cuenta.length ? cuenta.reduce((a, b) => a[1] <= b[1] ? a : b) : null;
   return out;
@@ -4053,7 +4064,7 @@ function manualHTML(){
 function renderManual(){
   const sel = manualSel();
   return `<section class="stack">
-    <button class="back" data-action="tab" data-tab="inicio">${icon("back")}Inicio</button>
+    ${backBtn()}
     <div class="intro"><h1>Manual en papel</h1><p class="lede">Todo lo importante en hojas para la mochila: sirve cuando no queda batería.</p></div>
     <div class="card"><h2>Qué incluir</h2><div class="checks">${MANUAL_SEC.map(([k, t, d]) => `<label class="check${sel[k] ? " on" : ""}" for="man-${k}"><input type="checkbox" id="man-${k}" data-man="${k}"${sel[k] ? " checked" : ""}><span><strong>${t}</strong><br><small>${d}</small></span></label>`).join("")}</div></div>
     <div class="inline"><button class="btn btn-primary" data-action="manual-print">Imprimir</button><button class="btn btn-outline" data-action="manual-dl">Descargar para imprimir</button></div>
@@ -4366,7 +4377,7 @@ function renderMiFicha(){
     : `<div class="card"><h2>Clave de las fichas activada</h2><p class="fine">Sin clave se ve solo lo vital. Con la clave, queda abierto 3 minutos.</p><div class="inline">${fpLocked() ? "" : `<button class="btn btn-ghost btn-sm" data-action="fp-lock">Cerrar ahora</button>`}<button class="btn btn-ghost btn-sm" data-action="fp-cambiar">Cambiar la clave</button><button class="btn btn-ghost btn-sm" data-action="fp-off">Quitar la clave</button></div>
       ${ui.fpCambiar ? `<form id="form-fp" novalidate><div class="field"><label class="lbl" for="fp-a">Clave nueva</label><input id="fp-a" type="password" inputmode="numeric" maxlength="4" autocomplete="new-password"></div><div class="field"><label class="lbl" for="fp-b">Repetir</label><input id="fp-b" type="password" inputmode="numeric" maxlength="4" autocomplete="new-password"></div><button class="btn btn-primary btn-sm" type="submit">Guardar</button><p class="st" id="fp-st" role="status"></p></form>` : ""}</div>`;
   if(!f){
-    return `<section class="stack"><button class="back" data-action="tab" data-tab="inicio">${icon("back")}Inicio</button>
+    return `<section class="stack">${backBtn()}
       <div class="intro"><h1>Mi ficha</h1><p class="lede">Tus datos médicos y documentos, a un toque.</p></div>
       ${state.fichas.length ? `<div class="card"><h2>¿Cuál es tu ficha?</h2><div class="chips">${state.fichas.map(x => `<button class="chip" data-action="mia-set" data-id="${esc(x.id)}">${esc(x.nombre)}</button>`).join("")}</div></div>
       <div class="inline"><button class="btn btn-ghost" data-action="mia-crear">Crear otra ficha</button></div>
@@ -4375,7 +4386,7 @@ function renderMiFicha(){
         <button class="btn btn-primary btn-big" data-action="mia-crear">Crear mi ficha</button></div>`}
       </section>`;
   }
-  return `<section class="stack mi-ficha"><button class="back" data-action="tab" data-tab="inicio">${icon("back")}Inicio</button>
+  return `<section class="stack mi-ficha">${backBtn()}
     ${fichaBig(f).replace(/<button class="back"[^>]*>[\s\S]*?<\/button>/, "")}
     <div class="inline"><button class="btn btn-primary" data-action="ficha-edit-mia" data-id="${esc(f.id)}">Editar mi ficha</button><button class="btn btn-ghost" data-action="mia-cambiar">No es mi ficha</button></div>
     ${clave}</section>`;
@@ -4392,7 +4403,7 @@ document.addEventListener("submit", e => { if(e.target.id === "form-fp"){ e.prev
 function renderLlevar(){
   const hay = state.lugares.length;
   return `<section class="stack">
-    <button class="back" data-action="tab" data-tab="inicio">${icon("back")}Inicio</button>
+    ${backBtn()}
     <div class="intro"><h1>Llevarme</h1><p class="lede">Elige adónde ir: la app te guía calle por calle, sin internet.</p></div>
     ${hay ? navRow(99) : `<div class="card"><p>Todavía no guardaste lugares. Agrega la dirección de tu casa y la de tus familiares.</p></div>`}
     ${hay ? `<div class="azwrap"><canvas id="azmap" tabindex="0" aria-label="Plano con tus lugares"></canvas><div class="mapbtns"><button class="btn btn-ghost" data-action="map-z" data-f="1.4" aria-label="Acercar">+</button><button class="btn btn-ghost" data-action="map-z" data-f="0.7" aria-label="Alejar">−</button></div></div>${mapLeyenda()}` : ""}
@@ -4775,10 +4786,27 @@ function screenHash(){
   return ui.tab;
 }
 const histUrl = () => location.pathname + location.search + (screenHash() ? "#" + screenHash() : "");
+const NAVS = [];   /* pantallas anteriores dentro de la app, para el botón «volver» */
+const SUB_LBL = {prob:"Tengo un problema", hoy:"¿Qué hago hoy?", queda:"¿Cuánto nos queda?", config:"Configuración", recs:"Recordatorios", corte:"Contador de corte", aviso:"Estoy bien", mapa:"Mapa", ayuda:"Necesito ayuda", llevar:"Llevarme", ir:"Llevarme", mificha:"Mi ficha", mes:"Plan de corte largo", radio:"Radio", manual:"Manual en papel"};
+const TAB_LBL = {inicio:"Inicio", guias:"Guías", preparar:"Preparar", aprender:"Aprender", numeros:"Plan", linterna:"Herramientas"};
+function scrLabel(st){
+  if(!st) return "Inicio";
+  if(st.guide){ const g = GUIDES.find(x => x.id === st.guide); if(g) return g.title; }
+  if(st.sub === "prob" && st.pbId){ const p = pbFind(st.pbId); if(p) return p.t; }
+  if(st.sub && SUB_LBL[st.sub]) return SUB_LBL[st.sub];
+  return TAB_LBL[st.tab] || "Inicio";
+}
+function backBtn(){
+  /* Al dibujar una pantalla nueva, la anterior todavía es la del historial */
+  const h = history.state, prev = h && h.k && h.k !== scrKey() ? h : NAVS[NAVS.length - 1];
+  if(prev && prev.k && prev.k !== scrKey()) return `<button class="back" data-action="volver">${icon("back")}${esc(scrLabel(prev))}</button>`;
+  return `<button class="back" data-action="tab" data-tab="inicio">${icon("back")}Inicio</button>`;
+}
 function histSync(){
   if(histPop) return;
   const k = scrKey(), cur = history.state && history.state.k;
   if(k === cur) return;
+  if(cur){ NAVS.push(history.state); if(NAVS.length > 40) NAVS.shift(); }
   try{ history[cur ? "pushState" : "replaceState"](histState(), "", histUrl()); }catch(e){}
 }
 const histState = () => ({k:scrKey(), tab:ui.tab, sub:ui.sub, guide:ui.guide, planSeg:ui.planSeg, prep:ui.prep, mostrar:!!(ui.ayuda && ui.ayuda.mostrar), pbId:ui.pbId || null});
@@ -4792,6 +4820,7 @@ window.addEventListener("popstate", e => {
     return;
   }
   if((!s || !s.k) && location.hash.length > 1 && location.hash.slice(1) !== screenHash()) return; /* un acceso directo: lo atiende «hashchange» */
+  if(s && s.k){ while(NAVS.length && NAVS[NAVS.length - 1].k !== s.k) NAVS.pop(); if(NAVS.length) NAVS.pop(); } else NAVS.length = 0;
   if(!s || !s.k) routeHash((location.hash || "").slice(1));
   else{ ui.tab = s.tab; ui.sub = s.sub; ui.guide = s.guide; if(s.planSeg) ui.planSeg = s.planSeg; if(s.prep) ui.prep = s.prep; if(ui.ayuda) ui.ayuda.mostrar = !!s.mostrar; ui.pbId = s.pbId || null; }
   ui.resetAsk = null; ui.delAsk = null; ui.sosAsk = false; ui.invEdit = null; ui.invDel = null; ui.fichaEdit = null; ui.fichaBig = null; ui.fichaDel = null;
@@ -4841,7 +4870,7 @@ function renderRecs(){
     }).join("")}</ul>`).join("");
   const elegidos = REMINDERS.filter(recOn).length;
   return `<section class="stack">
-    <button class="back" data-action="tab" data-tab="inicio">${icon("back")}Inicio</button>
+    ${backBtn()}
     <div class="intro"><h1>Recordatorios</h1><p class="lede">Elige qué quieres que la app te recuerde y cada cuánto. Lo que no elijas, no aparece.</p></div>
     <div class="card rec-aqui${aqui ? " on" : ""}"><h2>En este celular</h2>
       <label class="check${aqui ? " on" : ""}" for="rec-aqui"><input type="checkbox" id="rec-aqui" data-recs-aqui="1"${aqui ? " checked" : ""}><span><strong>Mostrar los recordatorios en este celular</strong><br><small>${aqui ? "Aparecen arriba en el Inicio cuando toca hacer algo." : "Apagado: en este celular no aparece ningún aviso."}</small></span></label>
@@ -4878,7 +4907,7 @@ async function recNotif(){
 
 /* ---------- Configuración: todos los ajustes en un lugar (engranaje arriba a la derecha) ----------
    En un celular con control parental se ve todo; para cambiar algo, salvo voz y vibración, pide el PIN. */
-const APP_VER = 27;
+const APP_VER = 28;
 const GEAR_SVG = `<svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>`;
 function renderConfig(){
   const lc = lockCfg(), lockOn = !!(lc && lc.on), f = miFicha(), fp = fpCfg(), aqui = recsAqui(), nRec = REMINDERS.filter(recOn).length;
@@ -4887,7 +4916,7 @@ function renderConfig(){
   const provs = `<option value="">Elige tu provincia</option>${PROVINCIAS.map(p => `<option${state.provincia === p ? " selected" : ""}>${p}</option>`).join("")}`;
   const ciuds = `<option value="">Otra ciudad</option>${Object.keys(CIUDADES).map(c => `<option${state.ciudad === c ? " selected" : ""}>${c}</option>`).join("")}`;
   return `<section class="stack cfg">
-    <button class="back" data-action="tab" data-tab="inicio">${icon("back")}Inicio</button>
+    ${backBtn()}
     <div class="intro"><h1>Configuración</h1><p class="lede">Todos los ajustes de la app en un solo lugar.</p></div>
     ${lockOn ? `<p class="cfg-lock">${icon("id")}<span>Este celular tiene control parental: para cambiar algo, salvo la voz y la vibración, hace falta el PIN de un adulto.</span></p>` : ""}
 
@@ -4919,6 +4948,7 @@ function renderConfig(){
     <div class="card"><h2>Batería y app</h2>
       ${fila("Modo ahorro de batería", "Pantalla negra y solo lo esencial", `<button class="btn btn-ghost btn-sm" data-action="ahorro-on">Activar</button>`)}
       ${installEvt ? fila("Instalar en este celular", "Abre sin internet y el GPS funciona", `<button class="btn btn-primary btn-sm" data-action="install">Instalar</button>`) : ""}
+      <div class="cfg-row"><div class="cfg-t"><strong>Accesos rápidos</strong><span>Con la app instalada, mantén apretado el ícono de Preparados en la pantalla del celular: aparecen «Necesito ayuda», «Tengo un problema», «¿Qué hago hoy?» y «Llevarme». Puedes arrastrar cualquiera a la pantalla como un ícono más.</span></div></div>
       ${fila("Guardado permanente", ui.persist ? "Activado: el celular no borra los datos solo" : "Sin confirmar todavía", ui.persist ? "" : `<button class="btn btn-ghost btn-sm" data-action="cfg-persist">Pedir</button>`)}
     </div>
 
@@ -5346,7 +5376,7 @@ function renderProb(){
   const urg = PROBLEMAS.filter(x => x.urg);
   const cats = PB_CATS.map(c => { const l = PROBLEMAS.filter(x => x.c === c.id && !x.urg); return `<details class="hsec pb-cat" data-pbcat="${c.id}"${ui.pbOpen === c.id ? " open" : ""}><summary><span class="g-ic">${icon(c.ic)}</span><span class="hs-t"><strong>${c.t}</strong><span>${l.length} problemas</span></span><span class="hs-chev" aria-hidden="true"></span></summary><ul class="glist pb-in">${l.map(pbRow).join("")}</ul></details>`; }).join("");
   return `<section class="stack pb">
-    <button class="back" data-action="tab" data-tab="inicio">${icon("back")}Inicio</button>
+    ${backBtn()}
     <div class="intro"><h1>Tengo un problema</h1><p class="lede">Elige qué está pasando y te digo qué hacer, paso a paso, con lo que tienen en casa.</p></div>
     <div class="pb-urgbox"><span class="lbl">Urgente</span><ul class="glist">${urg.map(pbRow).join("")}</ul></div>
     <div class="field"><label class="lbl" for="pb-q">Buscar</label><input id="pb-q" type="search" autocomplete="off" enterkeyhint="search" value="${esc(ui.pbQ || "")}" placeholder="Ej.: fiebre, agua, frío, inodoro"></div>
@@ -5513,6 +5543,19 @@ function hoyPend(){
   const c = h.chk[isoOf(today0())] || {}, l = hoyMias(n, h.enc);
   return {n, total:l.length, hechas:l.filter(t => c[t.id]).length};
 }
+/* Inicio durante un corte: un solo panel con lo que importa ese día */
+function corteCard(){
+  const n = hoyDia(), p = hoyPend();
+  const hoySub = !p ? "" : p.sinEnc ? "Elige tus encargos" : p.hechas >= p.total ? "Hiciste todas tus tareas de hoy" : `${p.total - p.hechas === 1 ? "Te queda 1 tarea" : `Te quedan ${p.total - p.hechas} tareas`}`;
+  let qSub = "Carga el inventario para saberlo", crit = false;
+  if(state.inv.length){ const t = qdTodo(); if(t.r.length){ const m = t.r.map(x => Object.assign({}, x, {hoy:qdHoy(x.dias)})).sort((x, y) => x.hoy - y.hoy)[0]; crit = m.hoy <= 3; qSub = `Lo primero: ${m.t.toLowerCase()}, ${m.hoy === 0 ? "se termina hoy" : m.hoy === 1 ? "1 día" : `${qdDiasTxt(m.hoy)} días`}`; } }
+  return `<div class="cc" role="group" aria-label="Corte de luz en curso">
+    <div class="cc-h"><span class="dot" aria-hidden="true"></span><span><strong>Sin luz hace <span data-live="short">${fmtDur(elapsed())}</span></strong> · día ${n}</span></div>
+    <button class="cc-r" data-action="go-hoy">${icon("cal")}<span><strong>¿Qué hago hoy?</strong><span>${hoySub}</span></span>${icon("chev")}</button>
+    <button class="cc-r${crit ? " crit" : ""}" data-action="go-queda">${icon("can")}<span><strong>¿Cuánto nos queda?</strong><span>${esc(qSub)}</span></span>${icon("chev")}</button>
+    <button class="cc-r" data-action="go-corte">${icon("bolt")}<span><strong>Heladera y freezer</strong><span>Cuánto aguanta la comida</span></span>${icon("chev")}</button>
+  </div>`;
+}
 function hoyBanner(){
   const p = hoyPend(); if(!p) return "";
   const sub = p.sinEnc ? "Elige tus encargos y mira qué hacer hoy" : p.hechas >= p.total ? "Hiciste todas tus tareas de hoy" : `${p.total - p.hechas === 1 ? "Te queda 1 tarea" : `Te quedan ${p.total - p.hechas} tareas`} para hoy`;
@@ -5536,7 +5579,7 @@ function renderHoy(){
   const h = hoyLoad(), real = hoyDia();
   if(!real && !ui.hoyVer){
     return `<section class="stack hoy">
-      <button class="back" data-action="tab" data-tab="inicio">${icon("back")}Inicio</button>
+      ${backBtn()}
       <div class="intro"><h1>¿Qué hago hoy?</h1><p class="lede">Cuando se corta la luz, la app te dice qué hacer cada día: tus tareas y las de todos.</p></div>
       <button class="btn btn-signal btn-big" data-action="hoy-start" data-n="1">Se cortó la luz hoy</button>
       <div class="card"><label class="lbl" for="hoy-n">¿Ya lleva varios días? Elige en qué día van</label>
@@ -5554,7 +5597,7 @@ function renderHoy(){
   const fecha = real ? (() => { const d = today0(); d.setDate(d.getDate() + (n - real)); return d; })() : null;
   const nav = `<div class="hoy-nav">${n > 1 ? `<button class="btn btn-ghost btn-sm" data-action="hoy-ver" data-n="${n - 1}" aria-label="Día anterior">‹ Día ${n - 1}</button>` : "<span></span>"}${!esHoy && real ? `<button class="btn btn-ghost btn-sm" data-action="hoy-ver" data-n="${real}">Volver a hoy</button>` : ""}<button class="btn btn-ghost btn-sm" data-action="hoy-ver" data-n="${n + 1}" aria-label="Día siguiente">Día ${n + 1} ›</button></div>`;
   return `<section class="stack hoy">
-    <button class="back" data-action="tab" data-tab="inicio">${icon("back")}Inicio</button>
+    ${backBtn()}
     <div class="intro"><p class="phase">${real ? (esHoy ? "Hoy" : n > real ? "Lo que viene" : "Un día anterior") + (fecha ? ` · ${fmtDate(fecha)}` : "") : "Ejemplo, sin corte"}</p><h1>Día ${n} sin luz</h1>
       ${prim ? "" : `<p class="lede">${state.yo ? `${esc(state.yo)}, te` : "Te"} encargas de: <strong>${h.enc.map(e => HOY_ENC.find(x => x.id === e).t).join(", ")}</strong>. <button class="lnk" data-action="hoy-enc-edit">Cambiar</button></p>`}</div>
     ${nav}
@@ -5612,7 +5655,7 @@ function qdTodo(){
   if(a.agua.hay) r.push({id:"agua", t:"Agua", ic:"drop", dias:a.agua.dias, sub:`${fmtNum(a.agua.litros)} litros`, por:`${Math.ceil(P * 4 + G * 0.25)} litros por día para tomar y cocinar`, pb:"se-acaba-agua"});
   if(a.comida.total) r.push({id:"comida", t:"Comida", ic:"food", dias:a.comida.dias, sub:`${fmtNum(Math.round(a.comida.kcal / 1000))} mil calorías`, por:`${fmtNum(P * 2)} mil calorías por día`, pb:"que-cocinar"});
   if(g.items.length) r.push({id:"gas", t:"Gas del anafe", ic:"flame", dias:g.dias, sub:`${fmtNum(Math.round(g.horas * 10) / 10)} horas de fuego`, por:"una comida por día para todos", pb:"ahorrar-gas"});
-  if(G && a.gato) r.push({id:"gato", t:G === 1 ? "Comida del gato" : "Comida de los gatos", ic:"heart", dias:a.gato.dias, sub:`${fmtNum(a.gato.kg)} kg`, por:`${60 * G} g por día`, pb:"gato"});
+  if(G && a.gato && state.inv.some(i => /gato|mascota/.test(norm(i.nombre)))) r.push({id:"gato", t:G === 1 ? "Comida del gato" : "Comida de los gatos", ic:"heart", dias:a.gato.dias, sub:`${fmtNum(a.gato.kg)} kg`, por:`${60 * G} g por día`, pb:"gato"});
   if(a.remedios.dias !== null) r.push({id:"remedios", t:"Remedios", ic:"heart", dias:a.remedios.dias, sub:a.remedios.cual, por:"el que se termina antes", pb:"remedio"});
   r.sort((x, y) => x.dias - y.dias);
   return {r, a, g, no:[].concat(a.agua.no, a.comida.no, a.remedios.no, a.gato ? a.gato.no : [], g.no)};
@@ -5634,7 +5677,7 @@ function qdFila(it){
 }
 function renderQueda(){
   const t = qdTodo(), dia = hoyDia(), d = mesD(), desde = qdDesde();
-  const back = `<button class="back" data-action="tab" data-tab="inicio">${icon("back")}Inicio</button>`;
+  const back = `${backBtn()}`;
   const intro = `<div class="intro"><h1>¿Cuánto nos queda?</h1><p class="lede">Para cuántos días alcanza lo que tienen guardado${dia ? ", y hasta qué día del corte llega" : ""}.</p></div>`;
   if(!state.inv.length) return `<section class="stack qd">${back}${intro}
     <div class="card"><h2>Primero, el inventario</h2><p>Carga lo que tienen guardado: bidones de agua, comida, cartuchos de gas, remedios y lo del gato, con la cantidad («20 litros», «2 kg», «6 latas»). Con eso la app hace la cuenta.</p><button class="btn btn-primary" data-action="go-inv">Ir al inventario</button></div></section>`;
@@ -5779,7 +5822,7 @@ function renderMes(){
   const etapas = mesEtapas().map(([t, items]) => `<li><h3>${t}</h3><ul>${items.map(([x, k]) => `<li>${x}${k ? `<div class="inline">${mesLink(k)}</div>` : ""}</li>`).join("")}</ul></li>`).join("");
   const num = (id, label, v) => `<div class="field mes-n"><span class="lbl" id="lbl-mes-${id}">${label}</span><div class="stepper" role="group" aria-labelledby="lbl-mes-${id}"><button data-action="mes-step" data-k="${id}" data-d="-1" aria-label="Restar">−</button><output aria-live="polite">${v}</output><button data-action="mes-step" data-k="${id}" data-d="1" aria-label="Sumar">+</button></div></div>`;
   return `<section class="stack">
-    <button class="back" data-action="tab" data-tab="inicio">${icon("back")}Inicio</button>
+    ${backBtn()}
     <div class="intro"><h1>${d} días sin luz</h1><p class="lede">Qué tener, cuánto y qué hacer para pasar ${mesPer(d)} sin electricidad en casa.</p></div>
     <div class="card"><h2>¿Para cuánto tiempo?</h2>
       <div class="chips" role="group" aria-label="Duración del corte">${MES_DIAS.map(x => `<button class="chip" data-action="mes-dias" data-d="${x}" aria-pressed="${x === d}">${x} días</button>`).join("")}</div>
@@ -5931,7 +5974,7 @@ function renderAyuda(){
   const dest = ayudaDest(), sel = ayudaSel(), g = a.geo, donde = g ? dondeEstoy(g) : "";
   const geoTxt = g ? `${donde ? `<strong>${esc(donde)}</strong><br>` : ""}<span class="mono">${g.lat.toFixed(5)}, ${g.lng.toFixed(5)}</span>${g.acc ? ` · precisión de unos ${Math.round(g.acc)} m` : ""}${g.at && Date.now() - g.at > 10 * 60000 ? ` · de hace ${fmtDur(Date.now() - g.at)}` : ""}` : (a.gmsg ? "" : "Buscando…");
   return `<section class="stack">
-    <button class="back" data-action="tab" data-tab="inicio">${icon("back")}Inicio</button>
+    ${backBtn()}
     <div class="intro ay-intro"><h1>Necesito ayuda</h1><p class="lede">Respira. Quédate en un lugar seguro y avisa dónde estás.</p></div>
     <a class="btn btn-danger btn-big" href="tel:911">${icon("phone")}Llamar al 911</a>
     <div class="card">
@@ -6014,7 +6057,7 @@ function avisoLinks(){
 function renderAviso(){
   const a = ui.aviso, l = avisoLinks(), c = state.plan.contacto;
   return `<section class="stack">
-    <button class="back" data-action="tab" data-tab="inicio">${icon("back")}Inicio</button>
+    ${backBtn()}
     <div class="intro"><h1>Avisar que estoy bien</h1><p class="lede">Arma el mensaje y mándalo a tu familia.</p></div>
     ${navigator.onLine === false ? offlineCard(true) : ""}
     <div class="card">
@@ -7072,7 +7115,7 @@ function renderMapa(){
       <div id="map-panel" aria-live="polite">${selHTML()}</div></div>
     <div class="card-h"><h2 class="sec">Mis lugares</h2><button class="btn btn-ghost btn-sm" data-action="dir-abrir">+ Agregar dirección</button></div><div id="map-lugares">${lugaresHTML()}</div>`;
   return `<section class="stack">
-    <button class="back" data-action="tab" data-tab="inicio">${icon("back")}Inicio</button>
+    ${backBtn()}
     <div class="intro"><h1>Mapa y brújula</h1><p class="lede">El plano de Azul está guardado en la app: funciona sin internet.</p></div>
     ${seg}
     ${m.tab === "arg" ? argHTML() : azul}
@@ -7572,6 +7615,8 @@ document.addEventListener("click", e => {
     case "go-prob": case "pb-back": ui.pbId = null; go("inicio", {sub:"prob"}); if(el.dataset.action === "pb-back" && ui.pbOpen){ const d = document.querySelector(`[data-pbcat="${ui.pbOpen}"]`); if(d) d.scrollIntoView({block:"start"}); } break;
     case "pb-open": { const p = pbFind(el.dataset.id); if(p){ try{ speechSynthesis.cancel(); }catch(e){} ui.pbId = p.id; if(!p.urg) ui.pbOpen = p.c; go("inicio", {sub:"prob"}); } break; }
     case "pb-chk": pbChk(el); break;
+    case "jump": { const t = document.getElementById(el.dataset.to); if(t) t.scrollIntoView({block:"start", behavior:"smooth"}); break; }
+    case "volver": if(NAVS.length) history.back(); else go("inicio"); break;
     case "go-queda": go("inicio", {sub:"queda"}); break;
     case "go-hoy": ui.hoyVer = 0; ui.hoyEdit = !(hoyLoad().enc || []).length; go("inicio", {sub:"hoy"}); break;
     case "hoy-chk": hoyChk(el); break;
