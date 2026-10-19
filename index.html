@@ -679,6 +679,14 @@ body.navegando .view{padding-bottom:calc(28px + env(safe-area-inset-bottom,0px))
 .hoy-o h3{display:flex;gap:8px;align-items:center;margin:4px 0 8px;font-size:17px}.hoy-o+.hoy-o{margin-top:8px}
 .lnk{display:inline;padding:0;margin:0;background:none;border:0;color:var(--blue);font:inherit;font-weight:700;text-decoration:underline;min-height:0}
 .hoy-ban{background:var(--surface-2);border-color:var(--blue)}.hoy-ban .dot{background:var(--blue)}
+.qd-v{display:flex;flex-direction:column;gap:6px;padding:16px;border-radius:var(--r);border:2px solid var(--ok);background:var(--ok-soft)}
+.qd-v p{margin:0}.qd-v.warn{border-color:var(--warn-fill);background:var(--warn-soft)}.qd-v.crit{border-color:var(--crit);background:var(--crit-soft)}
+.qd-big{font-size:22px;line-height:1.25}.qd-v .btn{align-self:flex-start}
+.auto-t.qd-warn{border-color:var(--warn-fill);background:var(--warn-soft)}.auto-t.qd-crit{border-color:var(--crit);background:var(--crit-soft)}
+.qd-l{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.qd-it{display:grid;grid-template-columns:minmax(0,1fr) 46%;gap:10px;align-items:center}.qd-n{font-weight:700;line-height:1.3}
+.qd-falta{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+.qd-ban{background:var(--crit-soft);border-color:var(--crit)}.qd-ban .dot{background:var(--crit)}
 .mf-btn.pb-home{border-left:6px solid var(--signal)}.pb-home>.ic:first-child{color:var(--signal-ink)}
 .pb .quick{grid-template-columns:1fr}
 .pb-urgbox{display:flex;flex-direction:column;gap:6px}.pb-urg .g-ic{background:var(--crit);color:var(--on-crit)}
@@ -2563,7 +2571,7 @@ const icon = (name, cls) => `<svg class="ic ${cls || ""}" viewBox="0 0 24 24" ar
 
 /* ---------- Estado: solo en este navegador ---------- */
 const KEY = "preparados.v1";
-const state = {checks:{}, corte:null, contacts:[], punto:"", inv:[], recs:{}, plan:{miembros:[], mascotas:"", tareas:{}, lugares:{}, contacto:{}, sim:null}, fichas:[], provincia:"", ciudad:"Azul", yo:"", trash:[], lastBackup:0, lugares:[], ultimaPos:null, mes:{checks:{}}, radioOk:{}, navVoz:true, navVib:true, ahorro:false, manual:{}, miAviso:null, avisos:[]};
+const state = {checks:{}, corte:null, contacts:[], punto:"", inv:[], recs:{}, plan:{miembros:[], mascotas:"", tareas:{}, lugares:{}, contacto:{}, sim:null}, fichas:[], provincia:"", ciudad:"Azul", yo:"", trash:[], lastBackup:0, invConteo:"", lugares:[], ultimaPos:null, mes:{checks:{}}, radioOk:{}, navVoz:true, navVib:true, ahorro:false, manual:{}, miAviso:null, avisos:[]};
 function load(){
   try{
     const raw = localStorage.getItem(KEY);
@@ -2588,6 +2596,7 @@ function load(){
     if(typeof s.ciudad === "string" && (s.ciudad === "" || CIUDADES[s.ciudad])) state.ciudad = s.ciudad;
     if(Array.isArray(s.trash)) state.trash = s.trash.filter(t => t && t.item && t.tipo && Date.now() - t.at < 30 * 864e5).slice(0, 60);
     if(typeof s.lastBackup === "number") state.lastBackup = s.lastBackup;
+    if(typeof s.invConteo === "string") state.invConteo = s.invConteo;
     if(Array.isArray(s.lugares)) state.lugares = s.lugares.filter(l => l && l.id && l.nombre && isFinite(l.lat) && isFinite(l.lng)).slice(0, 40);
     if(s.miAviso && s.miAviso.at && s.miAviso.estado) state.miAviso = s.miAviso;
     if(s.radioOk && typeof s.radioOk === "object") state.radioOk = s.radioOk;
@@ -2658,6 +2667,7 @@ function hsec(id, ic, title, sub, body, extra){
 }
 function renderHome(){
   const ahora = [];
+  const qb = qdBanner(); if(qb) ahora.push(qb);
   const hb = hoyBanner(); if(hb) ahora.push(hb);
   if(state.corte) ahora.push(`<button class="banner" data-action="go-corte"><span class="dot" aria-hidden="true"></span><span class="banner-txt"><strong>Sin luz hace <span data-live="short">${fmtDur(elapsed())}</span></strong><span>Ver el contador de la heladera</span></span>${icon("chev")}</button>`);
   if(navigator.onLine === false) ahora.push(`<button class="net-line" data-action="go-compartir" data-to="qs"><span class="dot" aria-hidden="true"></span>Sin conexión: la app funciona igual. Para pasar datos, Quick Share.</button>`);
@@ -2674,6 +2684,7 @@ function renderHome(){
   const ext = GUIDES.filter(g => g.group === "extremo");
   const extremo = `<button class="btn btn-primary" data-action="go-mes">${icon("cal")}Plan de corte largo: 7, 15 o 30 días</button>
     <button class="btn btn-ghost" data-action="go-hoy">${icon("cal")}¿Qué hago hoy? Las tareas de cada día</button>
+    <button class="btn btn-ghost" data-action="go-queda">${icon("can")}¿Cuánto nos queda? Agua, comida y gas</button>
     <button class="btn btn-ghost" data-action="go-prob">${icon("help")}Tengo un problema: qué hacer paso a paso</button>
     <div class="chips">${ext.map(g => `<button class="chip" data-action="guide" data-id="${g.id}">${g.title}</button>`).join("")}</div>`;
   const c = CIUDADES[state.ciudad];
@@ -2741,7 +2752,7 @@ function renderGuides(){
     <h2 class="sec">Saber hacer</h2>
     <ul class="glist">${GUIDES.filter(g => g.group === "saber").map(row).join("")}</ul>
     <details class="ext-g" id="extremo"${ui.extOpen ? " open" : ""}><summary><h2 class="sec">Caso extremo</h2><span class="fine">Varios días en casa sin luz, gas ni agua · ${GUIDES.filter(g => g.group === "extremo").length + 1} guías</span></summary>
-    <ul class="glist"><li><button class="grow" data-action="go-hoy"><span class="g-ic">${icon("cal")}</span><span class="g-txt"><strong>¿Qué hago hoy?</strong><span>Las tareas de cada día del corte, repartidas entre todos.</span></span><span class="g-meta">${icon("chev")}</span></button></li><li><button class="grow" data-action="go-prob"><span class="g-ic">${icon("help")}</span><span class="g-txt"><strong>Tengo un problema</strong><span>Falta agua, hace frío, alguien se enfermó: qué hacer, paso a paso.</span></span><span class="g-meta">${icon("chev")}</span></button></li><li><button class="grow" data-action="go-mes"><span class="g-ic">${icon("cal")}</span><span class="g-txt"><strong>Plan de corte largo</strong><span>Para 7, 15 o 30 días: qué tener, cuánto y qué hacer cada semana.</span></span><span class="g-meta">${icon("chev")}</span></button></li>${GUIDES.filter(g => g.group === "extremo").map(row).join("")}</ul></details>
+    <ul class="glist"><li><button class="grow" data-action="go-queda"><span class="g-ic">${icon("can")}</span><span class="g-txt"><strong>¿Cuánto nos queda?</strong><span>Para cuántos días alcanzan el agua, la comida y el gas.</span></span><span class="g-meta">${icon("chev")}</span></button></li><li><button class="grow" data-action="go-hoy"><span class="g-ic">${icon("cal")}</span><span class="g-txt"><strong>¿Qué hago hoy?</strong><span>Las tareas de cada día del corte, repartidas entre todos.</span></span><span class="g-meta">${icon("chev")}</span></button></li><li><button class="grow" data-action="go-prob"><span class="g-ic">${icon("help")}</span><span class="g-txt"><strong>Tengo un problema</strong><span>Falta agua, hace frío, alguien se enfermó: qué hacer, paso a paso.</span></span><span class="g-meta">${icon("chev")}</span></button></li><li><button class="grow" data-action="go-mes"><span class="g-ic">${icon("cal")}</span><span class="g-txt"><strong>Plan de corte largo</strong><span>Para 7, 15 o 30 días: qué tener, cuánto y qué hacer cada semana.</span></span><span class="g-meta">${icon("chev")}</span></button></li>${GUIDES.filter(g => g.group === "extremo").map(row).join("")}</ul></details>
     <h2 class="sec" id="zona">Según dónde vives</h2>
     ${zonaHTML(row)}
     <p class="fine">Basadas en fuentes oficiales argentinas e internacionales. No reemplazan las indicaciones de las autoridades ni la atención médica.</p>
@@ -3939,7 +3950,7 @@ function autonomiaHTML(compact){
     <div class="auto-g">${tiles}</div>
     ${no.length ? `<p class="fine"><strong>No pude contar:</strong> ${no.slice(0, 6).map(esc).join(", ")}${no.length > 6 ? "…" : ""}. Escribe la cantidad así: «12 litros», «2 kg», «6 latas», «3 paquetes» o, para remedios, «30 días».</p>` : ""}
     <p class="fine">Estimación: 4 litros de agua y 2.000 calorías por persona por día${a.G ? ", y 60 g de alimento por gato" : ""}. Cambia la cantidad de personas en el plan de corte largo.</p>
-    <div class="inline"><button class="btn btn-ghost btn-sm" data-action="go-mes">Personas y plan de corte largo</button></div></div>`;
+    <div class="inline"><button class="btn btn-primary btn-sm" data-action="go-queda">¿Cuánto nos queda?</button><button class="btn btn-ghost btn-sm" data-action="go-mes">Personas y plan de corte largo</button></div></div>`;
 }
 
 /* ---------- Modo ahorro de batería ---------- */
@@ -4755,7 +4766,7 @@ document.addEventListener("keydown", e => { if(e.key === "Escape"){ const ov = d
 const scrKey = () => [ui.tab, ui.sub || "", ui.guide || "", ui.tab === "numeros" ? ui.planSeg || "" : "", ui.tab === "preparar" ? ui.prep || "" : "", ui.ayuda && ui.ayuda.mostrar && ui.sub === "ayuda" ? "m" : "", ui.sub === "prob" ? ui.pbId || "" : ""].join("|");
 let histPop = false;
 /* La dirección de cada pantalla: si Android recarga la app, vuelve a la misma pantalla */
-const SUB_HASH = {hoy:"hoy", prob:"problema", config:"configuracion", recs:"recordatorios", corte:"corte", aviso:"aviso", mapa:"mapa", ayuda:"ayuda", llevar:"llevar", ir:"llevar", mificha:"mificha", mes:"30dias", radio:"radio", manual:"manual"};
+const SUB_HASH = {queda:"cuanto-queda", hoy:"hoy", prob:"problema", config:"configuracion", recs:"recordatorios", corte:"corte", aviso:"aviso", mapa:"mapa", ayuda:"ayuda", llevar:"llevar", ir:"llevar", mificha:"mificha", mes:"30dias", radio:"radio", manual:"manual"};
 function screenHash(){
   if(ui.tab === "inicio") return ui.sub === "prob" && ui.pbId ? "problema-" + ui.pbId : SUB_HASH[ui.sub] || "";
   if(ui.tab === "guias") return ui.guide ? "guia-" + ui.guide : "guias";
@@ -4867,7 +4878,7 @@ async function recNotif(){
 
 /* ---------- Configuración: todos los ajustes en un lugar (engranaje arriba a la derecha) ----------
    En un celular con control parental se ve todo; para cambiar algo, salvo voz y vibración, pide el PIN. */
-const APP_VER = 26;
+const APP_VER = 27;
 const GEAR_SVG = `<svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>`;
 function renderConfig(){
   const lc = lockCfg(), lockOn = !!(lc && lc.on), f = miFicha(), fp = fpCfg(), aqui = recsAqui(), nRec = REMINDERS.filter(recOn).length;
@@ -5009,7 +5020,7 @@ const PROBLEMAS = [
       "Pregunten en la radio o a los vecinos dónde reparten agua: escuelas, bomberos, la municipalidad.",
       "Lleven bidones vacíos con tapa y vayan de a dos."],
    ayuda:"Si alguien no hace pis en 8 horas, tiene la boca muy seca o está muy decaído, le falta agua: llama al 107.",
-   tel:["107", "agua"], ir:[["g","agua-lluvia"], ["p","agua-turbia"], ["h","radio"]]},
+   tel:["107", "agua"], ir:[["h","cuanto-queda"], ["g","agua-lluvia"], ["p","agua-turbia"], ["h","radio"]]},
 
   /* ---- Comida y cocina ---- */
   {id:"heladera", c:"comida", t:"La heladera dejó de enfriar", kw:"heladera freezer frio comida se echa a perder",
@@ -5052,7 +5063,7 @@ const PROBLEMAS = [
       "Polenta con queso rallado o con una lata de tomate: rinde mucho y se hace rápido.",
       "Desayuno y merienda: leche en polvo, pan o galletitas, dulce y fruta.",
       "Si queda poco, repartan en porciones iguales y cuenten para cuántos días alcanza."],
-   ir:[["h","inventario"], ["g","reserva-comida"], ["h","30dias"]]},
+   ir:[["h","cuanto-queda"], ["h","inventario"], ["g","reserva-comida"]]},
   {id:"gato", c:"comida", t:"Se termina la comida o las piedras del gato", kw:"gato mascota alimento piedras arena sanitaria",
    p:["Por unos días puede comer pollo o carne hervida sin sal, o un poco de atún al natural.",
       "Nunca le des cebolla, ajo, chocolate, uvas, leche ni huesos cocidos.",
@@ -5294,7 +5305,7 @@ const PB_TEL = {
   apoyo:{n:"0800 345 1435", tel:"08003451435", sh:"Prevención del suicidio", ic:"phone"},
   hosp:{city:"heart"}, luz:{city:"bolt"}, agua:{city:"drop"}, gas:{city:"flame"}
 };
-const PB_IR_H = {inventario:"Inventario", radio:"Radio y comunicación", aviso:"Estoy bien", plan:"Plan familiar", corte:"Contador de corte", "30dias":"Plan de corte largo", ficha:"Fichas médicas", mificha:"Mi ficha", ayuda:"Necesito ayuda"};
+const PB_IR_H = {"cuanto-queda":"¿Cuánto nos queda?", inventario:"Inventario", radio:"Radio y comunicación", aviso:"Estoy bien", plan:"Plan familiar", corte:"Contador de corte", "30dias":"Plan de corte largo", ficha:"Fichas médicas", mificha:"Mi ficha", ayuda:"Necesito ayuda"};
 const PB_IR_A = {"ahorro-on":"Modo ahorro de batería", linterna:"Linterna", silbato:"Silbato"};
 const PB_STOP = ["que","los","las","del","una","uno","hay","nos","con","por","para","tengo","tiene","tenemos","esta","estan","esta","anda","andan","funciona","mucho","muy","algo","como","hago","hacer","pasa","casa"];
 const pbFind = id => PROBLEMAS.find(x => x.id === id);
@@ -5415,12 +5426,12 @@ const HOY_T = [
   {id:"t-manos", e:"todos", d:"*", t:"Lavarse las manos antes de comer y después de ir al baño."},
   {id:"t-noche", e:"todos", d:"*", t:"Cenar temprano, con luz de día, y a la noche un juego o un cuento.", ir:["p","noche"]},
   {id:"t-frio", e:"todos", d:"*", t:"Si hace frío: todos en una sola habitación, y ventilar 10 minutos a la mañana.", ir:["p","frio"]},
-  {id:"t-revision", e:"todos", d:"c4:4", t:"Revisión de la semana: qué se está terminando y qué hay que conseguir.", ir:["h","inventario"]},
+  {id:"t-revision", e:"todos", d:"c4:4", t:"Revisión: qué se está terminando y qué hay que conseguir.", ir:["h","cuanto-queda"]},
 
   /* Agua */
   {id:"a-llenar", e:"agua", d:"1", t:"Mientras haya presión, llenar todo: bidones, ollas con tapa, botellas, baldes y la bañera.", ir:["p","poca-agua"]},
   {id:"a-separar", e:"agua", d:"1", t:"Separar el agua para tomar y cocinar (bidones cerrados) de la del baño (bañera y baldes)."},
-  {id:"a-contar", e:"agua", d:"*", t:"Ver cuánta agua queda y anotarlo. Para tomar y cocinar hacen falta {agua} litros por día."},
+  {id:"a-contar", e:"agua", d:"*", t:"Contar cuánta agua queda y anotarlo en la app. Para tomar y cocinar hacen falta {agua} litros por día.", ir:["h","cuanto-queda"]},
   {id:"a-canilla", e:"agua", d:"2+", t:"Probar la canilla a la mañana y a la noche: si hay presión, rellenar lo que se usó."},
   {id:"a-lluvia", e:"agua", d:"c4:2", t:"Si llueve, poner afuera baldes y fuentes limpias. Esa agua se trata antes de tomarla.", ir:["p","agua-turbia"]},
   {id:"a-bidones", e:"agua", d:"c3:3", t:"Enjuagar con unas gotas de lavandina los bidones vacíos antes de volver a llenarlos."},
@@ -5433,7 +5444,7 @@ const HOY_T = [
   {id:"c-heladera", e:"comida", d:"2", t:"Revisar la heladera: carne, lácteos, huevos y sobras que estuvieron más de 4 horas sin frío se tiran.", ir:["p","comida-rara"]},
   {id:"c-freezer", e:"comida", d:"3", t:"Revisar el freezer: lo que ya no está frío se cocina hoy o se tira.", ir:["p","comida-rara"]},
   {id:"c-vence", e:"comida", d:"4+", t:"Usar primero lo que vence antes. Está en el Inventario.", ir:["h","inventario"]},
-  {id:"c-porciones", e:"comida", d:"c3:4", t:"Contar la comida que queda y repartirla en porciones para los días que faltan.", ir:["h","30dias"]},
+  {id:"c-porciones", e:"comida", d:"c3:4", t:"Contar la comida que queda, anotarlo en la app y repartirla en porciones para los días que faltan.", ir:["h","cuanto-queda"]},
 
   /* Luz, cargas y noticias */
   {id:"e-ahorro", e:"energia", d:"1", t:"Poner el modo ahorro en los 4 celulares y bajar el brillo.", ir:["a","ahorro-on"]},
@@ -5582,6 +5593,90 @@ function hoyManual(){
   const grupo = (t, e) => `<h3>${t}</h3><ul>${HOY_T.filter(x => x.e === e).map(x => `<li><strong>${hoyCuando(x.d)}:</strong> ${esc(hoyTxt(x.t))}${x.ad ? " (con un adulto)" : ""}</li>`).join("")}</ul>`;
   return `<p>El día 1 es el día en que se cortó la luz. Cada uno se encarga de uno o más temas; «Para todos» es de todos.</p>${grupo("Para todos", "todos")}${HOY_ENC.map(e => grupo(e.t, e.id)).join("")}`;
 }
+
+/* ---------- ¿Cuánto nos queda?: para cuántos días alcanza lo que hay, y hasta qué día del corte llega ----------
+   Usa el inventario. Durante el corte, se cuenta de nuevo lo que queda (tarea del encargo de agua y de comida). */
+const QD_GAS_H = 1.5;   /* horas de fuego medio de un cartucho de 227 g */
+const QD_KG_H = 5;      /* horas por kg de una garrafa */
+function qdGas(){
+  const P = mesCfg().p, horasDia = P * 0.25;
+  let horas = 0; const no = [], items = state.inv.filter(i => /cartucho|garrafa|butano/.test(norm(i.nombre)));
+  items.forEach(i => { const c = parseCant(i.cant || ""); if(!c) return no.push(i.nombre);
+    if(c.u === "kg") horas += c.n * QD_KG_H; else if(c.u === "u" || c.u === "paq") horas += c.n * QD_GAS_H * (c.u === "paq" ? 4 : 1); else no.push(i.nombre); });
+  return {items, horas, dias:items.length ? Math.floor(horas / horasDia) : null, no};
+}
+/* Todo junto: cada recurso con sus días, ordenado de lo que se termina antes a lo que dura más */
+function qdTodo(){
+  const a = autonomia(), g = qdGas(), P = a.P, G = a.G;
+  const r = [];
+  if(a.agua.hay) r.push({id:"agua", t:"Agua", ic:"drop", dias:a.agua.dias, sub:`${fmtNum(a.agua.litros)} litros`, por:`${Math.ceil(P * 4 + G * 0.25)} litros por día para tomar y cocinar`, pb:"se-acaba-agua"});
+  if(a.comida.total) r.push({id:"comida", t:"Comida", ic:"food", dias:a.comida.dias, sub:`${fmtNum(Math.round(a.comida.kcal / 1000))} mil calorías`, por:`${fmtNum(P * 2)} mil calorías por día`, pb:"que-cocinar"});
+  if(g.items.length) r.push({id:"gas", t:"Gas del anafe", ic:"flame", dias:g.dias, sub:`${fmtNum(Math.round(g.horas * 10) / 10)} horas de fuego`, por:"una comida por día para todos", pb:"ahorrar-gas"});
+  if(G && a.gato) r.push({id:"gato", t:G === 1 ? "Comida del gato" : "Comida de los gatos", ic:"heart", dias:a.gato.dias, sub:`${fmtNum(a.gato.kg)} kg`, por:`${60 * G} g por día`, pb:"gato"});
+  if(a.remedios.dias !== null) r.push({id:"remedios", t:"Remedios", ic:"heart", dias:a.remedios.dias, sub:a.remedios.cual, por:"el que se termina antes", pb:"remedio"});
+  r.sort((x, y) => x.dias - y.dias);
+  return {r, a, g, no:[].concat(a.agua.no, a.comida.no, a.remedios.no, a.gato ? a.gato.no : [], g.no)};
+}
+/* Lo que pasó desde el último conteo se descuenta solo, como estimación */
+function qdDesde(){ const d = parseISO(state.invConteo || ""); return d ? Math.max(0, Math.round((today0() - d) / 864e5)) : null; }
+function qdHoy(dias){ const s = state.corte ? qdDesde() : null; return s ? Math.max(0, dias - s) : dias; }
+const qdNivel = d => d <= 2 ? "crit" : d <= 5 ? "warn" : "ok";
+const qdDiasTxt = d => d >= 60 ? "60 o más" : String(d);
+function qdBanner(){
+  if(!state.corte || !state.inv.length) return "";
+  const t = qdTodo(); if(!t.r.length) return "";
+  const m = t.r.map(x => Object.assign({}, x, {hoy:qdHoy(x.dias)})).sort((x, y) => x.hoy - y.hoy)[0];
+  if(m.hoy > 3) return "";
+  return `<button class="banner qd-ban" data-action="go-queda"><span class="dot" aria-hidden="true"></span><span class="banner-txt"><strong>${m.t}: ${m.hoy === 0 ? "se termina hoy" : m.hoy === 1 ? "queda para 1 día" : `queda para ${m.hoy} días`}</strong><span>Mira cómo estirarlo y qué conseguir</span></span>${icon("chev")}</button>`;
+}
+function qdFila(it){
+  return `<li class="qd-it"><label class="qd-n" for="qd-${esc(it.id)}">${esc(it.nombre)}</label><input id="qd-${esc(it.id)}" data-qd="${esc(it.id)}" value="${esc(it.cant || "")}" placeholder="Ej.: 12 litros" autocomplete="off" enterkeyhint="done"></li>`;
+}
+function renderQueda(){
+  const t = qdTodo(), dia = hoyDia(), d = mesD(), desde = qdDesde();
+  const back = `<button class="back" data-action="tab" data-tab="inicio">${icon("back")}Inicio</button>`;
+  const intro = `<div class="intro"><h1>¿Cuánto nos queda?</h1><p class="lede">Para cuántos días alcanza lo que tienen guardado${dia ? ", y hasta qué día del corte llega" : ""}.</p></div>`;
+  if(!state.inv.length) return `<section class="stack qd">${back}${intro}
+    <div class="card"><h2>Primero, el inventario</h2><p>Carga lo que tienen guardado: bidones de agua, comida, cartuchos de gas, remedios y lo del gato, con la cantidad («20 litros», «2 kg», «6 latas»). Con eso la app hace la cuenta.</p><button class="btn btn-primary" data-action="go-inv">Ir al inventario</button></div></section>`;
+  const r = t.r.map(x => Object.assign({}, x, {hoy:qdHoy(x.dias)})).sort((x, y) => x.hoy - y.hoy);
+  const m = r[0];
+  const fechaDia = n => { const f = today0(); f.setDate(f.getDate() + n); return `${["domingo","lunes","martes","miércoles","jueves","viernes","sábado"][f.getDay()]} ${pad(f.getDate())}/${pad(f.getMonth() + 1)}`; };
+  const verd = m ? `<div class="qd-v ${qdNivel(m.hoy)}"><p class="phase">Lo primero que se termina</p><p class="qd-big"><strong>${m.t}</strong>: ${m.hoy === 0 ? "se termina hoy" : `alcanza para <span class="mono">${qdDiasTxt(m.hoy)}</span> ${m.hoy === 1 ? "día" : "días"}`}</p>
+      ${dia && m.hoy < 60 ? `<p>Llega hasta el <strong>día ${dia + Math.max(0, m.hoy - 1)} del corte</strong>${m.hoy ? `, el ${fechaDia(m.hoy - 1)}` : ""}.${dia + m.hoy - 1 < d ? ` No alcanza para los ${d} días del plan.` : ""}</p>` : ""}
+      ${m.hoy <= 5 ? `<button class="btn btn-primary btn-sm" data-action="pb-open" data-id="${m.pb}">Qué hacer</button>` : ""}</div>` : `<div class="card"><p>Todavía no puedo hacer la cuenta: faltan cantidades en el inventario.</p></div>`;
+  const tiles = r.map(x => `<div class="auto-t${x.hoy <= 2 ? " qd-crit" : x.hoy <= 5 ? " qd-warn" : ""}"><span class="mono auto-n">${diasTxt(x.hoy)}</span><span class="auto-u">${x.hoy === 1 ? "día" : "días"}</span><strong>${x.t}</strong><span class="auto-s">${esc(x.sub)}</span></div>`).join("");
+  /* Lo que falta para el plan (antes del corte) */
+  const falta = [];
+  if(!dia){
+    const P = t.a.P, G = t.a.G;
+    const ag = r.find(x => x.id === "agua"), co = r.find(x => x.id === "comida"), ga = r.find(x => x.id === "gato");
+    const fa = Math.ceil((P * 4 + G * 0.25) * d - (t.a.agua.litros || 0)); if(fa > 0) falta.push(`<strong>${fmtNum(fa)} litros de agua</strong>${ag ? "" : " (no cargaste agua)"}`);
+    const fk = Math.ceil(((P * 2000 * d) - (t.a.comida.kcal || 0)) / 3500); if(fk > 0) falta.push(`<strong>comida</strong>: el equivalente a unos ${fmtNum(fk)} kg de arroz, fideos o polenta${co ? "" : " (no cargaste comida)"}`);
+    if(G){ const fg = Math.ceil((0.06 * G * d - ((t.a.gato && t.a.gato.kg) || 0)) * 10) / 10; if(fg > 0) falta.push(`<strong>${fmtNum(fg)} kg de alimento para ${G === 1 ? "el gato" : "los gatos"}</strong>${ga ? "" : " (no lo cargaste)"}`); }
+    const fc = Math.ceil((mesCfg().p * 0.25 * d - t.g.horas) / QD_GAS_H); if(fc > 0) falta.push(`<strong>${fc} cartuchos de gas</strong>, por si se corta el gas de red`);
+  }
+  const contar = state.inv.filter(i => i.cat === "Agua" || i.cat === "Comida" || /cartucho|garrafa|butano|gato/.test(norm(i.nombre)));
+  const cuenta = desde === null ? "Todavía no contaron." : desde === 0 ? "Contaron hoy." : desde === 1 ? "Contaron ayer." : `Contaron hace ${desde} días.`;
+  return `<section class="stack qd">${back}${intro}
+    ${verd}
+    ${r.length ? `<div class="auto-g">${tiles}</div>` : ""}
+    ${dia && desde ? `<p class="fine">${cuenta} Hasta que cuenten de nuevo, la app descuenta ${desde === 1 ? "ese día" : "esos días"} sola.</p>` : ""}
+    ${falta.length ? `<div class="card"><h2>Para el plan de ${d} días les falta</h2><ul class="qd-falta">${falta.map(x => `<li>${x}</li>`).join("")}</ul><div class="inline"><button class="btn btn-ghost btn-sm" data-action="go-mes">Plan de corte largo</button></div></div>` : !dia && r.length ? `<div class="card"><h2>Para el plan de ${d} días</h2><p>Con lo que cargaron, alcanza. Revisen cada tanto que no venza nada.</p></div>` : ""}
+    <details class="hsec qd-contar"${dia ? " open" : ""}><summary><span class="g-ic">${icon("can")}</span><span class="hs-t"><strong>Contar lo que queda</strong><span>${dia ? cuenta : "Cambia las cantidades si usaron algo"}</span></span><span class="hs-chev" aria-hidden="true"></span></summary>
+      <div class="hs-body"><p class="fine">Escribe cuánto queda de cada cosa: «12 litros», «2 bidones de 20 litros», «3 kg», «4 latas», «2 cartuchos». Si se terminó, pon 0.</p>
+        ${contar.length ? `<ul class="qd-l">${contar.map(qdFila).join("")}</ul>` : `<p class="fine">No hay agua ni comida en el inventario.</p>`}
+        <button class="btn btn-ghost btn-sm" data-action="go-inv">Agregar algo al inventario</button></div></details>
+    ${r.length ? `<div class="card"><h2>Para que dure más</h2><div class="inline">${r.slice(0, 4).map(x => pbIr(["p", x.pb])).join("")}</div></div>` : ""}
+    ${t.no.length ? `<p class="fine"><strong>No pude contar:</strong> ${t.no.slice(0, 6).map(esc).join(", ")}${t.no.length > 6 ? "…" : ""}. Escribe la cantidad con su unidad, por ejemplo «2 kg» o «6 latas»; los remedios, en días («30 días»).</p>` : ""}
+    <p class="fine">Es una estimación para ${t.a.P} ${t.a.P === 1 ? "persona" : "personas"}${t.a.G ? ` y ${t.a.G === 1 ? "el gato" : `${t.a.G} gatos`}` : ""}: 4 litros de agua y 2.000 calorías por persona por día; un cartucho de gas da unas ${fmtNum(QD_GAS_H)} horas de fuego. Si el gas de red funciona, el anafe no hace falta. La cantidad de personas se cambia en el plan de corte largo.</p>
+  </section>`;
+}
+document.addEventListener("change", e => {
+  const el = e.target; if(!el.matches || !el.matches("[data-qd]")) return;
+  const it = state.inv.find(i => i.id === el.dataset.qd); if(!it) return;
+  it.cant = el.value.slice(0, 40).trim(); state.invConteo = isoOf(today0()); save();
+  const y = window.scrollY; render(false); window.scrollTo(0, y);
+});
 
 /* ---------- Plan 30 días sin luz ---------- */
 const MES_COMIDA = [
@@ -7025,7 +7120,7 @@ function render(top){
   if(!(ui.tab === "inicio" && ui.sub === "ir")) navStop();
   applyAhorro();
   if(ui.tab === "inicio" && !ui.sub && state.ahorro) html = renderAhorro();
-  else if(ui.tab === "inicio") html = ui.sub === "corte" ? renderCorte() : ui.sub === "aviso" ? renderAviso() : ui.sub === "mapa" ? renderMapa() : ui.sub === "ayuda" ? renderAyuda() : ui.sub === "mes" ? renderMes() : ui.sub === "radio" ? renderRadio() : ui.sub === "manual" ? renderManual() : ui.sub === "ir" ? renderNav() : ui.sub === "llevar" ? renderLlevar() : ui.sub === "mificha" ? renderMiFicha() : ui.sub === "recs" ? renderRecs() : ui.sub === "config" ? renderConfig() : ui.sub === "prob" ? renderProb() : ui.sub === "hoy" ? renderHoy() : renderHome();
+  else if(ui.tab === "inicio") html = ui.sub === "corte" ? renderCorte() : ui.sub === "aviso" ? renderAviso() : ui.sub === "mapa" ? renderMapa() : ui.sub === "ayuda" ? renderAyuda() : ui.sub === "mes" ? renderMes() : ui.sub === "radio" ? renderRadio() : ui.sub === "manual" ? renderManual() : ui.sub === "ir" ? renderNav() : ui.sub === "llevar" ? renderLlevar() : ui.sub === "mificha" ? renderMiFicha() : ui.sub === "recs" ? renderRecs() : ui.sub === "config" ? renderConfig() : ui.sub === "prob" ? renderProb() : ui.sub === "hoy" ? renderHoy() : ui.sub === "queda" ? renderQueda() : renderHome();
   else if(ui.tab === "guias") html = ui.guide ? renderGuide() : renderGuides();
   else if(ui.tab === "preparar") html = renderPrep();
   else if(ui.tab === "linterna") html = renderTools();
@@ -7477,6 +7572,7 @@ document.addEventListener("click", e => {
     case "go-prob": case "pb-back": ui.pbId = null; go("inicio", {sub:"prob"}); if(el.dataset.action === "pb-back" && ui.pbOpen){ const d = document.querySelector(`[data-pbcat="${ui.pbOpen}"]`); if(d) d.scrollIntoView({block:"start"}); } break;
     case "pb-open": { const p = pbFind(el.dataset.id); if(p){ try{ speechSynthesis.cancel(); }catch(e){} ui.pbId = p.id; if(!p.urg) ui.pbOpen = p.c; go("inicio", {sub:"prob"}); } break; }
     case "pb-chk": pbChk(el); break;
+    case "go-queda": go("inicio", {sub:"queda"}); break;
     case "go-hoy": ui.hoyVer = 0; ui.hoyEdit = !(hoyLoad().enc || []).length; go("inicio", {sub:"hoy"}); break;
     case "hoy-chk": hoyChk(el); break;
     case "hoy-start": hoyStart(el); break;
@@ -7844,6 +7940,7 @@ function routeHash(hash){
   else if(hash === "corte") ui.sub = "corte";
   else if(hash === "recordatorios") ui.sub = "recs";
   else if(hash === "configuracion") ui.sub = "config";
+  else if(hash === "cuanto-queda") ui.sub = "queda";
   else if(hash === "hoy"){ ui.sub = "hoy"; ui.hoyVer = 0; }
   else if(hash === "problema"){ ui.sub = "prob"; ui.pbId = null; }
   else if(hash.indexOf("problema-") === 0 && PROBLEMAS.some(x => x.id === hash.slice(9))){ ui.sub = "prob"; ui.pbId = hash.slice(9); }
