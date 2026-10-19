@@ -664,6 +664,21 @@ body.navegando .view{padding-bottom:calc(28px + env(safe-area-inset-bottom,0px))
 .lock-chip{position:fixed;left:50%;transform:translateX(-50%);top:calc(env(safe-area-inset-top,0px) + 62px);z-index:150;padding:8px 14px;border-radius:99px;background:var(--signal);color:var(--on-signal,#fff);font-weight:700;font-size:14px;box-shadow:0 4px 14px rgba(0,0,0,.25)}
 .lock-chip[hidden]{display:none}
 .conf-card h2{display:flex;align-items:flex-start;gap:8px;color:var(--crit);font-size:22px;line-height:1.25}.conf-card h2 .ic{flex:none;width:26px;height:26px;margin-top:2px}.conf-card p{font-size:17px;line-height:1.45}
+.hoy-nav{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.hoy-l{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.hoy-l>li+li{border-top:1px solid var(--line)}
+.hoy-t .pb-n:empty{background:var(--surface);border:2px solid var(--ink-2);width:28px;height:28px}
+.hoy-x{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:0 14px 12px 56px}
+.hoy-t.ver{display:flex;flex-wrap:wrap;gap:4px 12px;padding:12px 14px;font-size:16px;line-height:1.4}.hoy-t.ver .pb-n{background:transparent;color:var(--ink-2);width:12px}
+.hoy-tx{display:flex;flex-direction:column;gap:8px;flex:1;min-width:0}.hoy-t.ver .hoy-x{padding:0}
+.hoy-ad{font-size:13px;font-weight:700;padding:3px 10px;border-radius:999px;background:var(--warn-soft);color:var(--warn)}
+.hoy-encs{display:grid;grid-template-columns:1fr;gap:8px}
+.hoy-e{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:center;padding:12px 14px;border-radius:12px;border:2px solid var(--line);background:var(--surface);text-align:left;min-height:56px}
+.hoy-e>span{display:flex;flex-direction:column}.hoy-e>span span{font-size:14px;color:var(--ink-2)}
+.hoy-e.on{border-color:var(--blue);background:var(--surface-2)}.hoy-e.on>.ic{color:var(--blue)}
+.hoy-o h3{display:flex;gap:8px;align-items:center;margin:4px 0 8px;font-size:17px}.hoy-o+.hoy-o{margin-top:8px}
+.lnk{display:inline;padding:0;margin:0;background:none;border:0;color:var(--blue);font:inherit;font-weight:700;text-decoration:underline;min-height:0}
+.hoy-ban{background:var(--surface-2);border-color:var(--blue)}.hoy-ban .dot{background:var(--blue)}
 .mf-btn.pb-home{border-left:6px solid var(--signal)}.pb-home>.ic:first-child{color:var(--signal-ink)}
 .pb .quick{grid-template-columns:1fr}
 .pb-urgbox{display:flex;flex-direction:column;gap:6px}.pb-urg .g-ic{background:var(--crit);color:var(--on-crit)}
@@ -2643,6 +2658,7 @@ function hsec(id, ic, title, sub, body, extra){
 }
 function renderHome(){
   const ahora = [];
+  const hb = hoyBanner(); if(hb) ahora.push(hb);
   if(state.corte) ahora.push(`<button class="banner" data-action="go-corte"><span class="dot" aria-hidden="true"></span><span class="banner-txt"><strong>Sin luz hace <span data-live="short">${fmtDur(elapsed())}</span></strong><span>Ver el contador de la heladera</span></span>${icon("chev")}</button>`);
   if(navigator.onLine === false) ahora.push(`<button class="net-line" data-action="go-compartir" data-to="qs"><span class="dot" aria-hidden="true"></span>Sin conexión: la app funciona igual. Para pasar datos, Quick Share.</button>`);
   const bb = ahorroBanner(); if(bb) ahora.push(bb);
@@ -2657,6 +2673,7 @@ function renderHome(){
     <button class="btn btn-ghost btn-sm" data-action="tab" data-tab="guias">Ver todas las guías</button>`;
   const ext = GUIDES.filter(g => g.group === "extremo");
   const extremo = `<button class="btn btn-primary" data-action="go-mes">${icon("cal")}Plan de corte largo: 7, 15 o 30 días</button>
+    <button class="btn btn-ghost" data-action="go-hoy">${icon("cal")}¿Qué hago hoy? Las tareas de cada día</button>
     <button class="btn btn-ghost" data-action="go-prob">${icon("help")}Tengo un problema: qué hacer paso a paso</button>
     <div class="chips">${ext.map(g => `<button class="chip" data-action="guide" data-id="${g.id}">${g.title}</button>`).join("")}</div>`;
   const c = CIUDADES[state.ciudad];
@@ -2690,8 +2707,8 @@ function renderHome(){
       <button class="sb sb-bien" data-action="go-aviso">${icon("heart")}<span>Estoy bien</span></button>
     </div>
     <button class="mf-btn" data-action="go-mificha">${icon("id")}<span><strong>Mi ficha</strong><span>${miFicha() ? esc(miFicha().nombre) + (fpCfg() ? " · con clave" : "") : "Datos médicos y documentos"}</span></span>${icon("chev")}</button>
-    <button class="mf-btn pb-home" data-action="go-prob">${icon("help")}<span><strong>Tengo un problema</strong><span>Qué hacer, paso a paso, con lo que hay en casa</span></span>${icon("chev")}</button>
     ${ahora.length ? `<div class="ahora">${ahora.join("")}</div>` : ""}
+    <button class="mf-btn pb-home" data-action="go-prob">${icon("help")}<span><strong>Tengo un problema</strong><span>Qué hacer, paso a paso, con lo que hay en casa</span></span>${icon("chev")}</button>
     <div class="hsecs">
       ${hsec("pasa", "storm", "¿Qué está pasando?", "Toca la situación y sigue los pasos", pasa, "hs-main")}
       ${hsec("tel", "phone", "Teléfonos", c ? `911 y los de ${esc(state.ciudad)}: hospital, luz, agua, gas` : "911 y tus contactos", tels)}
@@ -2724,7 +2741,7 @@ function renderGuides(){
     <h2 class="sec">Saber hacer</h2>
     <ul class="glist">${GUIDES.filter(g => g.group === "saber").map(row).join("")}</ul>
     <details class="ext-g" id="extremo"${ui.extOpen ? " open" : ""}><summary><h2 class="sec">Caso extremo</h2><span class="fine">Varios días en casa sin luz, gas ni agua · ${GUIDES.filter(g => g.group === "extremo").length + 1} guías</span></summary>
-    <ul class="glist"><li><button class="grow" data-action="go-prob"><span class="g-ic">${icon("help")}</span><span class="g-txt"><strong>Tengo un problema</strong><span>Falta agua, hace frío, alguien se enfermó: qué hacer, paso a paso.</span></span><span class="g-meta">${icon("chev")}</span></button></li><li><button class="grow" data-action="go-mes"><span class="g-ic">${icon("cal")}</span><span class="g-txt"><strong>Plan de corte largo</strong><span>Para 7, 15 o 30 días: qué tener, cuánto y qué hacer cada semana.</span></span><span class="g-meta">${icon("chev")}</span></button></li>${GUIDES.filter(g => g.group === "extremo").map(row).join("")}</ul></details>
+    <ul class="glist"><li><button class="grow" data-action="go-hoy"><span class="g-ic">${icon("cal")}</span><span class="g-txt"><strong>¿Qué hago hoy?</strong><span>Las tareas de cada día del corte, repartidas entre todos.</span></span><span class="g-meta">${icon("chev")}</span></button></li><li><button class="grow" data-action="go-prob"><span class="g-ic">${icon("help")}</span><span class="g-txt"><strong>Tengo un problema</strong><span>Falta agua, hace frío, alguien se enfermó: qué hacer, paso a paso.</span></span><span class="g-meta">${icon("chev")}</span></button></li><li><button class="grow" data-action="go-mes"><span class="g-ic">${icon("cal")}</span><span class="g-txt"><strong>Plan de corte largo</strong><span>Para 7, 15 o 30 días: qué tener, cuánto y qué hacer cada semana.</span></span><span class="g-meta">${icon("chev")}</span></button></li>${GUIDES.filter(g => g.group === "extremo").map(row).join("")}</ul></details>
     <h2 class="sec" id="zona">Según dónde vives</h2>
     ${zonaHTML(row)}
     <p class="fine">Basadas en fuentes oficiales argentinas e internacionales. No reemplazan las indicaciones de las autoridades ni la atención médica.</p>
@@ -2846,6 +2863,7 @@ function renderCorte(){
     <p class="fine">Tiempos estimados con las puertas cerradas. La respuesta segura la da un termómetro: heladera a 4 °C o menos y freezer a −18 °C o menos.</p>
     <h2 class="sec">Primeros pasos</h2>
     <div class="checks">${CORTE_STEPS.map(([id, t]) => `<label class="check${done[id] ? " on" : ""}" for="cs-${id}"><input type="checkbox" id="cs-${id}" data-corte="${id}"${done[id] ? " checked" : ""}><span>${t}</span></label>`).join("")}</div>
+    <button class="btn btn-ghost" data-action="go-hoy">${icon("cal")}¿Qué hago hoy?</button>
     <button class="btn btn-primary btn-big" data-action="corte-end">Volvió la luz</button>`;
   }
   return `<section class="stack">
@@ -3973,6 +3991,7 @@ const MANUAL_SEC = [
   ["datos","Datos de la familia","Plan, teléfonos, lugares, inventario y fichas médicas.",true],
   ["mapa","Mapa del barrio y de Azul","Con tus lugares guardados, hospitales, bomberos y policía.",true],
   ["radio","Radios y cómo comunicarse","Frecuencias y qué hacer sin internet.",true],
+  ["hoy","Qué hacer cada día","Las tareas de cada encargo, día por día, para un corte largo.",true],
   ["problemas","Tengo un problema","Qué hacer si falta agua, hace frío, alguien se enferma y más.",true],
   ["emergencia","Guías: en la emergencia","Corte de luz, inundación, tormenta, calor, monóxido, RCP, evacuar.",true],
   ["extremo","Guías: caso extremo","Fuego, agua, energía, cocina, abrigo, baño y señales.",true],
@@ -4012,6 +4031,7 @@ function manualHTML(){
     parts.push(`<section class="ps"><h2>Radios</h2>${printTable(["Banda","Frecuencia","Radio"], RADIOS.flatMap(g => g.l).map(([, b, f, n]) => [b, f, n]))}
       <h3>Comunicarse fuera de la zona</h3><ol>${COMS.map(([t, d]) => `<li><strong>${esc(t)}.</strong> ${esc(d)}</li>`).join("")}</ol></section>`);
   }
+  if(sel.hoy) parts.push(`<section class="ps pm-g"><h2>Qué hacer cada día</h2>${hoyManual()}</section>`);
   if(sel.problemas) parts.push(`<section class="ps pm-g"><h2>Tengo un problema</h2>${pbManual()}</section>`);
   const gsec = (k, t) => { if(sel[k]) parts.push(`<section class="ps pm-g"><h2>${t}</h2>${GUIDES.filter(g => g.group === k).map(guidePrint).join("")}</section>`); };
   gsec("emergencia", "En la emergencia"); gsec("extremo", "Caso extremo"); gsec("saber", "Saber hacer"); gsec("zona", "Según la zona");
@@ -4735,7 +4755,7 @@ document.addEventListener("keydown", e => { if(e.key === "Escape"){ const ov = d
 const scrKey = () => [ui.tab, ui.sub || "", ui.guide || "", ui.tab === "numeros" ? ui.planSeg || "" : "", ui.tab === "preparar" ? ui.prep || "" : "", ui.ayuda && ui.ayuda.mostrar && ui.sub === "ayuda" ? "m" : "", ui.sub === "prob" ? ui.pbId || "" : ""].join("|");
 let histPop = false;
 /* La dirección de cada pantalla: si Android recarga la app, vuelve a la misma pantalla */
-const SUB_HASH = {prob:"problema", config:"configuracion", recs:"recordatorios", corte:"corte", aviso:"aviso", mapa:"mapa", ayuda:"ayuda", llevar:"llevar", ir:"llevar", mificha:"mificha", mes:"30dias", radio:"radio", manual:"manual"};
+const SUB_HASH = {hoy:"hoy", prob:"problema", config:"configuracion", recs:"recordatorios", corte:"corte", aviso:"aviso", mapa:"mapa", ayuda:"ayuda", llevar:"llevar", ir:"llevar", mificha:"mificha", mes:"30dias", radio:"radio", manual:"manual"};
 function screenHash(){
   if(ui.tab === "inicio") return ui.sub === "prob" && ui.pbId ? "problema-" + ui.pbId : SUB_HASH[ui.sub] || "";
   if(ui.tab === "guias") return ui.guide ? "guia-" + ui.guide : "guias";
@@ -4847,7 +4867,7 @@ async function recNotif(){
 
 /* ---------- Configuración: todos los ajustes en un lugar (engranaje arriba a la derecha) ----------
    En un celular con control parental se ve todo; para cambiar algo, salvo voz y vibración, pide el PIN. */
-const APP_VER = 25;
+const APP_VER = 26;
 const GEAR_SVG = `<svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>`;
 function renderConfig(){
   const lc = lockCfg(), lockOn = !!(lc && lc.on), f = miFicha(), fp = fpCfg(), aqui = recsAqui(), nRec = REMINDERS.filter(recOn).length;
@@ -5372,6 +5392,195 @@ function pbChk(el){
 /* Para el manual en papel: todos los problemas, cortos */
 function pbManual(){
   return PB_CATS.map(c => `<h3>${c.t}</h3>${PROBLEMAS.filter(p => p.c === c.id).map(p => `<div class="pb-m"><p><strong>${p.t}.</strong>${p.pri ? ` <strong>${esc(p.pri)}</strong>` : ""}</p><ol>${p.p.map(s => `<li>${esc(pbTxt(s))}</li>`).join("")}</ol>${p.ayuda ? `<p><em>Cuándo pedir ayuda:</em> ${esc(p.ayuda)}</p>` : ""}</div>`).join("")}`).join("");
+}
+
+/* ---------- ¿Qué hago hoy?: tareas de cada día del corte, repartidas por encargos ----------
+   Cada celular elige sus encargos y tilda sus tareas (se guarda solo en ese celular, no se pasa a otros).
+   El día sale del contador de corte: día 1 es el día en que se cortó. */
+const HOY_KEY = "preparados.hoy";
+const HOY_ENC = [
+  {id:"agua", t:"Agua", ic:"drop", d:"Cuidar la reserva y conseguir más"},
+  {id:"comida", t:"Comida y cocina", ic:"pot", d:"Qué se come, la heladera y el gas"},
+  {id:"energia", t:"Luz, cargas y noticias", ic:"bolt", d:"Celulares, linternas, radio y avisos"},
+  {id:"higiene", t:"Baño e higiene", ic:"toilet", d:"Baño, manos, platos y basura"},
+  {id:"gato", t:"El gato", ic:"heart", d:"Comida, agua y piedras"},
+  {id:"animo", t:"Ánimo y juegos", ic:"smile", d:"Que la familia esté bien y unida"}
+];
+/* d: "*" todos los días · "3" el día 3 · "2-7" del 2 al 7 · "2+" desde el día 2 · "c3:4" cada 3 días desde el 4
+   ad: lo hace o lo acompaña un adulto · ir: [tipo, dato] como en «Tengo un problema» */
+const HOY_T = [
+  /* Para todos */
+  {id:"t-reunion", e:"todos", d:"1", t:"Reunión de 10 minutos: cada uno elige sus encargos en su celular."},
+  {id:"t-charla", e:"todos", d:"2+", t:"Charla de la mañana: cómo dormimos, qué falta y qué hace cada uno hoy."},
+  {id:"t-manos", e:"todos", d:"*", t:"Lavarse las manos antes de comer y después de ir al baño."},
+  {id:"t-noche", e:"todos", d:"*", t:"Cenar temprano, con luz de día, y a la noche un juego o un cuento.", ir:["p","noche"]},
+  {id:"t-frio", e:"todos", d:"*", t:"Si hace frío: todos en una sola habitación, y ventilar 10 minutos a la mañana.", ir:["p","frio"]},
+  {id:"t-revision", e:"todos", d:"c4:4", t:"Revisión de la semana: qué se está terminando y qué hay que conseguir.", ir:["h","inventario"]},
+
+  /* Agua */
+  {id:"a-llenar", e:"agua", d:"1", t:"Mientras haya presión, llenar todo: bidones, ollas con tapa, botellas, baldes y la bañera.", ir:["p","poca-agua"]},
+  {id:"a-separar", e:"agua", d:"1", t:"Separar el agua para tomar y cocinar (bidones cerrados) de la del baño (bañera y baldes)."},
+  {id:"a-contar", e:"agua", d:"*", t:"Ver cuánta agua queda y anotarlo. Para tomar y cocinar hacen falta {agua} litros por día."},
+  {id:"a-canilla", e:"agua", d:"2+", t:"Probar la canilla a la mañana y a la noche: si hay presión, rellenar lo que se usó."},
+  {id:"a-lluvia", e:"agua", d:"c4:2", t:"Si llueve, poner afuera baldes y fuentes limpias. Esa agua se trata antes de tomarla.", ir:["p","agua-turbia"]},
+  {id:"a-bidones", e:"agua", d:"c3:3", t:"Enjuagar con unas gotas de lavandina los bidones vacíos antes de volver a llenarlos."},
+  {id:"a-reparten", e:"agua", d:"5+", t:"Si queda agua para menos de 2 días: averiguar en la radio dónde reparten.", ad:true, ir:["p","se-acaba-agua"]},
+
+  /* Comida y cocina */
+  {id:"c-menu", e:"comida", d:"1", t:"Armar el menú de hoy y mañana con lo de la heladera: lo fresco se come primero.", ir:["p","que-cocinar"]},
+  {id:"c-contador", e:"comida", d:"1", t:"Mirar el contador de corte: dice cuánto aguanta la heladera y el freezer.", ir:["h","corte"]},
+  {id:"c-cocinar", e:"comida", d:"*", t:"Cocinar una vez para todos y, en el mismo fuego, calentar el agua.", ad:true, ir:["p","ahorrar-gas"]},
+  {id:"c-heladera", e:"comida", d:"2", t:"Revisar la heladera: carne, lácteos, huevos y sobras que estuvieron más de 4 horas sin frío se tiran.", ir:["p","comida-rara"]},
+  {id:"c-freezer", e:"comida", d:"3", t:"Revisar el freezer: lo que ya no está frío se cocina hoy o se tira.", ir:["p","comida-rara"]},
+  {id:"c-vence", e:"comida", d:"4+", t:"Usar primero lo que vence antes. Está en el Inventario.", ir:["h","inventario"]},
+  {id:"c-porciones", e:"comida", d:"c3:4", t:"Contar la comida que queda y repartirla en porciones para los días que faltan.", ir:["h","30dias"]},
+
+  /* Luz, cargas y noticias */
+  {id:"e-ahorro", e:"energia", d:"1", t:"Poner el modo ahorro en los 4 celulares y bajar el brillo.", ir:["a","ahorro-on"]},
+  {id:"e-turnos", e:"energia", d:"1", t:"Armar los turnos: un celular prendido para avisos y los demás en modo avión.", ir:["p","bateria"]},
+  {id:"e-panel", e:"energia", d:"*", t:"Si hay sol, cargar los powerbanks con el panel de 10 a 16, y los celulares de a uno.", ir:["p","bateria"]},
+  {id:"e-linternas", e:"energia", d:"*", t:"Antes de que oscurezca: una linterna con pilas en cada habitación.", ir:["p","noche"]},
+  {id:"e-radio", e:"energia", d:"*", t:"Escuchar la radio a la mañana y a la noche, y contarle a todos lo importante.", ir:["h","radio"]},
+  {id:"e-aviso", e:"energia", d:"c2:1", t:"Mandar «Estoy bien» a la familia de afuera.", ir:["h","aviso"]},
+  {id:"e-anotar", e:"energia", d:"2", t:"Anotar en un papel dónde dan agua, dónde se puede cargar y qué está abierto.", ir:["p","noticias"]},
+
+  /* Baño e higiene */
+  {id:"h-bano", e:"higiene", d:"1", t:"Preparar el baño: un balde con agua usada para la descarga, y bolsas por si se corta el agua.", ir:["p","inodoro"]},
+  {id:"h-jabon", e:"higiene", d:"*", t:"Dejar agua y jabón, o alcohol en gel, al lado del baño y de la cocina."},
+  {id:"h-basura", e:"higiene", d:"*", t:"Sacar la basura en bolsa cerrada al tacho de afuera.", ir:["p","basura"]},
+  {id:"h-platos", e:"higiene", d:"2+", t:"Lavar los platos con dos palanganas: una para lavar y otra para enjuagar."},
+  {id:"h-banarse", e:"higiene", d:"c2:2", t:"Baño por partes para todos, con agua tibia de la pava.", ir:["p","banarse"]},
+  {id:"h-ropa", e:"higiene", d:"c3:3", t:"Lavar a mano la ropa interior y las medias."},
+
+  /* El gato */
+  {id:"g-comida", e:"gato", d:"*", t:"Darle comida y agua limpia al gato, y mirar que coma."},
+  {id:"g-piedras", e:"gato", d:"*", t:"Limpiar las piedras."},
+  {id:"g-contar", e:"gato", d:"c3:1", t:"Ver cuánta comida y piedras quedan. Si alcanzan para menos de una semana, avisar.", ir:["p","gato"]},
+  {id:"g-jugar", e:"gato", d:"c2:2", t:"Un rato de juego con el gato: él también se pone nervioso."},
+
+  /* Ánimo y juegos */
+  {id:"m-caja", e:"animo", d:"1", t:"Armar la caja de noches sin luz: cartas, un libro, lápices y una linterna.", ir:["p","aburridos"]},
+  {id:"m-juego", e:"animo", d:"*", t:"Proponer el juego o el cuento de la noche.", ir:["p","aburridos"]},
+  {id:"m-preguntar", e:"animo", d:"*", t:"Preguntarle a cada uno cómo está, y escuchar.", ir:["p","miedo"]},
+  {id:"m-diario", e:"animo", d:"2+", t:"Escribir o dibujar en el diario de la familia lo que pasó hoy."},
+  {id:"m-especial", e:"animo", d:"c3:4", t:"Algo lindo para todos: una merienda especial, una canción o una historia."}
+];
+function hoyOn(spec, n){
+  if(spec === "*") return true;
+  let m;
+  if((m = /^c(\d+):(\d+)$/.exec(spec))) return n >= +m[2] && (n - +m[2]) % +m[1] === 0;
+  if((m = /^(\d+)\+$/.exec(spec))) return n >= +m[1];
+  if((m = /^(\d+)-(\d+)$/.exec(spec))) return n >= +m[1] && n <= +m[2];
+  return n === +spec;
+}
+function hoyCuando(spec){
+  let m;
+  if(spec === "*") return "Todos los días";
+  if((m = /^c(\d+):(\d+)$/.exec(spec))) return +m[1] === 2 ? `Día por medio, desde el día ${m[2]}` : `Cada ${m[1]} días, desde el día ${m[2]}`;
+  if((m = /^(\d+)\+$/.exec(spec))) return `Todos los días, desde el día ${m[1]}`;
+  if((m = /^(\d+)-(\d+)$/.exec(spec))) return `Días ${m[1]} a ${m[2]}`;
+  return `Día ${spec}`;
+}
+const hoyTxt = s => { const c = mesCfg(); return s.replace("{agua}", String(Math.ceil(c.p * 4 + c.g * 0.25))); };
+function hoyLoad(){ try{ const o = JSON.parse(localStorage.getItem(HOY_KEY) || "{}"); return {enc:Array.isArray(o.enc) ? o.enc.filter(e => HOY_ENC.some(x => x.id === e)) : null, chk:o.chk && typeof o.chk === "object" ? o.chk : {}}; }catch(e){ return {enc:null, chk:{}}; } }
+function hoySave(h){
+  /* Solo se guardan las marcas de los últimos 7 días */
+  const keep = {}; Object.keys(h.chk).sort().slice(-7).forEach(k => { keep[k] = h.chk[k]; });
+  try{ localStorage.setItem(HOY_KEY, JSON.stringify({enc:h.enc, chk:keep})); }catch(e){}
+}
+/* Día del corte según el contador, contando días de calendario: el día que se cortó es el día 1 */
+function hoyDia(){
+  if(!state.corte) return 0;
+  const s = new Date(state.corte.start); s.setHours(0, 0, 0, 0);
+  return Math.max(1, Math.round((today0() - s) / 864e5) + 1);
+}
+const hoyDe = (n, e) => HOY_T.filter(t => t.e === e && hoyOn(t.d, n));
+function hoyMias(n, enc){ return enc.flatMap(e => hoyDe(n, e)).concat(hoyDe(n, "todos")); }
+function hoyPend(){
+  const n = hoyDia(); if(!n) return null;
+  const h = hoyLoad(); if(!h.enc || !h.enc.length) return {n, sinEnc:true};
+  const c = h.chk[isoOf(today0())] || {}, l = hoyMias(n, h.enc);
+  return {n, total:l.length, hechas:l.filter(t => c[t.id]).length};
+}
+function hoyBanner(){
+  const p = hoyPend(); if(!p) return "";
+  const sub = p.sinEnc ? "Elige tus encargos y mira qué hacer hoy" : p.hechas >= p.total ? "Hiciste todas tus tareas de hoy" : `${p.total - p.hechas === 1 ? "Te queda 1 tarea" : `Te quedan ${p.total - p.hechas} tareas`} para hoy`;
+  return `<button class="banner hoy-ban" data-action="go-hoy"><span class="dot" aria-hidden="true"></span><span class="banner-txt"><strong>¿Qué hago hoy? Día ${p.n}</strong><span>${sub}</span></span>${icon("chev")}</button>`;
+}
+function hoyTarea(t, c, puede){
+  const on = !!c[t.id], txt = esc(hoyTxt(t.t));
+  const ir = t.ir ? pbIr(t.ir) : "";
+  const extra = (t.ad ? `<span class="hoy-ad">Con un adulto</span>` : "") + ir;
+  if(!puede) return `<li class="hoy-t ver"><span class="pb-n" aria-hidden="true">·</span><span class="hoy-tx"><span>${txt}</span>${extra ? `<span class="hoy-x">${extra}</span>` : ""}</span></li>`;
+  return `<li class="hoy-t"><button class="pb-paso${on ? " on" : ""}" data-action="hoy-chk" data-id="${t.id}" aria-pressed="${on}"><span class="pb-n" aria-hidden="true">${on ? "✓" : ""}</span><span>${txt}</span></button>${extra ? `<span class="hoy-x">${extra}</span>` : ""}</li>`;
+}
+function hoyEncPicker(h, primera){
+  const sel = h.enc || [];
+  return `<div class="card hoy-enc" id="hoy-enc"><h2>${primera ? "¿De qué te encargas?" : "Tus encargos"}</h2>
+    <p class="fine">Elige uno o más. Cada uno lo elige en su celular. Una idea: los adultos, agua y comida; las chicas, el gato y el ánimo; y la luz y el baño, entre todos.</p>
+    <div class="hoy-encs">${HOY_ENC.map(e => `<button class="hoy-e${sel.includes(e.id) ? " on" : ""}" data-action="hoy-enc" data-id="${e.id}" aria-pressed="${sel.includes(e.id)}">${icon(e.ic)}<span><strong>${e.t}</strong><span>${e.d}</span></span></button>`).join("")}</div>
+    ${sel.length ? `<button class="btn btn-primary" data-action="hoy-enc-ok">Listo</button>` : ""}</div>`;
+}
+function renderHoy(){
+  const h = hoyLoad(), real = hoyDia();
+  if(!real && !ui.hoyVer){
+    return `<section class="stack hoy">
+      <button class="back" data-action="tab" data-tab="inicio">${icon("back")}Inicio</button>
+      <div class="intro"><h1>¿Qué hago hoy?</h1><p class="lede">Cuando se corta la luz, la app te dice qué hacer cada día: tus tareas y las de todos.</p></div>
+      <button class="btn btn-signal btn-big" data-action="hoy-start" data-n="1">Se cortó la luz hoy</button>
+      <div class="card"><label class="lbl" for="hoy-n">¿Ya lleva varios días? Elige en qué día van</label>
+        <div class="inline"><select id="hoy-n">${Array.from({length:29}, (_, i) => `<option value="${i + 2}">Día ${i + 2}</option>`).join("")}</select><button class="btn btn-ghost" data-action="hoy-start">Empezar</button></div>
+        <p class="fine">Esto también prende el contador de corte, que cuenta cuánto aguanta la heladera.</p></div>
+      <button class="btn btn-ghost" data-action="hoy-ver" data-n="1">Ver cómo es, sin que haya un corte</button>
+    </section>`;
+  }
+  const n = ui.hoyVer || real, esHoy = n === real, prim = !h.enc || !h.enc.length;
+  if(prim) ui.hoyEdit = true;
+  const c = esHoy ? h.chk[isoOf(today0())] || {} : {};
+  const mias = prim ? [] : h.enc.flatMap(e => hoyDe(n, e)), todos = hoyDe(n, "todos");
+  const lista = mias.concat(todos), hechas = esHoy ? lista.filter(t => c[t.id]).length : 0;
+  const otros = HOY_ENC.filter(e => prim || !h.enc.includes(e.id));
+  const fecha = real ? (() => { const d = today0(); d.setDate(d.getDate() + (n - real)); return d; })() : null;
+  const nav = `<div class="hoy-nav">${n > 1 ? `<button class="btn btn-ghost btn-sm" data-action="hoy-ver" data-n="${n - 1}" aria-label="Día anterior">‹ Día ${n - 1}</button>` : "<span></span>"}${!esHoy && real ? `<button class="btn btn-ghost btn-sm" data-action="hoy-ver" data-n="${real}">Volver a hoy</button>` : ""}<button class="btn btn-ghost btn-sm" data-action="hoy-ver" data-n="${n + 1}" aria-label="Día siguiente">Día ${n + 1} ›</button></div>`;
+  return `<section class="stack hoy">
+    <button class="back" data-action="tab" data-tab="inicio">${icon("back")}Inicio</button>
+    <div class="intro"><p class="phase">${real ? (esHoy ? "Hoy" : n > real ? "Lo que viene" : "Un día anterior") + (fecha ? ` · ${fmtDate(fecha)}` : "") : "Ejemplo, sin corte"}</p><h1>Día ${n} sin luz</h1>
+      ${prim ? "" : `<p class="lede">${state.yo ? `${esc(state.yo)}, te` : "Te"} encargas de: <strong>${h.enc.map(e => HOY_ENC.find(x => x.id === e).t).join(", ")}</strong>. <button class="lnk" data-action="hoy-enc-edit">Cambiar</button></p>`}</div>
+    ${nav}
+    ${prim || ui.hoyEdit ? hoyEncPicker(h, prim) : ""}
+    ${!prim ? `<h2 class="sec">${esHoy ? "Tus tareas de hoy" : "Tus tareas ese día"}</h2>
+      ${mias.length ? `<ul class="hoy-l">${mias.map(t => hoyTarea(t, c, esHoy)).join("")}</ul>` : `<p class="fine">Ese día no hay tareas de tus encargos.</p>`}` : ""}
+    <h2 class="sec">Para todos</h2>
+    <ul class="hoy-l">${todos.map(t => hoyTarea(t, c, esHoy && !prim)).join("")}</ul>
+    ${esHoy && !prim ? `<p class="st" id="hoy-cnt" role="status">${hoyCnt(hechas, lista.length)}</p>` : ""}
+    ${!esHoy && real ? `<p class="fine">Las tareas se tildan solo el día que tocan.</p>` : ""}
+    <details class="hsec hoy-otros"${prim ? " open" : ""}><summary><span class="g-ic">${icon("cal")}</span><span class="hs-t"><strong>${prim ? "Las tareas de cada encargo" : "Lo que hacen los demás"}</strong><span>${prim ? "Para que elijas" : "Para saber quién hace qué"}</span></span><span class="hs-chev" aria-hidden="true"></span></summary>
+      <div class="hs-body">${otros.map(e => { const l = hoyDe(n, e.id); return `<div class="hoy-o"><h3>${icon(e.ic)}${e.t}</h3>${l.length ? `<ul class="hoy-l">${l.map(t => hoyTarea(t, {}, false)).join("")}</ul>` : `<p class="fine">Ese día, nada.</p>`}</div>`; }).join("")}</div></details>
+    ${real ? "" : `<button class="btn btn-ghost" data-action="hoy-salir">Salir del ejemplo</button>`}
+    <div class="inline"><button class="btn btn-ghost btn-sm" data-action="go-prob">${icon("help")}Tengo un problema</button><button class="btn btn-ghost btn-sm" data-action="go-mes">Plan de corte largo</button></div>
+  </section>`;
+}
+const hoyCnt = (h, t) => h >= t ? "¡Listo por hoy! Hiciste todas tus tareas." : h ? `${h} de ${t} hechas.` : `${t} tareas para hoy. Tócalas cuando las hagas.`;
+function hoyChk(el){
+  const h = hoyLoad(), k = isoOf(today0()), c = h.chk[k] = h.chk[k] || {}, id = el.dataset.id;
+  c[id] = !c[id]; if(!c[id]) delete c[id];
+  hoySave(h);
+  el.classList.toggle("on", !!c[id]); el.setAttribute("aria-pressed", String(!!c[id]));
+  el.querySelector(".pb-n").textContent = c[id] ? "✓" : "";
+  const n = hoyDia(), l = hoyMias(n, h.enc || []), st = document.getElementById("hoy-cnt");
+  if(st) st.textContent = hoyCnt(l.filter(t => c[t.id]).length, l.length);
+  vibrar(15);
+}
+function hoyStart(el){
+  const n = el.dataset.n ? +el.dataset.n : +((document.getElementById("hoy-n") || {}).value || 1);
+  const d = new Date(); if(n > 1){ d.setDate(d.getDate() - (n - 1)); d.setHours(8, 0, 0, 0); }
+  state.corte = {start:d.getTime(), done:{}}; save();
+  ui.hoyVer = 0; render(false);
+}
+/* Para el manual en papel */
+function hoyManual(){
+  const grupo = (t, e) => `<h3>${t}</h3><ul>${HOY_T.filter(x => x.e === e).map(x => `<li><strong>${hoyCuando(x.d)}:</strong> ${esc(hoyTxt(x.t))}${x.ad ? " (con un adulto)" : ""}</li>`).join("")}</ul>`;
+  return `<p>El día 1 es el día en que se cortó la luz. Cada uno se encarga de uno o más temas; «Para todos» es de todos.</p>${grupo("Para todos", "todos")}${HOY_ENC.map(e => grupo(e.t, e.id)).join("")}`;
 }
 
 /* ---------- Plan 30 días sin luz ---------- */
@@ -6816,7 +7025,7 @@ function render(top){
   if(!(ui.tab === "inicio" && ui.sub === "ir")) navStop();
   applyAhorro();
   if(ui.tab === "inicio" && !ui.sub && state.ahorro) html = renderAhorro();
-  else if(ui.tab === "inicio") html = ui.sub === "corte" ? renderCorte() : ui.sub === "aviso" ? renderAviso() : ui.sub === "mapa" ? renderMapa() : ui.sub === "ayuda" ? renderAyuda() : ui.sub === "mes" ? renderMes() : ui.sub === "radio" ? renderRadio() : ui.sub === "manual" ? renderManual() : ui.sub === "ir" ? renderNav() : ui.sub === "llevar" ? renderLlevar() : ui.sub === "mificha" ? renderMiFicha() : ui.sub === "recs" ? renderRecs() : ui.sub === "config" ? renderConfig() : ui.sub === "prob" ? renderProb() : renderHome();
+  else if(ui.tab === "inicio") html = ui.sub === "corte" ? renderCorte() : ui.sub === "aviso" ? renderAviso() : ui.sub === "mapa" ? renderMapa() : ui.sub === "ayuda" ? renderAyuda() : ui.sub === "mes" ? renderMes() : ui.sub === "radio" ? renderRadio() : ui.sub === "manual" ? renderManual() : ui.sub === "ir" ? renderNav() : ui.sub === "llevar" ? renderLlevar() : ui.sub === "mificha" ? renderMiFicha() : ui.sub === "recs" ? renderRecs() : ui.sub === "config" ? renderConfig() : ui.sub === "prob" ? renderProb() : ui.sub === "hoy" ? renderHoy() : renderHome();
   else if(ui.tab === "guias") html = ui.guide ? renderGuide() : renderGuides();
   else if(ui.tab === "preparar") html = renderPrep();
   else if(ui.tab === "linterna") html = renderTools();
@@ -7268,6 +7477,14 @@ document.addEventListener("click", e => {
     case "go-prob": case "pb-back": ui.pbId = null; go("inicio", {sub:"prob"}); if(el.dataset.action === "pb-back" && ui.pbOpen){ const d = document.querySelector(`[data-pbcat="${ui.pbOpen}"]`); if(d) d.scrollIntoView({block:"start"}); } break;
     case "pb-open": { const p = pbFind(el.dataset.id); if(p){ try{ speechSynthesis.cancel(); }catch(e){} ui.pbId = p.id; if(!p.urg) ui.pbOpen = p.c; go("inicio", {sub:"prob"}); } break; }
     case "pb-chk": pbChk(el); break;
+    case "go-hoy": ui.hoyVer = 0; ui.hoyEdit = !(hoyLoad().enc || []).length; go("inicio", {sub:"hoy"}); break;
+    case "hoy-chk": hoyChk(el); break;
+    case "hoy-start": hoyStart(el); break;
+    case "hoy-ver": ui.hoyVer = Math.max(1, +el.dataset.n || 1); if(ui.hoyVer === hoyDia()) ui.hoyVer = 0; render(false); scrollTo(0, 0); break;
+    case "hoy-salir": ui.hoyVer = 0; render(false); break;
+    case "hoy-enc": { const h = hoyLoad(), id = el.dataset.id, e = h.enc || []; h.enc = e.includes(id) ? e.filter(x => x !== id) : e.concat(id); hoySave(h); render(false); break; }
+    case "hoy-enc-ok": ui.hoyEdit = false; render(false); break;
+    case "hoy-enc-edit": ui.hoyEdit = true; render(false); { const c = document.getElementById("hoy-enc"); if(c) c.scrollIntoView({block:"start"}); } break;
     case "pb-leer": { const p = pbFind(el.dataset.id); if(p) pbLeer(p); break; }
     case "pb-ir": routeHash(el.dataset.h); render(true); break;
     case "pb-lec": { const l = APR_ALL().find(x => x.id === el.dataset.id); if(l){ ui.apr = ui.apr || {lec:null, q:"", open:"casa"}; ui.apr.lec = l.id; ui.apr.open = l.tema.id; ui.apr.q = ""; go("aprender"); } break; }
@@ -7627,6 +7844,7 @@ function routeHash(hash){
   else if(hash === "corte") ui.sub = "corte";
   else if(hash === "recordatorios") ui.sub = "recs";
   else if(hash === "configuracion") ui.sub = "config";
+  else if(hash === "hoy"){ ui.sub = "hoy"; ui.hoyVer = 0; }
   else if(hash === "problema"){ ui.sub = "prob"; ui.pbId = null; }
   else if(hash.indexOf("problema-") === 0 && PROBLEMAS.some(x => x.id === hash.slice(9))){ ui.sub = "prob"; ui.pbId = hash.slice(9); }
   else if(hash.indexOf("guia-") === 0 && GUIDES.some(g => g.id === hash.slice(5))){ ui.tab = "guias"; ui.guide = hash.slice(5); }
