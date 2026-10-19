@@ -664,6 +664,23 @@ body.navegando .view{padding-bottom:calc(28px + env(safe-area-inset-bottom,0px))
 .lock-chip{position:fixed;left:50%;transform:translateX(-50%);top:calc(env(safe-area-inset-top,0px) + 62px);z-index:150;padding:8px 14px;border-radius:99px;background:var(--signal);color:var(--on-signal,#fff);font-weight:700;font-size:14px;box-shadow:0 4px 14px rgba(0,0,0,.25)}
 .lock-chip[hidden]{display:none}
 .conf-card h2{display:flex;align-items:flex-start;gap:8px;color:var(--crit);font-size:22px;line-height:1.25}.conf-card h2 .ic{flex:none;width:26px;height:26px;margin-top:2px}.conf-card p{font-size:17px;line-height:1.45}
+.mf-btn.pb-home{border-left:6px solid var(--signal)}.pb-home>.ic:first-child{color:var(--signal-ink)}
+.pb .quick{grid-template-columns:1fr}
+.pb-urgbox{display:flex;flex-direction:column;gap:6px}.pb-urg .g-ic{background:var(--crit);color:var(--on-crit)}
+.pb-row .g-txt strong{font-size:17px;line-height:1.3}
+.pb-cat>.glist{border:0;border-radius:0}
+.pb-pri{display:flex;gap:10px;align-items:flex-start;margin:0;padding:12px 14px;border-radius:12px;background:var(--warn-soft);border:1px solid var(--warn-fill);font-weight:700;line-height:1.35}
+.pb-pri.crit{background:var(--crit-soft);border-color:var(--crit)}.pb-pri .ic{flex:none;margin-top:1px}
+.pb-kid{display:flex;gap:10px;align-items:flex-start;margin:0;padding:10px 14px;border-radius:12px;background:var(--surface-2);line-height:1.35}.pb-kid .ic{flex:none;margin-top:1px}
+.pb-head{display:flex;align-items:center;justify-content:space-between;gap:10px}.pb-head h2{margin:0}
+.pb-pasos{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.pb-pasos li+li{border-top:1px solid var(--line)}
+.pb-paso{display:flex;gap:12px;align-items:flex-start;width:100%;padding:14px;text-align:left;font-size:17px;line-height:1.4}
+.pb-n{flex:none;display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--tile);color:var(--tile-ink);font-weight:800;font-size:15px}
+.pb-paso.on{color:var(--ink-2)}.pb-paso.on .pb-n{background:var(--ok);color:#fff}
+.pb-casa{margin:0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:8px}.pb-casa li{padding:6px 12px;border-radius:999px;background:var(--surface-2);font-size:15px}
+.pb-ayuda{display:flex;flex-direction:column;gap:10px;padding:14px;border-radius:var(--r);background:var(--crit-soft);border:1px solid var(--crit)}.pb-ayuda h2,.pb-ayuda p{margin:0}
+.pb-m{break-inside:avoid}.pb-m ol{margin:4px 0 8px}
 .mf-btn{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:12px;width:100%;padding:10px 14px;border-radius:var(--r);background:var(--surface);border:1px solid var(--line);text-align:left;min-height:56px}
 .mf-btn>.ic{width:26px;height:26px;color:var(--crit)}.mf-btn strong{display:block;font-size:17px}.mf-btn span span{font-size:14px;color:var(--ink-2)}
 .fb-lock{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:12px;border-radius:12px;background:var(--surface-2);font-size:15px}.fb-lock .ic{width:22px;height:22px;color:var(--signal)}
@@ -2521,6 +2538,9 @@ const ICON = {
   cal:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
   toilet:'<path d="M14 3h6v8h-6z"/><path d="M3 11h17a6 6 0 0 1-6 6v4H9v-4a6 6 0 0 1-6-6z"/>',
   compass:'<circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2.5 4.5-4.5 2.5 2.5-4.5z"/>',
+  help:'<circle cx="12" cy="12" r="9.5"/><path d="M9.3 9.2a2.8 2.8 0 1 1 3.9 2.6c-.8.4-1.2 1-1.2 1.8v.6"/><path d="M12 17.3h.01"/>',
+  smile:'<circle cx="12" cy="12" r="9.5"/><path d="M8.3 14.2a4.6 4.6 0 0 0 7.4 0"/><path d="M9 9.5h.01M15 9.5h.01"/>',
+  cash:'<rect x="2.5" y="6" width="19" height="12" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M6 9.5v5M18 9.5v5"/>',
   back:'<path d="m15 5-7 7 7 7"/>',
   chev:'<path d="m9 5 7 7-7 7"/>'
 };
@@ -2637,6 +2657,7 @@ function renderHome(){
     <button class="btn btn-ghost btn-sm" data-action="tab" data-tab="guias">Ver todas las guías</button>`;
   const ext = GUIDES.filter(g => g.group === "extremo");
   const extremo = `<button class="btn btn-primary" data-action="go-mes">${icon("cal")}Plan de corte largo: 7, 15 o 30 días</button>
+    <button class="btn btn-ghost" data-action="go-prob">${icon("help")}Tengo un problema: qué hacer paso a paso</button>
     <div class="chips">${ext.map(g => `<button class="chip" data-action="guide" data-id="${g.id}">${g.title}</button>`).join("")}</div>`;
   const c = CIUDADES[state.ciudad];
   const tops = c ? c.nums.filter(x => x.top) : [];
@@ -2669,6 +2690,7 @@ function renderHome(){
       <button class="sb sb-bien" data-action="go-aviso">${icon("heart")}<span>Estoy bien</span></button>
     </div>
     <button class="mf-btn" data-action="go-mificha">${icon("id")}<span><strong>Mi ficha</strong><span>${miFicha() ? esc(miFicha().nombre) + (fpCfg() ? " · con clave" : "") : "Datos médicos y documentos"}</span></span>${icon("chev")}</button>
+    <button class="mf-btn pb-home" data-action="go-prob">${icon("help")}<span><strong>Tengo un problema</strong><span>Qué hacer, paso a paso, con lo que hay en casa</span></span>${icon("chev")}</button>
     ${ahora.length ? `<div class="ahora">${ahora.join("")}</div>` : ""}
     <div class="hsecs">
       ${hsec("pasa", "storm", "¿Qué está pasando?", "Toca la situación y sigue los pasos", pasa, "hs-main")}
@@ -2702,7 +2724,7 @@ function renderGuides(){
     <h2 class="sec">Saber hacer</h2>
     <ul class="glist">${GUIDES.filter(g => g.group === "saber").map(row).join("")}</ul>
     <details class="ext-g" id="extremo"${ui.extOpen ? " open" : ""}><summary><h2 class="sec">Caso extremo</h2><span class="fine">Varios días en casa sin luz, gas ni agua · ${GUIDES.filter(g => g.group === "extremo").length + 1} guías</span></summary>
-    <ul class="glist"><li><button class="grow" data-action="go-mes"><span class="g-ic">${icon("cal")}</span><span class="g-txt"><strong>Plan de corte largo</strong><span>Para 7, 15 o 30 días: qué tener, cuánto y qué hacer cada semana.</span></span><span class="g-meta">${icon("chev")}</span></button></li>${GUIDES.filter(g => g.group === "extremo").map(row).join("")}</ul></details>
+    <ul class="glist"><li><button class="grow" data-action="go-prob"><span class="g-ic">${icon("help")}</span><span class="g-txt"><strong>Tengo un problema</strong><span>Falta agua, hace frío, alguien se enfermó: qué hacer, paso a paso.</span></span><span class="g-meta">${icon("chev")}</span></button></li><li><button class="grow" data-action="go-mes"><span class="g-ic">${icon("cal")}</span><span class="g-txt"><strong>Plan de corte largo</strong><span>Para 7, 15 o 30 días: qué tener, cuánto y qué hacer cada semana.</span></span><span class="g-meta">${icon("chev")}</span></button></li>${GUIDES.filter(g => g.group === "extremo").map(row).join("")}</ul></details>
     <h2 class="sec" id="zona">Según dónde vives</h2>
     ${zonaHTML(row)}
     <p class="fine">Basadas en fuentes oficiales argentinas e internacionales. No reemplazan las indicaciones de las autoridades ni la atención médica.</p>
@@ -3951,6 +3973,7 @@ const MANUAL_SEC = [
   ["datos","Datos de la familia","Plan, teléfonos, lugares, inventario y fichas médicas.",true],
   ["mapa","Mapa del barrio y de Azul","Con tus lugares guardados, hospitales, bomberos y policía.",true],
   ["radio","Radios y cómo comunicarse","Frecuencias y qué hacer sin internet.",true],
+  ["problemas","Tengo un problema","Qué hacer si falta agua, hace frío, alguien se enferma y más.",true],
   ["emergencia","Guías: en la emergencia","Corte de luz, inundación, tormenta, calor, monóxido, RCP, evacuar.",true],
   ["extremo","Guías: caso extremo","Fuego, agua, energía, cocina, abrigo, baño y señales.",true],
   ["saber","Guías: saber hacer","Agua segura, comida, mochila, mapas y más.",false],
@@ -3989,9 +4012,10 @@ function manualHTML(){
     parts.push(`<section class="ps"><h2>Radios</h2>${printTable(["Banda","Frecuencia","Radio"], RADIOS.flatMap(g => g.l).map(([, b, f, n]) => [b, f, n]))}
       <h3>Comunicarse fuera de la zona</h3><ol>${COMS.map(([t, d]) => `<li><strong>${esc(t)}.</strong> ${esc(d)}</li>`).join("")}</ol></section>`);
   }
+  if(sel.problemas) parts.push(`<section class="ps pm-g"><h2>Tengo un problema</h2>${pbManual()}</section>`);
   const gsec = (k, t) => { if(sel[k]) parts.push(`<section class="ps pm-g"><h2>${t}</h2>${GUIDES.filter(g => g.group === k).map(guidePrint).join("")}</section>`); };
   gsec("emergencia", "En la emergencia"); gsec("extremo", "Caso extremo"); gsec("saber", "Saber hacer"); gsec("zona", "Según la zona");
-  if(sel.mes) parts.push(`<section class="ps"><h2>30 días sin luz</h2>${MES_ETAPAS.map(([t, it]) => `<h3>${t}</h3><ul>${it.map(([x]) => `<li>${esc(x)}</li>`).join("")}</ul>`).join("")}</section>${mesPrintHTML()}`);
+  if(sel.mes) parts.push(`<section class="ps"><h2>${mesD()} días sin luz</h2>${mesEtapas().map(([t, it]) => `<h3>${t}</h3><ul>${it.map(([x]) => `<li>${esc(x)}</li>`).join("")}</ul>`).join("")}</section>${mesPrintHTML()}`);
   if(sel.aprender) parts.push(`<section class="ps pm-g"><h2>Aprender</h2>${APRENDER.map(t => `<h3>${t.t}</h3>${t.lec.map(l => `<section class="pg"><h4>${l.t}</h4>${l.b.map(aprBlock).join("")}</section>`).join("")}`).join("")}</section>`);
   return `<header class="ph"><h1>Manual de emergencia de la familia</h1><p>Preparados · impreso el ${fmtDate(new Date())}. Guárdalo en la mochila: sirve aunque no haya batería. En una emergencia, llama al 911.</p></header>${parts.join("")}`;
 }
@@ -4708,12 +4732,12 @@ document.addEventListener("keydown", e => { if(e.key === "Escape"){ const ov = d
 
 /* ---------- Botón «atrás» del celular ----------
    Cada pantalla nueva queda en el historial: «atrás» vuelve a la anterior en vez de cerrar la app. */
-const scrKey = () => [ui.tab, ui.sub || "", ui.guide || "", ui.tab === "numeros" ? ui.planSeg || "" : "", ui.tab === "preparar" ? ui.prep || "" : "", ui.ayuda && ui.ayuda.mostrar && ui.sub === "ayuda" ? "m" : ""].join("|");
+const scrKey = () => [ui.tab, ui.sub || "", ui.guide || "", ui.tab === "numeros" ? ui.planSeg || "" : "", ui.tab === "preparar" ? ui.prep || "" : "", ui.ayuda && ui.ayuda.mostrar && ui.sub === "ayuda" ? "m" : "", ui.sub === "prob" ? ui.pbId || "" : ""].join("|");
 let histPop = false;
 /* La dirección de cada pantalla: si Android recarga la app, vuelve a la misma pantalla */
-const SUB_HASH = {config:"configuracion", recs:"recordatorios", corte:"corte", aviso:"aviso", mapa:"mapa", ayuda:"ayuda", llevar:"llevar", ir:"llevar", mificha:"mificha", mes:"30dias", radio:"radio", manual:"manual"};
+const SUB_HASH = {prob:"problema", config:"configuracion", recs:"recordatorios", corte:"corte", aviso:"aviso", mapa:"mapa", ayuda:"ayuda", llevar:"llevar", ir:"llevar", mificha:"mificha", mes:"30dias", radio:"radio", manual:"manual"};
 function screenHash(){
-  if(ui.tab === "inicio") return SUB_HASH[ui.sub] || "";
+  if(ui.tab === "inicio") return ui.sub === "prob" && ui.pbId ? "problema-" + ui.pbId : SUB_HASH[ui.sub] || "";
   if(ui.tab === "guias") return ui.guide ? "guia-" + ui.guide : "guias";
   if(ui.tab === "preparar") return ui.prep === "inv" ? "inventario" : "preparar";
   if(ui.tab === "numeros") return {familia:"plan", ficha:"ficha", compartir:"compartir"}[ui.planSeg] || "numeros";
@@ -4726,7 +4750,7 @@ function histSync(){
   if(k === cur) return;
   try{ history[cur ? "pushState" : "replaceState"](histState(), "", histUrl()); }catch(e){}
 }
-const histState = () => ({k:scrKey(), tab:ui.tab, sub:ui.sub, guide:ui.guide, planSeg:ui.planSeg, prep:ui.prep, mostrar:!!(ui.ayuda && ui.ayuda.mostrar)});
+const histState = () => ({k:scrKey(), tab:ui.tab, sub:ui.sub, guide:ui.guide, planSeg:ui.planSeg, prep:ui.prep, mostrar:!!(ui.ayuda && ui.ayuda.mostrar), pbId:ui.pbId || null});
 window.addEventListener("popstate", e => {
   const s = e.state;
   /* Con una ventana abierta (PIN, confirmar, luz de pantalla), «atrás» solo la cierra */
@@ -4738,7 +4762,7 @@ window.addEventListener("popstate", e => {
   }
   if((!s || !s.k) && location.hash.length > 1 && location.hash.slice(1) !== screenHash()) return; /* un acceso directo: lo atiende «hashchange» */
   if(!s || !s.k) routeHash((location.hash || "").slice(1));
-  else{ ui.tab = s.tab; ui.sub = s.sub; ui.guide = s.guide; if(s.planSeg) ui.planSeg = s.planSeg; if(s.prep) ui.prep = s.prep; if(ui.ayuda) ui.ayuda.mostrar = !!s.mostrar; }
+  else{ ui.tab = s.tab; ui.sub = s.sub; ui.guide = s.guide; if(s.planSeg) ui.planSeg = s.planSeg; if(s.prep) ui.prep = s.prep; if(ui.ayuda) ui.ayuda.mostrar = !!s.mostrar; ui.pbId = s.pbId || null; }
   ui.resetAsk = null; ui.delAsk = null; ui.sosAsk = false; ui.invEdit = null; ui.invDel = null; ui.fichaEdit = null; ui.fichaBig = null; ui.fichaDel = null;
   histPop = true;
   try{ render(true); }finally{ histPop = false; }
@@ -4823,7 +4847,7 @@ async function recNotif(){
 
 /* ---------- Configuración: todos los ajustes en un lugar (engranaje arriba a la derecha) ----------
    En un celular con control parental se ve todo; para cambiar algo, salvo voz y vibración, pide el PIN. */
-const APP_VER = 24;
+const APP_VER = 25;
 const GEAR_SVG = `<svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>`;
 function renderConfig(){
   const lc = lockCfg(), lockOn = !!(lc && lc.on), f = miFicha(), fp = fpCfg(), aqui = recsAqui(), nRec = REMINDERS.filter(recOn).length;
@@ -4920,6 +4944,434 @@ async function cfgUpdate(){
     if(v > APP_VER) say(`Hay una versión nueva (${v}).`, true);
     else say("Ya tienes la última versión.");
   }catch(e){ say("No se pudo revisar ahora. Prueba más tarde."); }
+}
+
+/* ---------- Tengo un problema: eliges qué pasa y la app dice qué hacer, paso a paso, con lo que hay en casa ----------
+   Para los 4: textos cortos y simples. Lo peligroso dice primero que avise a un adulto. */
+const PB_CATS = [
+  {id:"agua", t:"Agua", ic:"drop"},
+  {id:"comida", t:"Comida y cocina", ic:"food"},
+  {id:"luz", t:"Luz, carga y señal", ic:"bolt"},
+  {id:"clima", t:"Frío y calor", ic:"heat"},
+  {id:"bano", t:"Baño e higiene", ic:"toilet"},
+  {id:"salud", t:"Salud", ic:"heart"},
+  {id:"plata", t:"Plata y compras", ic:"cash"},
+  {id:"casa", t:"Casa y seguridad", ic:"home"},
+  {id:"animo", t:"Ánimo y familia", ic:"smile"}
+];
+const PB_KID = "Si eres una de las chicas: avísale primero a un adulto.";
+/* tel: 911, 107, 100, intox, apoyo; y de tu ciudad: hosp, luz, agua, gas.
+   ir: [tipo, dato] — g = guía, l = lectura de Aprender, p = otro problema, h = pantalla, a = herramienta */
+const PROBLEMAS = [
+  /* ---- Agua ---- */
+  {id:"poca-agua", c:"agua", t:"Sale poca agua o nada de la canilla", kw:"presion canilla no sale agua corte de agua",
+   p:["Cierra todas las canillas, así no se pierde agua cuando vuelva.",
+      "Usa la reserva en este orden: primero para tomar y cocinar, después para lavarse las manos y al final para el inodoro.",
+      "Para tomar y cocinar hacen falta unos 4 litros por persona por día: en casa, {agua} litros por día.",
+      "Cuando vuelva, llena todo: bidones, ollas con tapa, botellas, baldes y la bañera. Suele haber más presión de noche y temprano.",
+      "Llama a la cooperativa de agua para saber si es un corte y cuánto va a durar."],
+   casa:["Bidones", "Ollas con tapa", "Botellas", "Baldes", "La bañera"],
+   ayuda:"Si pasa un día y no vuelve, y la reserva alcanza para menos de 2 días, averigua en la radio dónde reparten agua.",
+   tel:["agua"], ir:[["g","agua-sin-luz"], ["h","inventario"], ["h","radio"]]},
+  {id:"agua-turbia", c:"agua", t:"El agua sale turbia, con olor o dicen que no se tome", kw:"turbia sucia olor color potable potabilizar hervir lavandina",
+   p:["No la tomes así. Para lavar platos y para el inodoro sí sirve.",
+      "Si está turbia, déjala reposar un rato y pásala por un trapo limpio o un filtro de café.",
+      "Después, hiérvela de 3 a 5 minutos con burbujeo fuerte. O ponle 2 gotas de lavandina común por litro y espera 30 minutos.",
+      "Guárdala tapada en un bidón limpio y escríbele «tratada».",
+      "Si puede tener nafta, aceite o químicos, no se arregla hirviéndola: solo agua envasada."],
+   casa:["Olla", "Trapo limpio o filtro de café", "Lavandina común, sin perfume ni gel", "Bidón con tapa"],
+   ayuda:"Si alguien la tomó y tiene diarrea o vómitos, mira «Diarrea o vómitos».",
+   ir:[["g","agua-segura"], ["p","diarrea"]]},
+  {id:"se-acaba-agua", c:"agua", t:"Se está terminando el agua de reserva", kw:"queda poca agua reserva bidones lluvia reparten",
+   p:["Desde ahora, el agua limpia es solo para tomar y cocinar.",
+      "Cocinen arroz, polenta o puré, que absorben el agua. Si hacen fideos, guarden esa agua para lavar.",
+      "Junten agua de lluvia en baldes y fuentes limpias. Para tomarla, trátenla igual que el agua turbia.",
+      "Pregunten en la radio o a los vecinos dónde reparten agua: escuelas, bomberos, la municipalidad.",
+      "Lleven bidones vacíos con tapa y vayan de a dos."],
+   ayuda:"Si alguien no hace pis en 8 horas, tiene la boca muy seca o está muy decaído, le falta agua: llama al 107.",
+   tel:["107", "agua"], ir:[["g","agua-lluvia"], ["p","agua-turbia"], ["h","radio"]]},
+
+  /* ---- Comida y cocina ---- */
+  {id:"heladera", c:"comida", t:"La heladera dejó de enfriar", kw:"heladera freezer frio comida se echa a perder",
+   p:["No la abras. Cerrada, la heladera guarda el frío unas 4 horas y el freezer lleno hasta 48 horas.",
+      "Antes de abrir, piensen qué van a sacar y sáquenlo todo de una vez.",
+      "Coman primero lo de la heladera, después lo del freezer y al final latas y paquetes.",
+      "Prende el contador de corte de la app: te avisa cuándo se pasa el tiempo de cada cosa.",
+      "Si tienen generador, prendan la heladera de a ratos: 1 o 2 horas, 3 o 4 veces por día. El generador, siempre afuera."],
+   casa:["Conservadora", "Botellas de agua congeladas", "Mantas para tapar la heladera"],
+   ir:[["h","corte"], ["g","comida-corte"], ["l","conservar"]]},
+  {id:"comida-rara", c:"comida", t:"No sé si esta comida está buena", kw:"en mal estado podrida vencida olor lata hinchada tirar",
+   pri:"Ante la duda, tírala. Nunca la pruebes para decidir.",
+   p:["Carne, pollo, pescado, lácteos, huevos, fiambre y sobras: si estuvieron más de 4 horas sin frío, se tiran.",
+      "Tira las latas hinchadas, oxidadas, abolladas en el borde o que salpican al abrirlas.",
+      "Mira el color y huele: si está babosa, tiene moho o huele raro, no se come.",
+      "Pan, arroz, fideos secos, galletitas, frutas, verduras enteras y latas sanas aguantan sin heladera.",
+      "Lava bien el abrelatas, la tabla y los platos."],
+   ayuda:"Si alguien comió algo en mal estado y vomita mucho, tiene diarrea fuerte, ve borroso o le cuesta tragar, llama al 107 o al Centro de Intoxicaciones.",
+   tel:["107", "intox"], ir:[["g","comida-corte"], ["l","conservar"]]},
+  {id:"cocina", c:"comida", t:"La cocina no prende", kw:"hornalla encendido chispa fosforo gas no sale anafe",
+   kid:true, pri:"Si huele a gas, no prendas nada: mira «Huele a gas».",
+   p:["Sin luz, el encendido eléctrico no hace chispa. Prende primero un fósforo o un encendedor largo, acércalo a la hornalla y recién ahí abre la perilla.",
+      "Si no sale gas en ninguna hornalla, se cortó el gas: cierra todas las perillas.",
+      "Sin gas, cocina con el anafe de cartucho al lado de una ventana abierta, o con la parrilla afuera.",
+      "Nunca uses el anafe, la parrilla ni carbón con todo cerrado: el humo que no se ve puede matar.",
+      "Comida que no hace falta cocinar: latas, pan, galletitas, frutas, leche en polvo con agua segura."],
+   casa:["Fósforos", "Encendedor largo", "Anafe de cartucho"],
+   tel:["gas"], ir:[["p","olor-gas"], ["g","cocinar"], ["l","gas"]]},
+  {id:"ahorrar-gas", c:"comida", t:"Se terminan los cartuchos de gas", kw:"cartucho garrafa ahorrar gas anafe cocinar poco",
+   p:["Cocinen una sola vez por día para todos, y en el mismo fuego calienten el agua.",
+      "La olla, siempre tapada. Cuando hierve, bajen el fuego.",
+      "Dejen las lentejas y porotos en remojo desde la noche anterior, y el arroz media hora antes.",
+      "Apaguen unos minutos antes y envuelvan la olla tapada en una manta: se termina de cocinar sola.",
+      "Pregunten a los vecinos: entre varios, se cocina en una sola olla."],
+   casa:["Olla con tapa", "Una manta o toallas viejas"],
+   ir:[["l","gas"], ["g","cocinar"], ["g","fuego"]]},
+  {id:"que-cocinar", c:"comida", t:"No sé qué cocinar con lo que queda", kw:"menu receta comida que hago reserva",
+   p:["Abre el Inventario: primero va lo que vence antes.",
+      "Una comida fácil: arroz o fideos, una lata (atún, lentejas, arvejas o choclo) y un chorrito de aceite.",
+      "Polenta con queso rallado o con una lata de tomate: rinde mucho y se hace rápido.",
+      "Desayuno y merienda: leche en polvo, pan o galletitas, dulce y fruta.",
+      "Si queda poco, repartan en porciones iguales y cuenten para cuántos días alcanza."],
+   ir:[["h","inventario"], ["g","reserva-comida"], ["h","30dias"]]},
+  {id:"gato", c:"comida", t:"Se termina la comida o las piedras del gato", kw:"gato mascota alimento piedras arena sanitaria",
+   p:["Por unos días puede comer pollo o carne hervida sin sal, o un poco de atún al natural.",
+      "Nunca le des cebolla, ajo, chocolate, uvas, leche ni huesos cocidos.",
+      "Que siempre tenga agua limpia a mano.",
+      "Sin piedras: usa tierra seca, arena o papel de diario en tiras. Cámbialo seguido.",
+      "Pregunta a vecinos con gatos o en la veterinaria: muchas veces se presta."],
+   ayuda:"Llévalo al veterinario si pasa más de un día sin comer, vomita seguido o está muy quieto.",
+   ir:[["h","30dias"]]},
+
+  /* ---- Luz, carga y señal ---- */
+  {id:"bateria", c:"luz", t:"Los celulares se están quedando sin batería", kw:"bateria carga cargar celular powerbank panel solar auto",
+   p:["Activa el modo ahorro de la app y el del celular, y baja el brillo.",
+      "Dejen un solo celular prendido para los avisos; los otros, en modo avión o apagados. Se turnan.",
+      "Carguen los celulares de a uno con el powerbank. Si hay panel solar, póngalo al sol de 10 a 16 cargando el powerbank.",
+      "En el auto se puede cargar, pero con el motor prendido y al aire libre. Nunca en el garage.",
+      "Pregunten dónde se puede cargar: hospital, municipalidad, comercios o vecinos con generador."],
+   casa:["Powerbank", "Cable del celular", "Panel solar", "Cargador para el auto"],
+   ir:[["a","ahorro-on"], ["g","energia"]]},
+  {id:"noche", c:"luz", t:"De noche no tenemos luz", kw:"oscuridad noche linterna vela lampara pilas",
+   kid:true,
+   p:["Usen linternas y lámparas a pilas o recargables: una por habitación.",
+      "Si usan velas: en un plato con agua o adentro de un frasco, lejos de cortinas y siempre con un adulto.",
+      "Nunca dejen una vela prendida al ir a dormir.",
+      "Cenen y hagan las cosas temprano, con la luz del día.",
+      "La linterna de la app gasta la batería del celular: úsala solo un rato."],
+   casa:["Linternas", "Pilas", "Frascos o platos para las velas"],
+   ir:[["a","linterna"], ["g","corte-luz"]]},
+  {id:"sin-senal", c:"luz", t:"No hay señal y no podemos avisar a la familia", kw:"señal senal llamar avisar sms whatsapp comunicar familia",
+   p:["Manda un SMS corto en vez de llamar: sale con muy poca señal. Usa «Estoy bien».",
+      "Prueba en otro lugar: al lado de una ventana, en un piso alto o afuera.",
+      "Prueba a distintas horas: de noche y temprano hay menos gente usando la red.",
+      "Si no hay forma de avisar, vayan al punto de encuentro del plan.",
+      "La radio de la ciudad lee mensajes de la gente: lleva un papel con quién eres y que están bien."],
+   ir:[["h","aviso"], ["h","plan"], ["h","radio"]]},
+  {id:"noticias", c:"luz", t:"No sabemos qué está pasando", kw:"noticias radio informacion rumores que pasa",
+   p:["Prende la radio a pilas. En Azul, LU10 en AM 1320.",
+      "Escuchen las noticias a horas fijas, a la mañana y a la noche, para ahorrar pilas.",
+      "Crean lo que dicen la municipalidad, Defensa Civil o la radio. Lo que llega por cadenas de WhatsApp, verifíquenlo antes.",
+      "Anoten en un papel lo importante: dónde dan agua, dónde se puede cargar, qué está abierto.",
+      "Hablen con los vecinos de la cuadra y compartan lo que saben."],
+   ir:[["h","radio"], ["l","rumores"], ["l","organizar"]]},
+  {id:"volvio", c:"luz", t:"Volvió la luz: ¿qué hacemos?", kw:"volvio la luz regreso vuelve electricidad",
+   p:["Prendan los aparatos de a uno, no todos juntos. Primero la heladera.",
+      "Revisen la comida antes de usarla.",
+      "Carguen todo: celulares, powerbanks, pilas recargables y linternas.",
+      "Llenen los bidones y la reserva de agua.",
+      "Apaguen el contador de corte y anoten qué les faltó, para comprarlo."],
+   ir:[["p","comida-rara"], ["h","corte"], ["h","inventario"]]},
+
+  /* ---- Frío y calor ---- */
+  {id:"frio", c:"clima", t:"Hace mucho frío en casa", kw:"frio calefaccion abrigo invierno helada estufa",
+   kid:true, pri:"Nunca uses el horno, las hornallas ni un brasero para calentar la casa: el monóxido puede matar.",
+   p:["Elijan una sola habitación, la más chica y con menos ventanas, y pasen el día ahí todos juntos.",
+      "Cierren puertas, bajen persianas y tapen las rendijas con toallas.",
+      "Abríguense en capas: camiseta, buzo, campera, gorro y medias.",
+      "Bolsas de agua caliente o botellas con agua tibia, envueltas en una toalla, en la cama.",
+      "Coman algo caliente. Duerman juntos y con mantas también debajo."],
+   casa:["Mantas y frazadas", "Gorros y medias", "Bolsas de agua caliente o botellas", "Toallas para las rendijas"],
+   ayuda:"Si alguien tiembla sin parar, está confundido o muy dormido, o tiene la piel muy fría, abrígalo y llama al 107.",
+   tel:["107"], ir:[["g","calor-sin-gas"], ["g","monoxido"]]},
+  {id:"calor", c:"clima", t:"Hace mucho calor", kw:"calor ola de calor temperatura golpe de calor ventilador",
+   p:["Tomen agua seguido, aunque no tengan sed.",
+      "De día, cierren ventanas y persianas del lado del sol. De noche, ábranlas para que entre aire fresco.",
+      "Quédense en la parte más fresca de la casa y no salgan de 11 a 17.",
+      "Paños húmedos en la nuca, la frente y las muñecas. Ropa clara y suelta.",
+      "Coman liviano. Con calor, la comida se echa a perder más rápido."],
+   ayuda:"Si alguien tiene la piel muy caliente y seca, está confundido, vomita o se desmaya, es un golpe de calor: llévalo a la sombra, mójalo y llama al 107.",
+   tel:["107"], ir:[["g","calor"]]},
+
+  /* ---- Baño e higiene ---- */
+  {id:"inodoro", c:"bano", t:"El inodoro no descarga", kw:"inodoro baño bano descarga cadena mochila",
+   p:["Si hay un poco de agua, echa un balde de golpe en la taza. Usa agua ya usada, de lavar platos o de bañarse.",
+      "Si no hay agua: pon dos bolsas de residuos fuertes adentro del inodoro.",
+      "Después de usarlo, echa un puñado de piedras del gato, tierra seca o aserrín: tapa el olor.",
+      "Cuando la bolsa está por la mitad, ciérrala con un nudo y déjala afuera, en un tacho con tapa.",
+      "Lávense siempre las manos después, aunque sea con poca agua, o con alcohol en gel."],
+   casa:["Balde", "Bolsas de residuos fuertes", "Piedras del gato", "Alcohol en gel"],
+   ir:[["g","bano"], ["l","higiene"]]},
+  {id:"banarse", c:"bano", t:"No nos podemos bañar", kw:"bañarse banarse ducha higiene lavarse dientes",
+   p:["Un baño por partes: un paño con agua tibia y jabón. Primero la cara, después axilas, pies y partes íntimas.",
+      "Con 2 litros de agua calentada en la pava alcanza para una persona.",
+      "Lavarse las manos es lo más importante: antes de comer y de cocinar, y después de ir al baño.",
+      "Para lavarse las manos con poca agua: un bidón con canilla o una botella con agujeritos en la tapa.",
+      "Cepíllense los dientes con un vaso de agua segura. La ropa interior y las medias se lavan a mano."],
+   casa:["Paño o toallita", "Jabón", "Pava", "Bidón con canilla"],
+   ir:[["l","higiene"]]},
+  {id:"basura", c:"bano", t:"Se junta la basura", kw:"basura residuos olor moscas ratas recoleccion",
+   p:["Separen los restos de comida: son los que traen olor, moscas y ratas.",
+      "Bolsas cerradas con doble nudo, en un tacho con tapa, afuera y a la sombra.",
+      "Aplasten botellas y cajas para que ocupen menos.",
+      "Pregunten en la radio o en la municipalidad cuándo pasa la recolección.",
+      "No quemen la basura: el humo es tóxico."],
+   ir:[["g","bano"]]},
+
+  /* ---- Salud ---- */
+  {id:"monoxido", c:"salud", t:"Varios tienen dolor de cabeza, mareo o mucho sueño", kw:"monoxido dolor de cabeza mareo sueño nauseas brasero estufa",
+   urg:true, kid:true, pri:"Puede ser monóxido de carbono. Salgan todos al aire libre ya, abriendo puertas y ventanas al pasar.",
+   p:["Apaguen braseros, estufas, el anafe o el generador solo si pueden hacerlo sin quedarse adentro.",
+      "Llamen al 107 o al 911 desde afuera.",
+      "No vuelvan a entrar hasta que lo diga un bombero o un médico.",
+      "Aunque se sientan mejor, vayan a una guardia y cuenten que sospechan monóxido."],
+   tel:["107", "911", "intox"], ir:[["g","monoxido"]]},
+  {id:"fiebre", c:"salud", t:"Alguien tiene fiebre", kw:"fiebre temperatura caliente termometro enfermo",
+   kid:"Si eres una de las chicas y te sientes mal, avísale a mamá o a papá.",
+   p:["Toma la temperatura con el termómetro y anota la hora y cuánto marca.",
+      "Que tome agua de a sorbos y descanse, con ropa liviana. No lo abrigues de más.",
+      "Paños con agua tibia en la frente. Nunca agua helada ni alcohol.",
+      "Si hay paracetamol o ibuprofeno, la dosis es la que dice el prospecto para su edad y peso, o la que indicó el médico. A las chicas, nunca aspirina.",
+      "Revisa su ficha médica: alergias y remedios que toma."],
+   ayuda:"Ve a la guardia o llama al 107 si la fiebre pasa de 39 °C y no baja, dura más de 2 días, le cuesta respirar, tiene el cuello duro, manchas rojas o violetas que no se borran al apretar, o está muy dormido o confundido.",
+   tel:["107", "hosp"], ir:[["h","ficha"], ["l","auxilios"]]},
+  {id:"diarrea", c:"salud", t:"Diarrea o vómitos", kw:"diarrea vomitos vomito panza estomago deshidratacion suero",
+   kid:"Si eres una de las chicas y te sientes mal, avísale a mamá o a papá.",
+   p:["Lo más importante es no secarse por dentro: líquido de a sorbos chicos, seguido.",
+      "Sales de rehidratación de la farmacia. Si no hay: en 1 litro de agua segura, 6 cucharaditas rasas de azúcar y media cucharadita de sal.",
+      "Cuando tenga hambre, comida liviana: arroz, polenta, puré, galletitas de agua, banana.",
+      "Todos se lavan bien las manos: se contagia fácil.",
+      "Piensen de dónde vino: el agua o alguna comida. Eso no se toma ni se come más."],
+   ayuda:"Ve a la guardia si hay sangre, no hace pis en 8 horas, tiene la boca muy seca, vomita todo lo que toma, está muy decaído o dura más de 2 días. Con las chicas, consulten antes.",
+   tel:["107", "hosp"], ir:[["p","agua-turbia"], ["l","higiene"]]},
+  {id:"herida", c:"salud", t:"Un corte o una herida", kw:"corte herida sangre sangra lastimadura",
+   p:["Aprieta fuerte con un trapo o una gasa limpia durante 10 minutos, sin levantar para mirar.",
+      "Cuando deja de sangrar, lávala con mucha agua segura y jabón.",
+      "Tápala con una gasa o una curita. Cámbiala todos los días o si se moja.",
+      "Mírala los días siguientes: si se pone roja, hinchada, caliente, con pus o hay fiebre, se infectó."],
+   casa:["Gasas o trapo limpio", "Curitas", "Jabón"],
+   ayuda:"Llama al 107 si sangra mucho y no para después de 10 minutos apretando, si es profunda o muy abierta, o si es una mordedura. Si la hizo algo oxidado o sucio, consulta por la vacuna antitetánica.",
+   tel:["107", "hosp"], ir:[["l","auxilios"]]},
+  {id:"quemadura", c:"salud", t:"Una quemadura", kw:"quemadura quemo quemé agua caliente fuego ampolla",
+   p:["Pon la quemadura bajo agua fresca, no helada, durante 20 minutos.",
+      "Saca anillos, pulseras o ropa de esa zona antes de que se hinche, si no están pegados a la piel.",
+      "Tápala con un trapo limpio o film de cocina, sin apretar.",
+      "Nada de pasta de dientes, manteca, aceite ni hielo. No revientes las ampollas."],
+   casa:["Agua fresca", "Film de cocina", "Trapo limpio"],
+   ayuda:"Ve a la guardia si es más grande que la palma de la mano, si es en la cara, las manos, los pies o los genitales, si la piel está blanca o negra, o si fue por electricidad o un químico.",
+   tel:["107", "hosp"], ir:[["l","auxilios"]]},
+  {id:"remedio", c:"salud", t:"Se termina un remedio que alguien toma siempre", kw:"remedio medicamento receta farmacia pastillas se termina",
+   p:["Cuenta para cuántos días queda y avisa ya, sin esperar al último día.",
+      "Lleva la caja o la receta a la farmacia: muchas atienden con generador.",
+      "Si no hay receta, en la guardia del hospital la pueden hacer.",
+      "No cortes ni cambies la dosis para que dure más, salvo que lo diga un médico.",
+      "Que la ficha médica tenga el nombre y la dosis de cada remedio."],
+   tel:["hosp"], ir:[["h","ficha"]]},
+  {id:"se-siente-mal", c:"salud", t:"Alguien se siente mal y no sé qué tiene", kw:"se siente mal dolor desmayo no se que tiene enfermo",
+   kid:"Si eres una de las chicas y te sientes mal, avísale a mamá o a papá.",
+   p:["Que se siente o se acueste en un lugar tranquilo, y que alguien se quede con él.",
+      "Pregúntale qué siente, desde cuándo, y si comió o tomó algo raro.",
+      "Abre su ficha médica: enfermedades, alergias y remedios.",
+      "Anota todo con la hora: te lo van a preguntar en la guardia."],
+   ayuda:"Llama al 107 o al 911 ya si no responde, le cuesta respirar, tiene un dolor fuerte en el pecho, la cara torcida o no puede mover un brazo, convulsiona o sangra mucho.",
+   tel:["107", "911", "hosp"], ir:[["h","ficha"], ["g","rcp"]]},
+
+  /* ---- Plata y compras ---- */
+  {id:"cajeros", c:"plata", t:"No andan los cajeros ni las tarjetas", kw:"plata dinero efectivo cajero tarjeta banco pagar",
+   p:["El efectivo de la reserva, solo para lo importante: agua, comida, remedios y pilas.",
+      "Anoten en un papel cada cosa que gastan: así saben cuánto queda.",
+      "Pregunten en el almacén del barrio si les anotan y pagan cuando vuelva la luz.",
+      "Las transferencias andan si el celular y el comercio tienen señal: prueben.",
+      "Lo que les sobra se puede cambiar con los vecinos."],
+   ir:[["l","trueque"], ["h","inventario"]]},
+  {id:"no-hay", c:"plata", t:"Los negocios no tienen lo que necesito", kw:"negocio supermercado almacen no hay falta comprar",
+   p:["Hagan una lista corta: lo que de verdad falta, de lo más importante a lo menos.",
+      "Pregunten en la radio y a los vecinos qué negocios abrieron y qué tienen.",
+      "Vayan temprano, de a dos, con bolsas y el efectivo justo.",
+      "Busquen reemplazos: si no hay pan, galletitas o harina; si no hay agua envasada, agua de la canilla potabilizada.",
+      "Entre vecinos, compartan y cambien: alguien tiene lo que a ustedes les sobra."],
+   ir:[["l","compartir"], ["l","organizar"]]},
+
+  /* ---- Casa y seguridad ---- */
+  {id:"olor-gas", c:"casa", t:"Huele a gas", kw:"olor a gas escape perdida gas",
+   urg:true, kid:true, pri:"No prendas ni apagues luces, ni uses fósforos o encendedores.",
+   p:["Abran puertas y ventanas.",
+      "Cierren la llave de paso del gas, al lado del medidor.",
+      "Salgan todos afuera, con el gato.",
+      "Desde afuera, llamen a la emergencia de gas o al 911.",
+      "No vuelvan a entrar hasta que lo digan los técnicos o los bomberos."],
+   tel:["gas", "911", "100"]},
+  {id:"cable", c:"casa", t:"Hay un cable caído o salen chispas", kw:"cable caido chispas poste electricidad electrocutado",
+   urg:true, kid:true, pri:"No te acerques ni lo toques, aunque parezca que no hay luz. Tampoco el agua que lo rodea.",
+   p:["Aléjense por lo menos 10 metros y avisen a los demás que no pasen.",
+      "Llamen a la cooperativa eléctrica o al 911.",
+      "Si alguien quedó tocando un cable, no lo toques con la mano: llama al 911."],
+   tel:["luz", "911"]},
+  {id:"generador", c:"casa", t:"Vamos a usar un generador", kw:"generador grupo electrogeno nafta motor",
+   kid:true, pri:"Siempre afuera, a más de 6 metros de puertas y ventanas. Nunca en el garage, aunque esté abierto.",
+   p:["Ponlo en un lugar seco, con techo si llueve.",
+      "Cárgale nafta con el motor apagado y frío.",
+      "Enchufa los aparatos con un alargue grueso que entre desde afuera. Nunca lo conectes a un enchufe de la casa.",
+      "Úsalo para la heladera de a ratos y para cargar celulares y powerbanks.",
+      "Guarda la nafta en bidones para combustible, afuera y lejos del calor."],
+   ir:[["g","monoxido"], ["g","energia"]]},
+  {id:"ruidos", c:"casa", t:"Alguien merodea o se escuchan ruidos raros", kw:"ladron robo ruido merodea intruso entrar inseguridad",
+   kid:true,
+   p:["No salgas a ver. Quédense todos adentro, juntos, en una habitación con puerta.",
+      "Llamen al 911: digan la dirección, qué ven y cuántas personas son.",
+      "Hagan ruido y prendan una linterna desde adentro: casi siempre se van.",
+      "Avisen a los vecinos por mensaje o con el silbato.",
+      "No enfrenten a nadie: las cosas se recuperan, las personas no."],
+   tel:["911"], ir:[["a","silbato"], ["l","intruso"], ["l","vecinos-seg"]]},
+
+  /* ---- Ánimo y familia ---- */
+  {id:"miedo", c:"animo", t:"Alguien de la familia tiene miedo", kw:"miedo angustia nervios llanto chicas ansiedad",
+   kid:"Si eres una de las chicas: está bien tener miedo. Cuéntaselo a mamá o a papá.",
+   p:["Siéntense juntos y pregunten qué es lo que da miedo. Escuchen sin decir «no pasa nada».",
+      "Expliquen lo que pasa con palabras simples y verdaderas: qué saben, qué no y qué están haciendo.",
+      "Cada uno con una tarea: tener algo que hacer da tranquilidad.",
+      "Mantengan los horarios: comidas, juegos y dormir a la misma hora.",
+      "Menos noticias delante de todos, y más juegos, cuentos y abrazos."],
+   ir:[["l","miedo"], ["l","rutina"], ["l","roles"]]},
+  {id:"aburridos", c:"animo", t:"Estamos aburridos", kw:"aburridos aburrimiento juegos que hacemos",
+   p:["Cartas: truco, chinchón, escoba de 15.",
+      "Juegos sin nada: tutti frutti, veo veo, 20 preguntas, adivinanzas.",
+      "Una historia por turnos: cada uno agrega una frase.",
+      "Leer en voz alta un capítulo por noche.",
+      "Cada uno enseña algo que sabe: un nudo, una receta, una canción."],
+   casa:["Cartas", "Papel y lápices", "Un libro"],
+   ir:[["l","juegos"]]},
+  {id:"peleas", c:"animo", t:"Estamos tensos y peleando", kw:"peleas discusion tension enojo gritos",
+   p:["Paren un momento: cada uno a un lugar distinto, 10 minutos.",
+      "Coman algo y tomen agua: con hambre y cansancio todos se enojan más.",
+      "Hablen de a uno, sin gritar y sin buscar culpables.",
+      "Repartan las tareas de forma justa y escríbanlas en un papel.",
+      "Un rato por día para algo lindo, todos juntos."],
+   ir:[["l","peleas"], ["l","roles"]]},
+  {id:"agotado", c:"animo", t:"Estoy agotado y no doy más", kw:"cansado agotado no doy mas estres dormir",
+   p:["Duerme aunque sea un rato. Pídele a otro que se quede atento.",
+      "Come algo y toma agua.",
+      "Deja que los demás hagan una parte: las chicas pueden ayudar más de lo que parece.",
+      "Hagan solo lo de hoy. Lo de mañana, mañana.",
+      "Habla con alguien: tu pareja, un vecino, un amigo."],
+   ayuda:"Si sientes que no puedes más o piensas en hacerte daño, llama a la Línea de Prevención del Suicidio: 0800 345 1435, gratis y las 24 horas.",
+   tel:["apoyo"], ir:[["l","cuidar"]]}
+];
+const PB_TEL = {
+  "911":{n:"911", sh:"Emergencias", ic:"phone"},
+  "107":{n:"107", sh:"Ambulancia (SAME)", ic:"heart"},
+  "100":{n:"100", sh:"Bomberos", ic:"fire"},
+  intox:{n:"0800-333-0160", tel:"08003330160", sh:"Intoxicaciones", ic:"phone"},
+  apoyo:{n:"0800 345 1435", tel:"08003451435", sh:"Prevención del suicidio", ic:"phone"},
+  hosp:{city:"heart"}, luz:{city:"bolt"}, agua:{city:"drop"}, gas:{city:"flame"}
+};
+const PB_IR_H = {inventario:"Inventario", radio:"Radio y comunicación", aviso:"Estoy bien", plan:"Plan familiar", corte:"Contador de corte", "30dias":"Plan de corte largo", ficha:"Fichas médicas", mificha:"Mi ficha", ayuda:"Necesito ayuda"};
+const PB_IR_A = {"ahorro-on":"Modo ahorro de batería", linterna:"Linterna", silbato:"Silbato"};
+const PB_STOP = ["que","los","las","del","una","uno","hay","nos","con","por","para","tengo","tiene","tenemos","esta","estan","esta","anda","andan","funciona","mucho","muy","algo","como","hago","hacer","pasa","casa"];
+const pbFind = id => PROBLEMAS.find(x => x.id === id);
+const pbTxt = s => { const p = (typeof mesCfg === "function" && mesCfg().p) || 4; return s.replace("{agua}", p * 4); };
+function pbTel(k){
+  const d = PB_TEL[k]; if(!d) return null;
+  if(d.city){ const c = CIUDADES[state.ciudad], x = c && c.nums.find(y => y.top && y.ic === d.city); return x ? {n:x.n, tel:x.tel, sh:x.sh, ic:x.ic} : null; }
+  return {n:d.n, tel:d.tel || d.n, sh:d.sh, ic:d.ic};
+}
+function pbIr([k, v]){
+  if(k === "g"){ const g = GUIDES.find(x => x.id === v); return g ? `<button class="btn btn-ghost btn-sm" data-action="guide" data-id="${v}">Guía: ${g.title}</button>` : ""; }
+  if(k === "l"){ const l = APR_ALL().find(x => x.id === v); return l ? `<button class="btn btn-ghost btn-sm" data-action="pb-lec" data-id="${v}">Leer: ${l.t}</button>` : ""; }
+  if(k === "p"){ const p = pbFind(v); return p ? `<button class="btn btn-ghost btn-sm" data-action="pb-open" data-id="${v}">${p.t}</button>` : ""; }
+  if(k === "h") return PB_IR_H[v] ? `<button class="btn btn-ghost btn-sm" data-action="pb-ir" data-h="${v}">${PB_IR_H[v]}</button>` : "";
+  if(k === "a") return PB_IR_A[v] ? `<button class="btn btn-ghost btn-sm" data-action="${v}">${PB_IR_A[v]}</button>` : "";
+  return "";
+}
+const pbRow = p => `<li><button class="grow pb-row${p.urg ? " pb-urg" : ""}" data-action="pb-open" data-id="${p.id}"><span class="g-ic">${icon(p.urg ? "sos" : PB_CATS.find(c => c.id === p.c).ic)}</span><span class="g-txt"><strong>${p.t}</strong></span><span class="g-meta">${icon("chev")}</span></button></li>`;
+function pbListHTML(){
+  const q = norm(ui.pbQ || "");
+  if(q.length > 1){
+    /* Busca como se habla: «el inodoro no anda» encuentra «El inodoro no descarga». Primero lo que coincide en el título. */
+    const words = q.split(" ").filter(w => w.length > 2 && !PB_STOP.includes(w));
+    const has = (h, w) => h.includes(w) || (w.length > 4 && h.includes(w.slice(0, -1)));
+    const hits = (words.length ? PROBLEMAS : []).map(p => {
+      const t = norm(p.t), a = norm(p.kw + " " + PB_CATS.find(c => c.id === p.c).t), b = norm(p.p.join(" "));
+      return {p, n:words.reduce((n, w) => n + (has(t, w) ? 4 : has(a, w) ? 3 : has(b, w) ? 1 : 0), 0)};
+    }).filter(x => x.n > 0).sort((x, y) => y.n - x.n).slice(0, 8).map(x => x.p);
+    return hits.length ? `<ul class="glist">${hits.map(pbRow).join("")}</ul>`
+      : `<p class="fine">No encontré «${esc(ui.pbQ)}». Prueba con otra palabra, o elige un tema abajo. Si es una emergencia, llama al 911.</p>`;
+  }
+  return "";
+}
+function renderProb(){
+  const p = ui.pbId && pbFind(ui.pbId);
+  if(p) return renderProbUno(p);
+  ui.pbId = null;
+  const urg = PROBLEMAS.filter(x => x.urg);
+  const cats = PB_CATS.map(c => { const l = PROBLEMAS.filter(x => x.c === c.id && !x.urg); return `<details class="hsec pb-cat" data-pbcat="${c.id}"${ui.pbOpen === c.id ? " open" : ""}><summary><span class="g-ic">${icon(c.ic)}</span><span class="hs-t"><strong>${c.t}</strong><span>${l.length} problemas</span></span><span class="hs-chev" aria-hidden="true"></span></summary><ul class="glist pb-in">${l.map(pbRow).join("")}</ul></details>`; }).join("");
+  return `<section class="stack pb">
+    <button class="back" data-action="tab" data-tab="inicio">${icon("back")}Inicio</button>
+    <div class="intro"><h1>Tengo un problema</h1><p class="lede">Elige qué está pasando y te digo qué hacer, paso a paso, con lo que tienen en casa.</p></div>
+    <div class="pb-urgbox"><span class="lbl">Urgente</span><ul class="glist">${urg.map(pbRow).join("")}</ul></div>
+    <div class="field"><label class="lbl" for="pb-q">Buscar</label><input id="pb-q" type="search" autocomplete="off" enterkeyhint="search" value="${esc(ui.pbQ || "")}" placeholder="Ej.: fiebre, agua, frío, inodoro"></div>
+    <div id="pb-list">${pbListHTML()}</div>
+    <div class="hsecs" id="pb-cats"${(ui.pbQ || "").trim().length > 1 ? " hidden" : ""}>${cats}</div>
+    <p class="fine">Información de referencia. No reemplaza la atención médica ni las indicaciones de las autoridades. En una emergencia, llama al 911.</p>
+  </section>`;
+}
+function renderProbUno(p){
+  const cat = PB_CATS.find(c => c.id === p.c), chk = (ui.pbChk || {})[p.id] || {};
+  const kid = p.kid === true ? PB_KID : p.kid || "";
+  const tels = (p.tel || []).map(pbTel).filter(Boolean);
+  const telHTML = tels.length ? `<ul class="quick">${tels.map(x => `<li><a class="qcall${x.n === "911" ? " q911" : ""}" href="tel:${x.tel}">${icon(x.ic || "phone")}<span><strong>${x.sh}</strong><span class="mono">${x.n}</span></span></a></li>`).join("")}</ul>` : "";
+  const ir = (p.ir || []).map(pbIr).filter(Boolean);
+  const hechos = p.p.filter((_, i) => chk[i]).length;
+  return `<section class="stack pb pb-uno">
+    <button class="back" data-action="pb-back">${icon("back")}Tengo un problema</button>
+    <div class="intro"><p class="phase">${cat.t}</p><h1>${p.t}</h1></div>
+    ${p.pri ? `<p class="pb-pri${p.urg ? " crit" : ""}">${icon(p.urg ? "sos" : "flame")}<span>${esc(p.pri)}</span></p>` : ""}
+    ${kid ? `<p class="pb-kid">${icon("smile")}<span>${esc(kid)}</span></p>` : ""}
+    ${p.urg && telHTML ? `<div class="card"><h2>Llama</h2>${telHTML}</div>` : ""}
+    <div class="pb-head"><h2>Qué hacer</h2><button class="btn btn-ghost btn-sm" data-action="pb-leer" data-id="${p.id}">Leer en voz alta</button></div>
+    <ol class="pb-pasos">${p.p.map((s, i) => `<li><button class="pb-paso${chk[i] ? " on" : ""}" data-action="pb-chk" data-id="${p.id}" data-i="${i}" aria-pressed="${!!chk[i]}"><span class="pb-n" aria-hidden="true">${chk[i] ? "✓" : i + 1}</span><span>${esc(pbTxt(s))}</span></button></li>`).join("")}</ol>
+    <p class="fine" id="pb-cnt" role="status">${hechos ? `${hechos} de ${p.p.length} hechos. Toca un paso para marcarlo.` : "Toca cada paso cuando lo hagas."}</p>
+    ${p.casa ? `<div class="card"><h2>Con lo que tienen en casa</h2><ul class="pb-casa">${p.casa.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>` : ""}
+    ${p.ayuda ? `<div class="pb-ayuda"><h2>Cuándo pedir ayuda</h2><p>${esc(p.ayuda)}</p>${telHTML}</div>` : tels.length && !p.urg ? `<div class="card"><h2>A quién llamar</h2>${telHTML}</div>` : ""}
+    ${ir.length ? `<div class="card"><h2>Para saber más</h2><div class="inline">${ir.join("")}</div></div>` : ""}
+    <p class="fine">Información de referencia. No reemplaza la atención médica ni las indicaciones de las autoridades. En una emergencia, llama al 911.</p>
+  </section>`;
+}
+/* Leer en voz alta: lo pide quien toca el botón, aunque la voz de la navegación esté apagada */
+function pbLeer(p){
+  if(!("speechSynthesis" in window)) return;
+  try{
+    if(speechSynthesis.speaking){ speechSynthesis.cancel(); return; }
+    const t = [p.t + ".", p.pri || "", ...p.p.map((s, i) => `Paso ${i + 1}. ${pbTxt(s)}`), p.ayuda ? "Cuándo pedir ayuda. " + p.ayuda : ""].filter(Boolean).join(" ");
+    const u = new SpeechSynthesisUtterance(t), vs = speechSynthesis.getVoices();
+    const v = vs.find(x => /es[-_]AR/i.test(x.lang)) || vs.find(x => /^es/i.test(x.lang));
+    if(v) u.voice = v;
+    u.lang = v ? v.lang : "es-AR"; u.rate = 0.95;
+    speechSynthesis.speak(u);
+  }catch(e){}
+}
+function pbChk(el){
+  const id = el.dataset.id, i = Number(el.dataset.i), p = pbFind(id); if(!p) return;
+  ui.pbChk = ui.pbChk || {}; const c = ui.pbChk[id] = ui.pbChk[id] || {};
+  c[i] = !c[i];
+  el.classList.toggle("on", c[i]); el.setAttribute("aria-pressed", String(c[i]));
+  el.querySelector(".pb-n").textContent = c[i] ? "✓" : String(i + 1);
+  const n = p.p.filter((_, k) => c[k]).length, st = document.getElementById("pb-cnt");
+  if(st) st.textContent = n === p.p.length ? "¡Listo! Hiciste todos los pasos." : n ? `${n} de ${p.p.length} hechos. Toca un paso para marcarlo.` : "Toca cada paso cuando lo hagas.";
+  vibrar(15);
+}
+/* Para el manual en papel: todos los problemas, cortos */
+function pbManual(){
+  return PB_CATS.map(c => `<h3>${c.t}</h3>${PROBLEMAS.filter(p => p.c === c.id).map(p => `<div class="pb-m"><p><strong>${p.t}.</strong>${p.pri ? ` <strong>${esc(p.pri)}</strong>` : ""}</p><ol>${p.p.map(s => `<li>${esc(pbTxt(s))}</li>`).join("")}</ol>${p.ayuda ? `<p><em>Cuándo pedir ayuda:</em> ${esc(p.ayuda)}</p>` : ""}</div>`).join("")}`).join("");
 }
 
 /* ---------- Plan 30 días sin luz ---------- */
@@ -6364,7 +6816,7 @@ function render(top){
   if(!(ui.tab === "inicio" && ui.sub === "ir")) navStop();
   applyAhorro();
   if(ui.tab === "inicio" && !ui.sub && state.ahorro) html = renderAhorro();
-  else if(ui.tab === "inicio") html = ui.sub === "corte" ? renderCorte() : ui.sub === "aviso" ? renderAviso() : ui.sub === "mapa" ? renderMapa() : ui.sub === "ayuda" ? renderAyuda() : ui.sub === "mes" ? renderMes() : ui.sub === "radio" ? renderRadio() : ui.sub === "manual" ? renderManual() : ui.sub === "ir" ? renderNav() : ui.sub === "llevar" ? renderLlevar() : ui.sub === "mificha" ? renderMiFicha() : ui.sub === "recs" ? renderRecs() : ui.sub === "config" ? renderConfig() : renderHome();
+  else if(ui.tab === "inicio") html = ui.sub === "corte" ? renderCorte() : ui.sub === "aviso" ? renderAviso() : ui.sub === "mapa" ? renderMapa() : ui.sub === "ayuda" ? renderAyuda() : ui.sub === "mes" ? renderMes() : ui.sub === "radio" ? renderRadio() : ui.sub === "manual" ? renderManual() : ui.sub === "ir" ? renderNav() : ui.sub === "llevar" ? renderLlevar() : ui.sub === "mificha" ? renderMiFicha() : ui.sub === "recs" ? renderRecs() : ui.sub === "config" ? renderConfig() : ui.sub === "prob" ? renderProb() : renderHome();
   else if(ui.tab === "guias") html = ui.guide ? renderGuide() : renderGuides();
   else if(ui.tab === "preparar") html = renderPrep();
   else if(ui.tab === "linterna") html = renderTools();
@@ -6813,6 +7265,12 @@ document.addEventListener("click", e => {
     case "rec-notif": recNotif(); break;
     case "go-recs": go("inicio", {sub:"recs"}); break;
     case "go-config": go("inicio", {sub:"config"}); break;
+    case "go-prob": case "pb-back": ui.pbId = null; go("inicio", {sub:"prob"}); if(el.dataset.action === "pb-back" && ui.pbOpen){ const d = document.querySelector(`[data-pbcat="${ui.pbOpen}"]`); if(d) d.scrollIntoView({block:"start"}); } break;
+    case "pb-open": { const p = pbFind(el.dataset.id); if(p){ try{ speechSynthesis.cancel(); }catch(e){} ui.pbId = p.id; if(!p.urg) ui.pbOpen = p.c; go("inicio", {sub:"prob"}); } break; }
+    case "pb-chk": pbChk(el); break;
+    case "pb-leer": { const p = pbFind(el.dataset.id); if(p) pbLeer(p); break; }
+    case "pb-ir": routeHash(el.dataset.h); render(true); break;
+    case "pb-lec": { const l = APR_ALL().find(x => x.id === el.dataset.id); if(l){ ui.apr = ui.apr || {lec:null, q:"", open:"casa"}; ui.apr.lec = l.id; ui.apr.open = l.tema.id; ui.apr.q = ""; go("aprender"); } break; }
     case "cfg-voz": hablar("Así suena la voz de la navegación."); break;
     case "cfg-persist": ensurePersist(true).then(() => render(false)); break;
     case "cfg-update": cfgUpdate(); break;
@@ -6975,6 +7433,12 @@ document.addEventListener("toggle", e => {
     else if(ui.apr.open === d.dataset.apr) ui.apr.open = "";
     return;
   }
+  if(d.matches && d.matches("details.pb-cat")){
+    if(d.open){ ui.pbOpen = d.dataset.pbcat; document.querySelectorAll("details.pb-cat[open]").forEach(o => { if(o !== d) o.open = false; });
+      if(Date.now() - (window.__sumTap || 0) < 1500) requestAnimationFrame(() => { const hdr = document.querySelector(".topbar"), off = (hdr ? hdr.getBoundingClientRect().bottom : 0) + 8, top = d.getBoundingClientRect().top; if(top < off || top > window.innerHeight * 0.55) window.scrollTo({top:window.scrollY + top - off}); }); }
+    else if(ui.pbOpen === d.dataset.pbcat) ui.pbOpen = "";
+    return;
+  }
   if(!d.matches || !d.matches("details.hsec")) return;
   if(d.open){
     ui.homeOpen = d.dataset.sec;
@@ -7060,6 +7524,10 @@ document.addEventListener("input", e => {
   }else if(e.target.id === "aviso-extra"){
     ui.aviso.extra = e.target.value.slice(0, 140);
     updAviso();
+  }else if(e.target.id === "pb-q"){
+    ui.pbQ = e.target.value.slice(0, 40);
+    const l = document.getElementById("pb-list"), c = document.getElementById("pb-cats");
+    if(l) l.innerHTML = pbListHTML(); if(c) c.hidden = ui.pbQ.trim().length > 1;
   }else if(e.target.id === "apr-q"){
     ui.apr.q = e.target.value.slice(0, 40);
     const pos = e.target.selectionStart; render(false);
@@ -7159,6 +7627,8 @@ function routeHash(hash){
   else if(hash === "corte") ui.sub = "corte";
   else if(hash === "recordatorios") ui.sub = "recs";
   else if(hash === "configuracion") ui.sub = "config";
+  else if(hash === "problema"){ ui.sub = "prob"; ui.pbId = null; }
+  else if(hash.indexOf("problema-") === 0 && PROBLEMAS.some(x => x.id === hash.slice(9))){ ui.sub = "prob"; ui.pbId = hash.slice(9); }
   else if(hash.indexOf("guia-") === 0 && GUIDES.some(g => g.id === hash.slice(5))){ ui.tab = "guias"; ui.guide = hash.slice(5); }
 }
 const hash = (location.hash || "").slice(1);
