@@ -3969,7 +3969,8 @@ async function torchSos(){
 
 /* ---------- Llevarme a un lugar: navegación a pie, sin internet ---------- */
 const NAV = {watch:null, fix:null, prev:null, course:null, compass:null, compassAt:0, route:null, routeAt:0, dest:null, arrived:false, orient:false, raf:0};
-function navDestinos(){
+function navDestinos(pos){
+  if(pos && isFinite(pos.lat)) return state.lugares.map(l => [l, distLugar(pos, l).m]).sort((a, b) => a[1] - b[1]).map(x => x[0]);
   const pri = l => /casa/i.test(l.nombre) ? 0 : /famili|tia|tío|tio|abuel|herman/i.test(l.nombre) ? 1 : /encuentro/i.test(l.nombre) ? 2 : 3;
   return state.lugares.slice().sort((a, b) => pri(a) - pri(b));
 }
@@ -4154,7 +4155,7 @@ function navBoxHTML(){
 function renderNav(){
   const d = NAV.dest;
   if(!d) return renderHome();
-  const otros = navDestinos().filter(l => l.id !== d.id).slice(0, 4);
+  const otros = navDestinos(NAV.fix).filter(l => l.id !== d.id).slice(0, 4);
   const geo = `geo:${d.lat},${d.lng}?q=${d.lat},${d.lng}(${encodeURIComponent(d.nombre)})`;
   return `<section class="stack nav-v">
     <button class="back" data-action="nav-stop">${icon("back")}Terminar</button>
@@ -4202,11 +4203,11 @@ function pedirPos(){
   }catch(e){}
 }
 function navRow(max){
-  const ds = navDestinos().slice(0, max || 5);
+  const ds = navDestinos(state.ultimaPos).slice(0, max || 5);
   if(!ds.length) return `<button class="nav-row empty" data-action="dir-abrir">${icon("compass")}<span><strong>Llevarme a casa</strong><span>Primero agrega la dirección de tu casa y la de un familiar</span></span>${icon("chev")}</button>`;
   const pos = state.ultimaPos, edad = pos ? Date.now() - (pos.at || 0) : Infinity;
   if(edad > 2 * 60000) setTimeout(pedirPos, 0);
-  const posTxt = !pos ? "Buscando dónde estás…" : edad < 2 * 60000 ? `Desde donde estás${pos.acc ? ` (±${Math.round(pos.acc)} m)` : ""}` : `Desde donde estabas hace ${fmtDur(edad)} · actualizando…`;
+  const posTxt = !pos ? "Buscando dónde estás… Cuando te ubique, los lugares se ordenan del más cerca al más lejos." : `${edad < 2 * 60000 ? `Desde donde estás${pos.acc ? ` (±${Math.round(pos.acc)} m)` : ""}` : `Desde donde estabas hace ${fmtDur(edad)} · actualizando…`} · del más cerca al más lejos`;
   const rows = ds.map(l => {
     const d = pos ? distLugar(pos, l) : null;
     const det = !d ? "" : d.m < 30 ? "Estás acá" : `${fmtKm(d.m / 1000)} · ${cuadrasTxt(d.m)}${d.calles ? "" : " en línea recta"} · hacia ${cardinal(d.brg)}`;
@@ -5628,7 +5629,8 @@ function yoHTML(){
 function lugaresHTML(){
   const m = ui.mapa;
   if(!state.lugares.length) return `<p class="fine">Todavía no guardaste lugares. Busca tu casa o tócala en el mapa y elige «Guardar este lugar».</p>`;
-  return `<ul class="nums lugares">${state.lugares.map(l => { const d = m.yo ? distKm(m.yo, l) : null;
+  const orden = m.yo ? state.lugares.slice().sort((a, b) => distKm(m.yo, a) - distKm(m.yo, b)) : state.lugares;
+  return `<ul class="nums lugares">${orden.map(l => { const d = m.yo ? distKm(m.yo, l) : null;
     if(m.ren === l.id) return `<li><form class="ren-form" data-ren="${esc(l.id)}"><label class="lbl" for="ren-${esc(l.id)}">Nombre del lugar</label><input id="ren-${esc(l.id)}" maxlength="40" autocomplete="off" value="${esc(l.nombre)}" placeholder="Ej.: Casa de la tía Ana"><div class="inline"><button class="btn btn-primary btn-sm" type="submit">Guardar</button><button class="btn btn-ghost btn-sm" type="button" data-action="lugar-ren-x">Cancelar</button></div></form></li>`;
     return `<li><div class="n-main"><span class="n-label">${esc(l.nombre)}</span><span class="n-desc">${esc(l.desc || "")}${d !== null ? `${l.desc ? " · " : ""}a ${fmtKm(d)}, hacia ${cardinal(rumbo(m.yo, l))}` : ""}</span></div>
       <div class="n-actions"><button class="btn btn-primary btn-sm" data-action="nav-go" data-id="${esc(l.id)}">Llevarme</button><button class="btn btn-ghost btn-sm" data-action="lugar-ren" data-id="${esc(l.id)}">Cambiar nombre</button><button class="btn btn-ghost btn-sm" data-action="lugar-ver" data-id="${esc(l.id)}">Ver</button><button class="btn btn-ghost btn-sm" data-action="lugar-del" data-id="${esc(l.id)}" aria-label="Borrar ${esc(l.nombre)}">Borrar</button></div></li>`; }).join("")}</ul>`;
