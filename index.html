@@ -627,6 +627,13 @@ html.ahorro *{animation:none!important;transition:none!important}
 .dir-card{border:2px solid var(--blue)}
 .ren-form{display:flex;flex-direction:column;gap:8px;width:100%}
 .nr-head .inline{gap:6px}
+.pin-ov{position:fixed;inset:0;z-index:200;display:grid;place-items:center;padding:16px;background:rgba(5,10,20,.6)}
+.pin-ov[hidden]{display:none}
+.pin-card{width:min(360px,100%);display:flex;flex-direction:column;gap:12px;padding:20px;border-radius:16px;background:var(--surface);border:1px solid var(--line);box-shadow:0 10px 40px rgba(0,0,0,.35)}
+.pin-card h2{display:flex;align-items:center;gap:8px}.pin-card h2 .ic{width:24px;height:24px;color:var(--signal)}
+.pin-card input{font-size:28px;letter-spacing:.3em;text-align:center;font-family:var(--font-data)}
+.lock-chip{position:fixed;left:50%;transform:translateX(-50%);top:calc(env(safe-area-inset-top,0px) + 62px);z-index:150;padding:8px 14px;border-radius:99px;background:var(--signal);color:var(--on-signal,#fff);font-weight:700;font-size:14px;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+.lock-chip[hidden]{display:none}
 .msgprev{padding:14px;border-radius:12px;background:var(--surface-2);font-size:17px;line-height:1.45;overflow-wrap:anywhere}
 .fb{display:flex;flex-direction:column;gap:14px;padding:20px 18px;border-radius:16px;background:var(--surface);border:2px solid var(--crit)}
 .fb h1{font-size:40px}
@@ -3154,6 +3161,7 @@ function renderFamilia(){
 function renderPlanTab(){
   const tabs = [["numeros","Números"],["familia","Plan familiar"],["ficha","Ficha médica"],["compartir","Compartir"]];
   const seg = `<div class="seg seg-${tabs.length}" role="tablist" aria-label="Plan">${tabs.map(([k, l]) => `<button role="tab" aria-selected="${ui.planSeg === k}" data-action="plan-seg" data-id="${k}">${l}</button>`).join("")}</div>`;
+  if(ui.planSeg === "control") return renderControl();
   const body = ui.planSeg === "familia" ? renderFamilia() : ui.planSeg === "ficha" ? renderFichas() : ui.planSeg === "compartir" ? renderCompartir() : renderNums();
   return `<section class="stack"><div class="intro"><h1>Plan</h1><p class="lede">Los números de emergencia, el plan de tu familia y cómo pasarlo a los demás celulares.</p></div>${seg}${body}</section>`;
 }
@@ -4324,6 +4332,145 @@ function dirBuscar(form){
   const i = document.getElementById("l-nombre"); if(i){ i.value = nombre; }
 }
 
+/* ---------- Control parental: PIN en este celular ----------
+   Se guarda solo en este teléfono (no se comparte ni va en las copias). Protege lugares, fichas, plan,
+   contactos, inventario, recibir datos y borrar. Se pueden ver y usar todo sin PIN. */
+const LOCK_KEY = "preparados.lock";
+const LOCK_ACTIONS = new Set([
+  "lugar-del","lugar-ren","map-guardar","dir-abrir","lugar-nombre",
+  "ficha-edit","ficha-del-ask","ficha-del-do","ficha-from","foto-del","dni-del",
+  "del-ask","del-do","mem-del-ask","mem-del-do","plan-step","punto-save","inv-edit","inv-del-ask","inv-del-do","inv-sugg","comida-inv",
+  "recv-apply","undo-recv","trash-empty","trash-restore","reset-ask","reset-do","fam-del","fam-load","avisos-del-do"
+]);
+const LOCK_FORMS = new Set(["form-contacto","form-dir","form-ficha","form-inv","form-lugar","form-mem"]);
+const LOCK_INPUTS = "[data-pf],[data-tarea],#punto,[data-ff],[data-foto],[data-dni],.ren-form input,#recv-file";
+function lockCfg(){ try{ const c = JSON.parse(localStorage.getItem(LOCK_KEY) || "null"); return c && c.hash ? c : null; }catch(e){ return null; } }
+function lockSave(c){ try{ if(c) localStorage.setItem(LOCK_KEY, JSON.stringify(c)); else localStorage.removeItem(LOCK_KEY); return true; }catch(e){ return false; } }
+const isLocked = () => { const c = lockCfg(); return !!(c && c.on) && Date.now() > (ui.unlockUntil || 0); };
+async function pinHash(pin, salt){
+  const data = new TextEncoder().encode(salt + ":" + pin);
+  try{ const h = await crypto.subtle.digest("SHA-256", data); return Array.from(new Uint8Array(h)).map(b => b.toString(16).padStart(2, "0")).join(""); }
+  catch(e){ let x = 0; for(const b of data) x = (x * 31 + b) >>> 0; return "f" + x.toString(16); }
+}
+function lockProtected(el){
+  if(!el || !el.closest) return false;
+  const a = el.closest("[data-action]");
+  if(a && LOCK_ACTIONS.has(a.dataset.action) && !(a.dataset.action === "plan-step" && Number(a.dataset.n) < 0)) return a;
+  const f = el.closest("form");
+  if(f && (LOCK_FORMS.has(f.id) || f.classList.contains("ren-form"))) return el;
+  if(el.matches && el.matches(LOCK_INPUTS)) return el;
+  if(el.closest("label") && el.closest("label").control && el.closest("label").control.matches(LOCK_INPUTS)) return el.closest("label").control;
+  return false;
+}
+let pinCb = null;
+function askPin(then){
+  pinCb = then;
+  let ov = document.getElementById("pin-ov");
+  if(!ov){ ov = document.createElement("div"); ov.id = "pin-ov"; ov.className = "pin-ov"; document.body.appendChild(ov); }
+  ov.innerHTML = `<form class="pin-card" id="form-pin" role="dialog" aria-modal="true" aria-labelledby="pin-h">
+    <h2 id="pin-h">${icon("id")}Protegido</h2>
+    <p>Para cambiar o borrar datos en este celular hace falta el PIN de un adulto.</p>
+    <input id="pin-in" type="password" inputmode="numeric" autocomplete="off" maxlength="8" aria-label="PIN" placeholder="PIN">
+    <p class="st" id="pin-st" role="status"></p>
+    <div class="inline"><button class="btn btn-primary" type="submit">Desbloquear</button><button class="btn btn-ghost" type="button" data-pin="x">Cancelar</button></div>
+  </form>`;
+  ov.hidden = false;
+  setTimeout(() => { const i = document.getElementById("pin-in"); if(i) i.focus(); }, 30);
+}
+function closePin(){ const ov = document.getElementById("pin-ov"); if(ov) ov.hidden = true; pinCb = null; }
+async function tryPin(){
+  const c = lockCfg(), i = document.getElementById("pin-in"), st = document.getElementById("pin-st");
+  if(!c || !i) return closePin();
+  if(Date.now() < (ui.pinWait || 0)){ st.textContent = `Espera ${Math.ceil((ui.pinWait - Date.now()) / 1000)} segundos.`; return; }
+  if(await pinHash(i.value.trim(), c.salt) === c.hash){
+    ui.unlockUntil = Date.now() + 5 * 60000; ui.pinFails = 0;
+    const cb = pinCb; closePin(); lockChip(); if(cb) setTimeout(cb, 0);
+  }else{
+    ui.pinFails = (ui.pinFails || 0) + 1;
+    if(ui.pinFails >= 5){ ui.pinWait = Date.now() + 30000; ui.pinFails = 0; st.textContent = "Muchos intentos. Espera 30 segundos."; }
+    else st.textContent = "PIN incorrecto.";
+    i.value = ""; i.focus();
+  }
+}
+function lockChip(){
+  let ch = document.getElementById("lock-chip");
+  const on = lockCfg() && lockCfg().on && Date.now() < (ui.unlockUntil || 0);
+  if(!on){ if(ch) ch.hidden = true; return; }
+  if(!ch){ ch = document.createElement("button"); ch.id = "lock-chip"; ch.className = "lock-chip"; ch.type = "button"; ch.dataset.lockNow = "1"; document.body.appendChild(ch); }
+  ch.hidden = false; ch.textContent = "Desbloqueado · tocar para bloquear";
+  clearTimeout(ui.lockT); ui.lockT = setTimeout(lockChip, Math.max(1000, ui.unlockUntil - Date.now() + 200));
+}
+/* Barrera: antes que cualquier otra acción de la app */
+document.addEventListener("click", e => {
+  if(e.target.closest && e.target.closest("[data-lock-now]")){ ui.unlockUntil = 0; lockChip(); if(ui.tab === "numeros") render(false); return; }
+  if(e.target.closest && e.target.closest("[data-pin='x']")){ e.preventDefault(); closePin(); return; }
+  if(!isLocked()) return;
+  const t = lockProtected(e.target);
+  if(!t) return;
+  e.preventDefault(); e.stopImmediatePropagation();
+  askPin(() => { if(t.matches && t.matches("input,select,textarea")){ t.focus(); if(t.type === "file") t.click(); } else t.click(); });
+}, true);
+document.addEventListener("submit", e => {
+  if(e.target.id === "form-pin"){ e.preventDefault(); e.stopImmediatePropagation(); tryPin(); return; }
+  if(!isLocked()) return;
+  if(LOCK_FORMS.has(e.target.id) || e.target.classList.contains("ren-form")){ e.preventDefault(); e.stopImmediatePropagation(); askPin(() => { if(e.target.requestSubmit) e.target.requestSubmit(); }); }
+}, true);
+document.addEventListener("focusin", e => {
+  if(!isLocked() || e.target.closest("#pin-ov")) return;
+  const t = lockProtected(e.target);
+  if(t && t.matches && t.matches("input,select,textarea")){ e.target.blur(); askPin(() => t.focus()); }
+}, true);
+["input","change","keydown"].forEach(ev => document.addEventListener(ev, e => {
+  if(!isLocked() || (e.target.closest && e.target.closest("#pin-ov"))) return;
+  if(lockProtected(e.target)){ e.preventDefault(); e.stopImmediatePropagation(); if(ev !== "keydown") render(false); }
+}, true));
+
+function renderControl(){
+  const c = lockCfg(), on = c && c.on;
+  const lista = ["Lugares guardados: agregar, cambiar nombre o borrar","Fichas médicas: editar o borrar","Plan familiar, contactos e inventario: editar o borrar","Recibir datos de otro celular, restaurar y borrar listas"];
+  return `<section class="stack">
+    <button class="back" data-action="plan-seg" data-id="compartir">${icon("back")}Compartir y copias</button>
+    <div class="intro"><h1>Control parental</h1><p class="lede">Un PIN para que en este celular nadie borre ni cambie datos sin un adulto. Todo se puede ver y usar igual: mapa, llevarme, ayuda, linterna y guías.</p></div>
+    <div class="card"><h2>${on ? "Activado en este celular" : "Desactivado en este celular"}</h2>
+      <p class="fine">Protege:</p><ul class="kv-list">${lista.map(x => `<li>${x}</li>`).join("")}</ul>
+      ${on ? `<div class="inline"><button class="btn btn-primary" data-ctl="lock">Bloquear ahora</button><button class="btn btn-ghost" data-ctl="cambiar">Cambiar el PIN</button><button class="btn btn-ghost" data-ctl="off">Desactivar</button></div>` : ""}</div>
+    ${!on || ui.ctlCambiar ? `<form class="card" id="form-ctl" novalidate><h2>${on ? "PIN nuevo" : "Elegir un PIN"}</h2>
+      <p class="fine">De 4 a 8 números. Que lo sepan solo los adultos.</p>
+      <div class="field"><label class="lbl" for="ctl-a">PIN</label><input id="ctl-a" type="password" inputmode="numeric" maxlength="8" autocomplete="new-password"></div>
+      <div class="field"><label class="lbl" for="ctl-b">Repetir el PIN</label><input id="ctl-b" type="password" inputmode="numeric" maxlength="8" autocomplete="new-password"></div>
+      <button class="btn btn-primary" type="submit">${on ? "Guardar el PIN nuevo" : "Activar el control parental"}</button>
+      <p class="st" id="ctl-st" role="status"></p></form>` : ""}
+    <div class="card"><h2>Bueno saber</h2><ul class="kv-list">
+      <li>Se configura en cada celular por separado: actívalo en el de las chicas y no en el tuyo, si quieres.</li>
+      <li>Después de poner el PIN, queda desbloqueado 5 minutos. Arriba aparece un aviso para volver a bloquear.</li>
+      <li>Si alguien borra algo por error, está en la papelera 30 días (Compartir → Papelera).</li>
+      <li>Anota el PIN en un lugar seguro: si se olvida, solo se recupera borrando los datos de la app en Chrome, y eso borra todo. Por eso, hagan copias de seguridad.</li>
+      <li>Evita borrados y cambios por error o sin permiso. No es una protección contra alguien que sabe de celulares.</li></ul></div>
+  </section>`;
+}
+async function ctlSubmit(form){
+  const a = form.querySelector("#ctl-a").value.trim(), b = form.querySelector("#ctl-b").value.trim(), st = form.querySelector("#ctl-st");
+  if(!/^\d{4,8}$/.test(a)){ st.textContent = "El PIN tiene que tener de 4 a 8 números."; return; }
+  if(a !== b){ st.textContent = "Los dos PIN no coinciden."; return; }
+  const salt = Math.random().toString(36).slice(2, 10);
+  lockSave({on:true, salt, hash:await pinHash(a, salt), at:Date.now()});
+  ui.ctlCambiar = false; ui.unlockUntil = 0; lockChip();
+  render(false);
+  const s2 = document.querySelector(".intro"); if(s2) s2.scrollIntoView({block:"start"});
+}
+document.addEventListener("click", e => {
+  const b = e.target.closest && e.target.closest("[data-ctl]");
+  if(!b) return;
+  const k = b.dataset.ctl;
+  const run = () => {
+    if(k === "lock"){ ui.unlockUntil = 0; lockChip(); render(false); }
+    else if(k === "cambiar"){ ui.ctlCambiar = true; render(false); }
+    else if(k === "off"){ lockSave(null); ui.unlockUntil = 0; lockChip(); render(false); }
+  };
+  if(k !== "lock" && isLocked()) askPin(run); else run();
+});
+document.addEventListener("submit", e => { if(e.target.id === "form-ctl"){ e.preventDefault(); const go = () => ctlSubmit(e.target); if(lockCfg() && isLocked()) askPin(go); else go(); } });
+
 /* ---------- Plan 30 días sin luz ---------- */
 const MES_COMIDA = [
   /* [id, nombre, cantidad por persona para 30 días, unidad, nota] */
@@ -5301,6 +5448,9 @@ function keepHTML(){
     <h3>2. En papel</h3>
     <p class="fine">Plan, teléfonos, inventario y fichas en hojas para la mochila. Sirven aunque no haya batería.</p>
     <div class="inline"><button class="btn btn-primary" data-action="go-manual">Armar el manual completo</button><button class="btn btn-outline" data-action="print-all">Imprimir todo</button><button class="btn btn-ghost" data-action="dl-all">Descargar para imprimir</button></div><p class="st" id="printall-st" role="status"></p>
+    <h3>Control parental</h3>
+    <p class="fine">${lockCfg() && lockCfg().on ? "Activado en este celular: para cambiar o borrar datos hace falta el PIN." : "Un PIN para que en este celular nadie borre ni cambie lugares, fichas o el plan sin un adulto."}</p>
+    <div class="inline"><button class="btn btn-outline" data-action="plan-seg" data-id="control">${lockCfg() && lockCfg().on ? "Ver el control parental" : "Activar el control parental"}</button></div>
     <h3>3. En los celulares de la familia</h3>
     <p class="fine">Pásense los datos entre todos: cada celular guarda una copia de los demás.</p>
     ${prevHTML()}</div>
