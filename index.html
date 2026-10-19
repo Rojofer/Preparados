@@ -2560,7 +2560,7 @@ function load(){
     if(typeof s.navVoz === "boolean") state.navVoz = s.navVoz;
     if(typeof s.navVib === "boolean") state.navVib = s.navVib;
     if(s.manual && typeof s.manual === "object") state.manual = s.manual;
-    if(s.mes && typeof s.mes === "object") state.mes = {p:s.mes.p, g:s.mes.g, pb:s.mes.pb, checks:s.mes.checks && typeof s.mes.checks === "object" ? s.mes.checks : {}};
+    if(s.mes && typeof s.mes === "object") state.mes = {p:s.mes.p, g:s.mes.g, pb:s.mes.pb, d:s.mes.d, checks:s.mes.checks && typeof s.mes.checks === "object" ? s.mes.checks : {}};
     if(s.ultimaPos && isFinite(s.ultimaPos.lat) && isFinite(s.ultimaPos.lng)) state.ultimaPos = {lat:+s.ultimaPos.lat, lng:+s.ultimaPos.lng, acc:+s.ultimaPos.acc || 0, at:+s.ultimaPos.at || 0};
     if(Array.isArray(s.avisos)) state.avisos = s.avisos.filter(a => a && a.at && a.estado && a.from).slice(0, 20);
   }catch(e){}
@@ -2636,7 +2636,7 @@ function renderHome(){
     ${zona.length ? `<span class="lbl">En ${esc(state.provincia)}, también</span><div class="chips">${zona.map(g => `<button class="chip" data-action="guide" data-id="${g.id}">${g.title}</button>`).join("")}</div>` : `<button class="btn btn-ghost btn-sm" data-action="go-zona">Guías para tu provincia</button>`}
     <button class="btn btn-ghost btn-sm" data-action="tab" data-tab="guias">Ver todas las guías</button>`;
   const ext = GUIDES.filter(g => g.group === "extremo");
-  const extremo = `<button class="btn btn-primary" data-action="go-mes">${icon("cal")}Plan 30 días sin luz</button>
+  const extremo = `<button class="btn btn-primary" data-action="go-mes">${icon("cal")}Plan de corte largo: 7, 15 o 30 días</button>
     <div class="chips">${ext.map(g => `<button class="chip" data-action="guide" data-id="${g.id}">${g.title}</button>`).join("")}</div>`;
   const c = CIUDADES[state.ciudad];
   const tops = c ? c.nums.filter(x => x.top) : [];
@@ -2674,7 +2674,7 @@ function renderHome(){
       ${hsec("pasa", "storm", "¿Qué está pasando?", "Toca la situación y sigue los pasos", pasa, "hs-main")}
       ${hsec("tel", "phone", "Teléfonos", c ? `911 y los de ${esc(state.ciudad)}: hospital, luz, agua, gas` : "911 y tus contactos", tels)}
       ${hsec("herr", "compass", "Herramientas", "Radio, mapa, linterna, SOS, silbato y más", herr)}
-      ${hsec("extremo", "flame", "Caso extremo", "Días sin luz, gas ni agua: plan de 30 días", extremo)}
+      ${hsec("extremo", "flame", "Caso extremo", "Días sin luz, gas ni agua: plan de 7, 15 o 30 días", extremo)}
       ${hsec("prep", "pack", "Tu preparación", `Mochila ${pm.pct}% · Botiquín ${pb.pct}% · Kit ${pk.pct}%${alerts ? ` · <b class="hs-alert">hay cosas para revisar</b>` : ""}`, prep)}
     </div>
     ${installCard()}
@@ -2702,7 +2702,7 @@ function renderGuides(){
     <h2 class="sec">Saber hacer</h2>
     <ul class="glist">${GUIDES.filter(g => g.group === "saber").map(row).join("")}</ul>
     <details class="ext-g" id="extremo"${ui.extOpen ? " open" : ""}><summary><h2 class="sec">Caso extremo</h2><span class="fine">Varios días en casa sin luz, gas ni agua · ${GUIDES.filter(g => g.group === "extremo").length + 1} guías</span></summary>
-    <ul class="glist"><li><button class="grow" data-action="go-mes"><span class="g-ic">${icon("cal")}</span><span class="g-txt"><strong>Plan 30 días sin luz</strong><span>Qué tener, cuánto y qué hacer cada semana.</span></span><span class="g-meta">${icon("chev")}</span></button></li>${GUIDES.filter(g => g.group === "extremo").map(row).join("")}</ul></details>
+    <ul class="glist"><li><button class="grow" data-action="go-mes"><span class="g-ic">${icon("cal")}</span><span class="g-txt"><strong>Plan de corte largo</strong><span>Para 7, 15 o 30 días: qué tener, cuánto y qué hacer cada semana.</span></span><span class="g-meta">${icon("chev")}</span></button></li>${GUIDES.filter(g => g.group === "extremo").map(row).join("")}</ul></details>
     <h2 class="sec" id="zona">Según dónde vives</h2>
     ${zonaHTML(row)}
     <p class="fine">Basadas en fuentes oficiales argentinas e internacionales. No reemplazan las indicaciones de las autoridades ni la atención médica.</p>
@@ -3061,7 +3061,7 @@ function renderPrep(){
   const tabs = [["indisp","Lo indispensable"],["mochila","Mochila"],["botiquin","Botiquín"],["kit","Kit del hogar"],["comida","Reserva de comida"],["inv","Inventario"],["calc","Calculadoras"]];
   const seg = `<div class="seg seg-4" role="tablist" aria-label="Preparar">${tabs.map(([k, l]) => `<button role="tab" aria-selected="${ui.prep === k}" data-action="prep" data-id="${k}">${l}</button>`).join("")}</div>`;
   let body;
-  if(ui.prep === "indisp") body = checklistHTML("indisp", INDISP, "Lo que conviene tener sí o sí, en orden de prioridad. El detalle está en Mochila, Botiquín y Kit del hogar; para cortes largos, el plan de 30 días.") + `<div class="inline"><button class="btn btn-outline" data-action="go-mes">${icon("cal")}Plan 30 días sin luz</button><button class="btn btn-ghost" data-action="go-radio">Radio y comunicación</button></div>`;
+  if(ui.prep === "indisp") body = checklistHTML("indisp", INDISP, "Lo que conviene tener sí o sí, en orden de prioridad. El detalle está en Mochila, Botiquín y Kit del hogar; para cortes largos, el plan de 30 días.") + `<div class="inline"><button class="btn btn-outline" data-action="go-mes">${icon("cal")}Plan de corte largo: 7, 15 o 30 días</button><button class="btn btn-ghost" data-action="go-radio">Radio y comunicación</button></div>`;
   else if(ui.prep === "mochila") body = checklistHTML("mochila", MOCHILA, "Una por persona, lista para salir y pasar 72 horas fuera de casa. Revísala cada 3 a 6 meses y renueva el agua y la comida cada 2 o 3 meses.") + srcFoot(["mochilaMza","readyKit"]);
   else if(ui.prep === "botiquin") body = checklistHTML("botiquin", BOTIQUIN, "Guárdalo en un lugar fácil de alcanzar para los adultos y fuera del alcance de los chicos. Revisa los vencimientos, repón lo que uses y guarda cada medicamento con sus instrucciones. Consulta con tu médico qué remedios conviene tener para tu familia.") + srcFoot(["botiquinCR","botiquinKH"]);
   else if(ui.prep === "kit") body = checklistHTML("kit", KIT, "Para quedarse en casa varios días sin luz, agua o gas.");
@@ -3898,8 +3898,8 @@ function autonomiaHTML(compact){
     <p>${a.min ? `Para ${a.P} ${a.P === 1 ? "persona" : "personas"}${a.G ? ` y ${a.G === 1 ? "el gato" : `${a.G} gatos`}` : ""}, lo primero que se termina es <strong>${a.min[0].toLowerCase()}: ${diasTxt(lim)} días</strong>.` : "Todavía falta cargar cantidades."}</p>
     <div class="auto-g">${tiles}</div>
     ${no.length ? `<p class="fine"><strong>No pude contar:</strong> ${no.slice(0, 6).map(esc).join(", ")}${no.length > 6 ? "…" : ""}. Escribe la cantidad así: «12 litros», «2 kg», «6 latas», «3 paquetes» o, para remedios, «30 días».</p>` : ""}
-    <p class="fine">Estimación: 4 litros de agua y 2.000 calorías por persona por día${a.G ? ", y 60 g de alimento por gato" : ""}. Cambia la cantidad de personas en el plan de 30 días.</p>
-    <div class="inline"><button class="btn btn-ghost btn-sm" data-action="go-mes">Personas y plan de 30 días</button></div></div>`;
+    <p class="fine">Estimación: 4 litros de agua y 2.000 calorías por persona por día${a.G ? ", y 60 g de alimento por gato" : ""}. Cambia la cantidad de personas en el plan de corte largo.</p>
+    <div class="inline"><button class="btn btn-ghost btn-sm" data-action="go-mes">Personas y plan de corte largo</button></div></div>`;
 }
 
 /* ---------- Modo ahorro de batería ---------- */
@@ -3955,7 +3955,7 @@ const MANUAL_SEC = [
   ["extremo","Guías: caso extremo","Fuego, agua, energía, cocina, abrigo, baño y señales.",true],
   ["saber","Guías: saber hacer","Agua segura, comida, mochila, mapas y más.",false],
   ["zona","Guías de tu zona","Sismo, Zonda, sudestada, nevada, incendio forestal.",false],
-  ["mes","Plan de 30 días sin luz","Semana por semana y la lista para el mes.",false],
+  ["mes","Plan de corte largo","Semana por semana y la lista, para los días que elegiste.",false],
   ["aprender","Lecturas de Aprender","Proteger la casa, familia, saberes y comunidad. Son muchas páginas.",false]
 ];
 function manualSel(){ const s = state.manual || {}; const o = {}; MANUAL_SEC.forEach(([k, , , d]) => { o[k] = s[k] === undefined ? d : !!s[k]; }); return o; }
@@ -4823,7 +4823,7 @@ async function recNotif(){
 
 /* ---------- Configuración: todos los ajustes en un lugar (engranaje arriba a la derecha) ----------
    En un celular con control parental se ve todo; para cambiar algo, salvo voz y vibración, pide el PIN. */
-const APP_VER = 23;
+const APP_VER = 24;
 const GEAR_SVG = `<svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>`;
 function renderConfig(){
   const lc = lockCfg(), lockOn = !!(lc && lc.on), f = miFicha(), fp = fpCfg(), aqui = recsAqui(), nRec = REMINDERS.filter(recOn).length;
@@ -4976,6 +4976,9 @@ const MES_ETAPAS = [
     ["Calefacción solo con artefactos a gas con salida al exterior. Nunca el horno ni braseros adentro.","guia:monoxido"],
     ["De noche, una luz encendida en la entrada y la casa cerrada."]]]
 ];
+const MES_DIAS = [7, 15, 30];
+const mesD = () => MES_DIAS.includes(+state.mes.d) ? +state.mes.d : 30;
+const mesPer = d => d === 7 ? "una semana" : d === 15 ? "15 días" : "un mes";
 function mesCfg(){ const m = state.mes, has = k => m[k] !== undefined && m[k] !== null && isFinite(+m[k]); return {p:Math.max(1, Math.min(12, has("p") ? +m.p : (state.plan.miembros.length || 4))), g:Math.max(0, Math.min(6, has("g") ? +m.g : 1)), pb:Math.max(0, Math.min(10, has("pb") ? +m.pb : 2))}; }
 const fmtQ = n => fmtNum(Math.round(n * 10) / 10);
 function mesNeeds(){
@@ -4984,8 +4987,18 @@ function mesNeeds(){
   const panelW = Math.max(100, Math.ceil(wh / 2.2 / 50) * 50);
   const estWh = wh * 2 <= 300 ? 300 : wh * 2 <= 500 ? 500 : 1000;
   return {c, wh, panelW, estWh, verano:Math.round(panelW * 5.5), invierno:Math.round(panelW * 2.2),
-    diasPB:Math.floor(c.pb * 50 / (c.p * 12) * 10) / 10, pilasLuz:Math.round(45 * 30 / 2.5),
-    agua7:Math.ceil(c.p * 4 * 7 + c.g * 0.25 * 7), agua30:c.p * 4 * 30 + c.g * 0.25 * 30};
+    diasPB:Math.floor(c.pb * 50 / (c.p * 12) * 10) / 10, pilasLuz:Math.round(45 * mesD() / 2.5),
+    agua7:Math.ceil(c.p * 4 * 7 + c.g * 0.25 * 7), agua30:c.p * 4 * mesD() + c.g * 0.25 * mesD()};
+}
+function mesCosaTxt(id, x){
+  const d = mesD(), c = mesCfg();
+  if(id === "papel") return `Papel higiénico: ${Math.ceil(10 * d / 30)} rollos por persona (${Math.ceil(10 * d / 30) * c.p} en total)`;
+  if(id === "femenina") return `Higiene femenina para ${mesPer(d)}`;
+  return x;
+}
+function mesEtapas(){
+  const d = mesD();
+  return MES_ETAPAS.filter(([t]) => !(d === 7 && t === "Semanas 2 a 4")).map(([t, items]) => [d === 15 && t === "Semanas 2 a 4" ? "Semana 2 (días 8 a 15)" : t, items]);
 }
 function mesCheck(id, txt){
   const on = !!state.mes.checks[id];
@@ -5001,17 +5014,20 @@ function mesLink(k){
   return "";
 }
 function renderMes(){
-  const n = mesNeeds(), c = n.c;
-  const comida = MES_COMIDA.map(([id, t, q, u]) => mesCheck("c-" + id, `<strong>${t}</strong> <span class="mono">${fmtQ(q * c.p)} ${u}</span>`)).join("");
-  const gato = c.g ? mesCheck("c-gato", `<strong>Alimento para ${c.g === 1 ? "el gato" : `los ${c.g} gatos`}</strong> <span class="mono">${fmtQ(1.8 * c.g)} kg</span>`) + mesCheck("c-arena", `<strong>Piedras sanitarias</strong> <span class="mono">${fmtQ(15 * c.g)} kg</span>`) : "";
-  const cosas = MES_COSAS.map(([t, items]) => `<h3 class="phase-h">${t === "luz" ? "Luz y noticias" : t}</h3><div class="checks">${items.map(([id, x]) => mesCheck("o-" + id, x)).join("")}</div>`).join("");
+  const n = mesNeeds(), c = n.c, d = mesD(), f = d / 30;
+  const comida = MES_COMIDA.map(([id, t, q, u]) => mesCheck("c-" + id, `<strong>${t}</strong> <span class="mono">${fmtQ(Math.ceil(q * c.p * f * 10) / 10)} ${u}</span>`)).join("");
+  const gato = c.g ? mesCheck("c-gato", `<strong>Alimento para ${c.g === 1 ? "el gato" : `los ${c.g} gatos`}</strong> <span class="mono">${fmtQ(Math.ceil(1.8 * c.g * f * 10) / 10)} kg</span>`) + mesCheck("c-arena", `<strong>Piedras sanitarias</strong> <span class="mono">${fmtQ(Math.ceil(15 * c.g * f))} kg</span>`) : "";
+  const cosas = MES_COSAS.map(([t, items]) => `<h3 class="phase-h">${t === "luz" ? "Luz y noticias" : t}</h3><div class="checks">${items.map(([id, x]) => mesCheck("o-" + id, mesCosaTxt(id, x))).join("")}</div>`).join("");
   const total = MES_COMIDA.length + (c.g ? 2 : 0) + MES_COSAS.reduce((a, [, i]) => a + i.length, 0);
   const hechos = Object.keys(state.mes.checks).filter(k => state.mes.checks[k] && (k.indexOf("c-") === 0 || k.indexOf("o-") === 0)).length;
-  const etapas = MES_ETAPAS.map(([t, items]) => `<li><h3>${t}</h3><ul>${items.map(([x, k]) => `<li>${x}${k ? `<div class="inline">${mesLink(k)}</div>` : ""}</li>`).join("")}</ul></li>`).join("");
+  const etapas = mesEtapas().map(([t, items]) => `<li><h3>${t}</h3><ul>${items.map(([x, k]) => `<li>${x}${k ? `<div class="inline">${mesLink(k)}</div>` : ""}</li>`).join("")}</ul></li>`).join("");
   const num = (id, label, v) => `<div class="field mes-n"><span class="lbl" id="lbl-mes-${id}">${label}</span><div class="stepper" role="group" aria-labelledby="lbl-mes-${id}"><button data-action="mes-step" data-k="${id}" data-d="-1" aria-label="Restar">−</button><output aria-live="polite">${v}</output><button data-action="mes-step" data-k="${id}" data-d="1" aria-label="Sumar">+</button></div></div>`;
   return `<section class="stack">
     <button class="back" data-action="tab" data-tab="inicio">${icon("back")}Inicio</button>
-    <div class="intro"><h1>30 días sin luz</h1><p class="lede">Qué tener, cuánto y qué hacer cada semana para pasar un mes sin electricidad en casa.</p></div>
+    <div class="intro"><h1>${d} días sin luz</h1><p class="lede">Qué tener, cuánto y qué hacer para pasar ${mesPer(d)} sin electricidad en casa.</p></div>
+    <div class="card"><h2>¿Para cuánto tiempo?</h2>
+      <div class="chips" role="group" aria-label="Duración del corte">${MES_DIAS.map(x => `<button class="chip" data-action="mes-dias" data-d="${x}" aria-pressed="${x === d}">${x} días</button>`).join("")}</div>
+      <p class="fine">Cambia las cantidades de comida, la energía, las etapas y la lista para imprimir.</p></div>
     <div class="card"><h2>Tu casa</h2>
       <div class="mes-cfg">${num("p","Personas",c.p)}${num("g","Gatos",c.g)}</div>
       <ul class="kv mes-casa"><li><span>Cocina</span><strong>Gas natural: sigue andando. Enciende con fósforos.</strong></li><li><span>Agua</span><strong>De red. Puede bajar la presión: guarda una reserva.</strong></li><li><span>Heladera</span><strong>Sin luz no enfría: el plan es comer sin frío.</strong></li></ul></div>
@@ -5019,31 +5035,36 @@ function renderMes(){
     <h2 class="sec">Cuánto necesitan</h2>
     <div class="res-grid">
       <div class="res"><span class="mono num">${fmtQ(n.agua7)}</span><span class="unit-l">litros</span><p>de agua de reserva para 7 días, para tomar y cocinar${c.g ? `, con ${c.g === 1 ? "el gato" : "los gatos"}` : ""}</p></div>
-      <div class="res"><span class="mono num">${fmtNum(c.p * 30)}</span><span class="unit-l">días-persona</span><p>de comida que no necesita heladera: la lista está abajo</p></div>
+      <div class="res"><span class="mono num">${fmtNum(c.p * d)}</span><span class="unit-l">días-persona</span><p>de comida que no necesita heladera: la lista está abajo</p></div>
       <div class="res"><span class="mono num">${fmtNum(n.wh)}</span><span class="unit-l">Wh por día</span><p>para ${c.p} celulares, 3 luces LED y una radio</p></div>
     </div>
-    <p class="fine">Si también se corta el agua de red, para 30 días harían falta unos ${fmtNum(Math.round(n.agua30))} litros: no se pueden guardar en casa. La salida es potabilizar agua de lluvia o del tanque.</p>
+    <p class="fine">Si también se corta el agua de red, para ${d} días harían falta unos ${fmtNum(Math.round(n.agua30))} litros${d > 7 ? ": no se pueden guardar en casa. La salida es potabilizar agua de lluvia o del tanque" : ""}.</p>
 
     <h2 class="sec">Energía: comparación</h2>
     <div class="cmp">
       <article class="cmp-c"><h3>Pilas y powerbanks</h3><p class="cmp-k">$ · sin ruido</p>
         ${num("pb","Powerbanks de 20.000 mAh",c.pb)}
         <p>Alcanzan para unos <strong>${fmtQ(n.diasPB)} días</strong> de celulares. Las luces a pilas del mes gastarían unas <strong>${fmtNum(n.pilasLuz)} pilas AA</strong>.</p>
-        <p class="cmp-v no">Solas no llegan a 30 días: sirven de respaldo.</p></article>
+        <p class="cmp-v ${n.diasPB >= d ? "ok" : "no"}">${n.diasPB >= d ? `Alcanzan para los ${d} días.` : `Solas no llegan a ${d} días: sirven de respaldo.`}</p></article>
       <article class="cmp-c rec"><p class="cmp-badge">Recomendado para ustedes</p><h3>Estación de energía + panel solar</h3><p class="cmp-k">$$ · sin ruido · sin combustible</p>
         <p>Una estación de <strong>${fmtNum(n.estWh)} Wh</strong> y un panel de <strong>${n.panelW} W</strong>. El panel carga unos ${fmtNum(n.verano)} Wh por día en verano y ${fmtNum(n.invierno)} Wh en invierno.</p>
-        <p class="cmp-v ok">Cubre celulares, luces y radio los 30 días. No alcanza para la heladera.</p></article>
+        <p class="cmp-v ok">Cubre celulares, luces y radio los ${d} días. No alcanza para la heladera.</p></article>
       <article class="cmp-c"><h3>Generador a nafta</h3><p class="cmp-k">$$ · mucho ruido · riesgo de monóxido</p>
-        <p>Uno chico, 2 horas por día para la heladera y cargar todo, gasta cerca de <strong>30 litros de nafta</strong> en el mes, que hay que guardar.</p>
+        <p>Uno chico, 2 horas por día para la heladera y cargar todo, gasta cerca de <strong>${d} litros de nafta</strong> en ${d} días, que hay que guardar.</p>
         <p class="cmp-v">Es el único que mantiene la heladera. Siempre afuera, lejos de ventanas.</p></article>
     </div>
     <p class="fine">Cálculos aproximados: 12 Wh por celular por día, luces de 3 W durante 5 horas y una radio. El panel rinde menos con nubes y en invierno. Un auto con nafta también carga celulares con el motor en marcha.</p>
+    <div class="card"><h2>¿Y la heladera?</h2>
+      <p>Una heladera eficiente gasta de 1 a 1,7 kWh por día; una vieja, hasta 3,5. Mira la etiqueta de eficiencia: el consumo por año dividido 365.</p>
+      <ul class="kv-list"><li><strong>Sin heladera:</strong> lo más barato. La conservadora salva lo del primer día y después se come sin frío.</li>
+        <li><strong>Generador de a ratos:</strong> 1 a 2 horas, 3 o 4 veces por día. Cerrada, la heladera conserva el frío unas 4 horas. Siempre afuera.</li>
+        <li><strong>Estación grande y panel:</strong> de 1.000 Wh o más, con un panel de 400 W o más. Sin ruido ni combustible; con nubes no alcanza para todo el día.</li></ul></div>
     <button class="btn btn-ghost" data-action="guide" data-id="energia">Guía: energía sin luz</button>
 
-    <h2 class="sec">Semana por semana</h2>
+    <h2 class="sec">${d === 7 ? "Día por día" : "Semana por semana"}</h2>
     <ol class="mes-plan">${etapas}</ol>
 
-    <div class="card-h"><h2 class="sec">Lista para el mes</h2><span class="mono mes-prog">${hechos}/${total}</span></div>
+    <div class="card-h"><h2 class="sec">Lista para ${d} días</h2><span class="mono mes-prog">${hechos}/${total}</span></div>
     <h3 class="phase-h">Comida sin heladera, para ${c.p} ${c.p === 1 ? "persona" : "personas"}</h3>
     <div class="checks">${comida}${gato}</div>
     <p class="fine">Unas 2.000 calorías por persona por día. Los chicos comen algo menos; guarden igual la misma cantidad. Con gas natural se pueden cocinar arroz, fideos y legumbres: rinden mucho y son baratos.</p>
@@ -5055,10 +5076,11 @@ function renderMes(){
 function mesPrintHTML(){
   const n = mesNeeds(), c = n.c;
   const li = (id, t) => `<li>${state.mes.checks[id] ? "☑" : "☐"} ${t}</li>`;
-  return `<section class="pf"><header><div><p class="pf-k">Preparados</p><h1>Lista para 30 días sin luz</h1></div></header>
+  const d = mesD(), f = d / 30;
+  return `<section class="pf"><header><div><p class="pf-k">Preparados</p><h1>Lista para ${d} días sin luz</h1></div></header>
     <p>${c.p} personas${c.g ? ` y ${c.g} ${c.g === 1 ? "gato" : "gatos"}` : ""}. Agua de reserva: ${fmtQ(n.agua7)} litros (7 días).</p>
-    <h3>Comida</h3><ul>${MES_COMIDA.map(([id, t, q, u]) => li("c-" + id, `${t}: ${fmtQ(q * c.p)} ${u}`)).join("")}${c.g ? li("c-gato", `Alimento para gato: ${fmtQ(1.8 * c.g)} kg`) + li("c-arena", `Piedras sanitarias: ${fmtQ(15 * c.g)} kg`) : ""}</ul>
-    ${MES_COSAS.map(([t, items]) => `<h3>${t === "luz" ? "Luz y noticias" : t}</h3><ul>${items.map(([id, x]) => li("o-" + id, x)).join("")}</ul>`).join("")}
+    <h3>Comida</h3><ul>${MES_COMIDA.map(([id, t, q, u]) => li("c-" + id, `${t}: ${fmtQ(Math.ceil(q * c.p * f * 10) / 10)} ${u}`)).join("")}${c.g ? li("c-gato", `Alimento para gato: ${fmtQ(Math.ceil(1.8 * c.g * f * 10) / 10)} kg`) + li("c-arena", `Piedras sanitarias: ${fmtQ(Math.ceil(15 * c.g * f))} kg`) : ""}</ul>
+    ${MES_COSAS.map(([t, items]) => `<h3>${t === "luz" ? "Luz y noticias" : t}</h3><ul>${items.map(([id, x]) => li("o-" + id, mesCosaTxt(id, x))).join("")}</ul>`).join("")}
     <h3>Energía</h3><p>Estación de ${fmtNum(n.estWh)} Wh + panel de ${n.panelW} W, y ${c.pb} powerbanks de respaldo.</p></section>`;
 }
 
@@ -6697,6 +6719,7 @@ document.addEventListener("click", e => {
     case "mes-ficha": ui.planSeg = "ficha"; go("numeros"); break;
     case "mes-step": { const c = mesCfg(), k = el.dataset.k, lim = {p:[1,12], g:[0,6], pb:[0,10]}[k]; state.mes[k] = Math.max(lim[0], Math.min(lim[1], c[k] + Number(el.dataset.d))); save(); const y = window.scrollY; render(false); window.scrollTo(0, y); break; }
     case "mes-print": printDoc(mesPrintHTML()); break;
+    case "mes-dias": { state.mes.d = MES_DIAS.includes(+el.dataset.d) ? +el.dataset.d : 30; save(); const y = window.scrollY; render(false); window.scrollTo(0, y); break; }
     case "ayuda-geo": getAyudaGeo(); break;
     case "ayuda-estado": ui.ayuda.estado = el.dataset.k; render(false); break;
     case "ayuda-sent": recordAyuda(); break;
@@ -7130,6 +7153,7 @@ function routeHash(hash){
   else if(hash === "llevar") ui.sub = "llevar";
   else if(hash === "mificha") ui.sub = "mificha";
   else if(hash === "30dias") ui.sub = "mes";
+  else if(hash === "15dias" || hash === "7dias"){ ui.sub = "mes"; state.mes.d = parseInt(hash, 10); }
   else if(hash === "radio") ui.sub = "radio";
   else if(hash === "manual") ui.sub = "manual";
   else if(hash === "corte") ui.sub = "corte";
