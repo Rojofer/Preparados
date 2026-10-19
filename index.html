@@ -624,6 +624,8 @@ html.ahorro *{animation:none!important;transition:none!important}
 @media (max-width:360px){.nav-main{grid-template-columns:1fr}.nav-dial{margin:auto}}
 @media (prefers-reduced-motion: reduce){#nav-arrow{transition:none}}
 .dir-card{border:2px solid var(--blue)}
+.ren-form{display:flex;flex-direction:column;gap:8px;width:100%}
+.nr-head .inline{gap:6px}
 .msgprev{padding:14px;border-radius:12px;background:var(--surface-2);font-size:17px;line-height:1.45;overflow-wrap:anywhere}
 .fb{display:flex;flex-direction:column;gap:14px;padding:20px 18px;border-radius:16px;background:var(--surface);border:2px solid var(--crit)}
 .fb h1{font-size:40px}
@@ -4189,7 +4191,7 @@ function navRow(){
     const det = !d ? "" : d.m < 30 ? "Estás acá" : `${fmtKm(d.m / 1000)} · ${cuadrasTxt(d.m)}${d.calles ? "" : " en línea recta"} · hacia ${cardinal(d.brg)}`;
     return `<li><button class="nr-item" data-action="nav-go" data-id="${esc(l.id)}"><span class="nr-t"><strong>${esc(l.nombre)}</strong>${det ? `<span>${det}</span>` : ""}</span><span class="nr-go">${icon("compass")}Ir</span></button></li>`;
   }).join("");
-  return `<div class="nav-row" data-navrow><div class="nr-head"><span class="nav-row-t">${icon("compass")}Llevarme a</span><button class="btn btn-ghost btn-sm" data-action="dir-abrir" aria-label="Agregar una dirección">+ Agregar</button></div>
+  return `<div class="nav-row" data-navrow><div class="nr-head"><span class="nav-row-t">${icon("compass")}Llevarme a</span><span class="inline"><button class="btn btn-ghost btn-sm" data-action="go-lugares">Editar</button><button class="btn btn-ghost btn-sm" data-action="dir-abrir" aria-label="Agregar una dirección">+ Agregar</button></span></div>
     <p class="nr-pos fine">${posTxt}</p><ul class="nr-list">${rows}</ul></div>`;
 }
 
@@ -4270,7 +4272,7 @@ function dirFormHTML(){
   return `<form class="card dir-card" id="form-dir" novalidate>
     <h2>Agregar una dirección</h2>
     <p class="fine">Escribe la dirección de tu casa o de un familiar: la app la ubica en el plano de Azul, sin internet.</p>
-    <div class="field"><label class="lbl" for="d-nombre">Nombre</label><input id="d-nombre" maxlength="40" autocomplete="off" value="${esc(d.nombre || "")}" placeholder="Ej.: Casa de la abuela"></div>
+    <div class="field"><label class="lbl" for="d-nombre">Nombre (puedes escribir el que quieras)</label><input id="d-nombre" maxlength="40" autocomplete="off" value="${esc(d.nombre || "")}" placeholder="Ej.: Casa de la tía Ana"></div>
     <div class="chips">${["Casa","Casa de un familiar","Punto de encuentro"].map(n => `<button type="button" class="chip" data-action="dir-nom" data-n="${n}">${n}</button>`).join("")}</div>
     <div class="field"><label class="lbl" for="d-calle">Calle y número</label><input id="d-calle" maxlength="60" autocomplete="off" value="${esc(d.calle || "")}" placeholder="Ej.: Belgrano 750"></div>
     <div class="field"><label class="lbl" for="d-entre">Entre qué calles (si lo sabes)</label><input id="d-entre" maxlength="60" autocomplete="off" value="${esc(d.entre || "")}" placeholder="Ej.: Colón y Burgos"></div>
@@ -4742,14 +4744,17 @@ const SHARE = [
    sum:x => plural((x.lugares || []).length, "lugar", "lugares"),
    get:() => ({lugares:state.lugares}),
    apply:(x, res) => {
-     let n = 0;
+     let n = 0, u = 0;
      (Array.isArray(x.lugares) ? x.lugares : []).slice(0, 40).forEach(l => {
        if(!l || !l.nombre || !isFinite(l.lat) || !isFinite(l.lng) || Math.abs(l.lat) > 90 || Math.abs(l.lng) > 180) return;
        const c = {id:String(l.id || newId("l")).slice(0, 40), nombre:String(l.nombre).slice(0, 40), lat:+l.lat, lng:+l.lng, desc:String(l.desc || "").slice(0, 80), at:+l.at || Date.now()};
-       if(state.lugares.some(y => y.id === c.id || (y.nombre === c.nombre && Math.abs(y.lat - c.lat) < 1e-4 && Math.abs(y.lng - c.lng) < 1e-4))) return;
+       const ya = state.lugares.find(y => y.id === c.id);
+       if(ya){ if(c.at > (+ya.at || 0) && (ya.nombre !== c.nombre || ya.lat !== c.lat || ya.lng !== c.lng)){ Object.assign(ya, c); u++; } return; }
+       if(state.lugares.some(y => y.nombre === c.nombre && Math.abs(y.lat - c.lat) < 1e-4 && Math.abs(y.lng - c.lng) < 1e-4)) return;
        state.lugares.push(c); n++;
      });
      if(n) res.push(plural(n, "lugar nuevo", "lugares nuevos"));
+     if(u) res.push(plural(u, "lugar actualizado", "lugares actualizados"));
    }},
   {id:"inv", t:"Inventario de la reserva", d:"Lo cargado, sus vencimientos y los recordatorios.",
    has:() => state.inv.length > 0 || Object.keys(state.recs).length > 0,
@@ -5603,8 +5608,9 @@ function lugaresHTML(){
   const m = ui.mapa;
   if(!state.lugares.length) return `<p class="fine">Todavía no guardaste lugares. Busca tu casa o tócala en el mapa y elige «Guardar este lugar».</p>`;
   return `<ul class="nums lugares">${state.lugares.map(l => { const d = m.yo ? distKm(m.yo, l) : null;
+    if(m.ren === l.id) return `<li><form class="ren-form" data-ren="${esc(l.id)}"><label class="lbl" for="ren-${esc(l.id)}">Nombre del lugar</label><input id="ren-${esc(l.id)}" maxlength="40" autocomplete="off" value="${esc(l.nombre)}" placeholder="Ej.: Casa de la tía Ana"><div class="inline"><button class="btn btn-primary btn-sm" type="submit">Guardar</button><button class="btn btn-ghost btn-sm" type="button" data-action="lugar-ren-x">Cancelar</button></div></form></li>`;
     return `<li><div class="n-main"><span class="n-label">${esc(l.nombre)}</span><span class="n-desc">${esc(l.desc || "")}${d !== null ? `${l.desc ? " · " : ""}a ${fmtKm(d)}, hacia ${cardinal(rumbo(m.yo, l))}` : ""}</span></div>
-      <div class="n-actions"><button class="btn btn-primary btn-sm" data-action="nav-go" data-id="${esc(l.id)}">Llevarme</button><button class="btn btn-ghost btn-sm" data-action="lugar-ver" data-id="${esc(l.id)}">Ver</button><button class="btn btn-ghost btn-sm" data-action="lugar-del" data-id="${esc(l.id)}" aria-label="Borrar ${esc(l.nombre)}">Borrar</button></div></li>`; }).join("")}</ul>`;
+      <div class="n-actions"><button class="btn btn-primary btn-sm" data-action="nav-go" data-id="${esc(l.id)}">Llevarme</button><button class="btn btn-ghost btn-sm" data-action="lugar-ren" data-id="${esc(l.id)}">Cambiar nombre</button><button class="btn btn-ghost btn-sm" data-action="lugar-ver" data-id="${esc(l.id)}">Ver</button><button class="btn btn-ghost btn-sm" data-action="lugar-del" data-id="${esc(l.id)}" aria-label="Borrar ${esc(l.nombre)}">Borrar</button></div></li>`; }).join("")}</ul>`;
 }
 function drawMapPanel(){
   const a = document.getElementById("map-panel"); if(a) a.innerHTML = selHTML();
@@ -6037,7 +6043,9 @@ document.addEventListener("click", e => {
     }
     case "map-res-pick": { const r = ui.mapa.res[Number(el.dataset.i)]; if(r) selectResult(r); break; }
     case "lugar-ver": { const l = state.lugares.find(x => x.id === el.dataset.id); if(l){ ui.mapa.tab = "azul"; if(!document.getElementById("azmap")) render(false); const [x, y] = toXY(l); selectResult({tipo:"Mi lugar", n:l.nombre, a:l.desc, x, y, lid:l.id}); } break; }
-    case "lugar-nombre": { const i = document.getElementById("l-nombre"); if(i){ i.value = el.dataset.n; ui.mapa.nombre = el.dataset.n; } break; }
+    case "lugar-nombre": { const i = document.getElementById("l-nombre"); if(i){ const v = el.dataset.n === "Casa de un familiar" ? "Casa de " : el.dataset.n; i.value = v; ui.mapa.nombre = v; if(v.endsWith(" ")){ i.focus(); try{ i.setSelectionRange(v.length, v.length); }catch(err){} } } break; }
+    case "lugar-ren": ui.mapa.ren = el.dataset.id; drawMapPanel(); { const i = document.getElementById("ren-" + el.dataset.id); if(i){ i.focus(); try{ i.select(); }catch(err){} } } break;
+    case "lugar-ren-x": ui.mapa.ren = null; drawMapPanel(); break;
     case "lugar-del": { const l = state.lugares.find(x => x.id === el.dataset.id); trashPut("lugar", l); state.lugares = state.lugares.filter(x => x.id !== el.dataset.id); if(ui.mapa.sel && ui.mapa.sel.lid === el.dataset.id) ui.mapa.sel = null; save(); drawMapa(); drawMapPanel(); break; }
     case "go-locales": ui.planSeg = "numeros"; go("numeros", {scrollTo:"locales"}); break;
     case "corte-start": state.corte = {start:Date.now(), done:{}}; save(); render(true); break;
@@ -6073,8 +6081,9 @@ document.addEventListener("click", e => {
     case "pantalla": openOverlay("linterna"); break;
     case "nav-go": goNav(el.dataset.id); break;
     case "dir-abrir": ui.mapa.tab = "azul"; ui.mapa.dir = Object.assign({}, ui.mapa.dir, {open:true, msg:""}); if(!(ui.tab === "inicio" && ui.sub === "mapa")) go("inicio", {sub:"mapa"}); else render(false); { const f = document.getElementById("d-nombre"); if(f){ f.scrollIntoView({block:"center"}); try{ f.focus({preventScroll:true}); }catch(err){} } } break;
+    case "go-lugares": ui.mapa.tab = "azul"; go("inicio", {sub:"mapa"}); { const l = document.getElementById("map-lugares"); if(l) l.scrollIntoView({block:"start"}); } break;
     case "dir-cerrar": ui.mapa.dir = {open:false}; render(false); break;
-    case "dir-nom": { const i = document.getElementById("d-nombre"); if(i) i.value = el.dataset.n; break; }
+    case "dir-nom": { const i = document.getElementById("d-nombre"); if(i){ const v = el.dataset.n === "Casa de un familiar" ? "Casa de " : el.dataset.n; i.value = v; if(v.endsWith(" ")){ i.focus(); try{ i.setSelectionRange(v.length, v.length); }catch(err){} } } break; }
     case "nav-stop": NAV.dest = null; navStop(); ui.mapa.ruta = null; go("inicio"); break;
     case "sos-ask": ui.sosAsk = true; render(false); break;
     case "sos-cancel": ui.sosAsk = false; render(false); break;
@@ -6359,6 +6368,12 @@ document.addEventListener("submit", e => {
   else if(e.target.id === "form-mem"){ e.preventDefault(); addMember(e.target); }
   else if(e.target.id === "form-lugar"){ e.preventDefault(); addLugar(); }
   else if(e.target.id === "form-dir"){ e.preventDefault(); dirBuscar(e.target); }
+  else if(e.target.matches(".ren-form")){
+    e.preventDefault();
+    const l = state.lugares.find(x => x.id === e.target.dataset.ren), v = e.target.querySelector("input").value.trim().slice(0, 40);
+    if(l && v){ l.nombre = v; l.at = Date.now(); save(); }
+    ui.mapa.ren = null; drawMapa(); drawMapPanel();
+  }
   else if(e.target.id === "form-ficha"){
     e.preventDefault();
     const n = e.target.querySelector("#f-nombre").value.trim();
