@@ -605,6 +605,12 @@ html.ahorro *{animation:none!important;transition:none!important}
 .nav-row{display:flex;flex-direction:column;gap:8px;padding:12px 14px;border-radius:var(--r);background:var(--surface);border:2px solid var(--blue)}
 .nav-row-t{display:flex;align-items:center;gap:8px;font-weight:700;font-size:18px;color:var(--blue)}.nav-row-t .ic{width:22px;height:22px}
 .nav-row-b{display:flex;flex-wrap:wrap;gap:8px}.nav-row-b .btn{min-height:44px;font-size:16px}
+.nr-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.nr-pos{margin-top:-4px}
+.nr-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.nr-item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;width:100%;padding:10px 12px;border-radius:12px;background:var(--surface-2);text-align:left;min-height:56px}
+.nr-t{display:flex;flex-direction:column;line-height:1.3;min-width:0}.nr-t strong{font-size:17px}.nr-t span{font-size:14px;color:var(--ink-2)}
+.nr-go{display:flex;align-items:center;gap:6px;padding:8px 12px;border-radius:10px;background:var(--blue);color:var(--on-blue,#fff);font-weight:700}.nr-go .ic{width:18px;height:18px}
 .nav-row.empty{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:12px;text-align:left;color:var(--ink)}
 .nav-row.empty strong{display:block;color:var(--blue)}.nav-row.empty span span{font-size:14px;color:var(--ink-2)}
 .nav-main{display:grid;grid-template-columns:150px minmax(0,1fr);gap:14px;align-items:center}
@@ -4144,15 +4150,47 @@ function renderNav(){
     <div class="card" id="nav-box" aria-live="polite">${navBoxHTML()}</div>
     ${enAzul(d) ? `<div class="azwrap"><canvas id="azmap" tabindex="0" aria-label="Plano con el camino"></canvas>
       <div class="mapbtns"><button class="btn btn-ghost" data-action="map-z" data-f="1.4" aria-label="Acercar">+</button><button class="btn btn-ghost" data-action="map-z" data-f="0.7" aria-label="Alejar">−</button></div></div>` : ""}
-    ${otros.length ? `<div><span class="lbl">Ir a otro lugar</span><div class="chips">${otros.map(l => `<button class="chip" data-action="nav-go" data-id="${esc(l.id)}">${esc(l.nombre)}</button>`).join("")}</div></div>` : ""}
+    ${otros.length ? `<div><span class="lbl">Ir a otro lugar</span><div class="chips">${otros.map(l => { const dd = NAV.fix ? distLugar(NAV.fix, l) : null; return `<button class="chip" data-action="nav-go" data-id="${esc(l.id)}">${esc(l.nombre)}${dd ? ` · ${cuadrasTxt(dd.m)}` : ""}</button>`; }).join("")}</div></div>` : ""}
     <div class="inline"><a class="btn btn-outline" href="${geo}">Abrir en la app de mapas</a><button class="btn btn-ghost" data-action="go-ayuda">Necesito ayuda</button></div>
     <p class="fine">El GPS funciona sin internet. La pantalla queda encendida mientras navegas. Si la flecha y el plano no coinciden, confía en los nombres de las calles.</p>
   </section>`;
 }
+/* Distancia por las calles desde donde estás hasta cada lugar guardado */
+const DIST_CACHE = new Map();
+function distLugar(pos, l){
+  const key = `${pos.lat.toFixed(4)},${pos.lng.toFixed(4)}|${l.id}|${l.lat},${l.lng}`;
+  if(DIST_CACHE.has(key)) return DIST_CACHE.get(key);
+  let m = distKm(pos, l) * 1000, calles = false;
+  if(enAzul(pos) && enAzul(l)){ try{ const r = ruta(toXY(pos), toXY(l)); if(r){ m = r.m; calles = true; } }catch(e){} }
+  const out = {m, calles, brg:rumbo(pos, l)};
+  DIST_CACHE.set(key, out);
+  return out;
+}
+const cuadrasTxt = m => { const c = Math.max(1, Math.round(m / 110)); return c === 1 ? "1 cuadra" : `${c} cuadras`; };
+let posPedida = 0;
+function pedirPos(){
+  if(!navigator.geolocation || Date.now() - posPedida < 60000) return;
+  posPedida = Date.now();
+  try{
+    navigator.geolocation.getCurrentPosition(p => {
+      state.ultimaPos = {lat:p.coords.latitude, lng:p.coords.longitude, acc:p.coords.accuracy || 0, at:Date.now()}; save();
+      document.querySelectorAll("[data-navrow]").forEach(el => { el.outerHTML = navRow(); });
+    }, () => { document.querySelectorAll("[data-navrow] .nr-pos").forEach(el => { el.textContent = "No pude ubicarte: sal al aire libre o activa la ubicación."; }); }, {enableHighAccuracy:true, timeout:20000, maximumAge:60000});
+  }catch(e){}
+}
 function navRow(){
-  const ds = navDestinos().slice(0, 3);
+  const ds = navDestinos().slice(0, 5);
   if(!ds.length) return `<button class="nav-row empty" data-action="dir-abrir">${icon("compass")}<span><strong>Llevarme a casa</strong><span>Primero agrega la dirección de tu casa y la de un familiar</span></span>${icon("chev")}</button>`;
-  return `<div class="nav-row"><span class="nav-row-t">${icon("compass")}Llevarme a</span><div class="nav-row-b">${ds.map(l => `<button class="btn btn-primary btn-sm" data-action="nav-go" data-id="${esc(l.id)}">${esc(l.nombre)}</button>`).join("")}<button class="btn btn-ghost btn-sm" data-action="dir-abrir" aria-label="Agregar una dirección">+ Agregar</button></div></div>`;
+  const pos = state.ultimaPos, edad = pos ? Date.now() - (pos.at || 0) : Infinity;
+  if(edad > 2 * 60000) setTimeout(pedirPos, 0);
+  const posTxt = !pos ? "Buscando dónde estás…" : edad < 2 * 60000 ? `Desde donde estás${pos.acc ? ` (±${Math.round(pos.acc)} m)` : ""}` : `Desde donde estabas hace ${fmtDur(edad)} · actualizando…`;
+  const rows = ds.map(l => {
+    const d = pos ? distLugar(pos, l) : null;
+    const det = !d ? "" : d.m < 30 ? "Estás acá" : `${fmtKm(d.m / 1000)} · ${cuadrasTxt(d.m)}${d.calles ? "" : " en línea recta"} · hacia ${cardinal(d.brg)}`;
+    return `<li><button class="nr-item" data-action="nav-go" data-id="${esc(l.id)}"><span class="nr-t"><strong>${esc(l.nombre)}</strong>${det ? `<span>${det}</span>` : ""}</span><span class="nr-go">${icon("compass")}Ir</span></button></li>`;
+  }).join("");
+  return `<div class="nav-row" data-navrow><div class="nr-head"><span class="nav-row-t">${icon("compass")}Llevarme a</span><button class="btn btn-ghost btn-sm" data-action="dir-abrir" aria-label="Agregar una dirección">+ Agregar</button></div>
+    <p class="nr-pos fine">${posTxt}</p><ul class="nr-list">${rows}</ul></div>`;
 }
 
 /* ---------- Direcciones de Azul: calle y número, sin internet ----------
@@ -6202,6 +6240,7 @@ document.addEventListener("click", e => {
     }
   }
 });
+document.addEventListener("click", e => { if(e.target.closest && e.target.closest("details.hsec > summary")) window.__sumTap = Date.now(); }, true);
 document.addEventListener("toggle", e => {
   const d = e.target;
   if(d.matches && d.matches("details.apr-t")){
@@ -6213,7 +6252,7 @@ document.addEventListener("toggle", e => {
   if(d.open){
     ui.homeOpen = d.dataset.sec;
     document.querySelectorAll("details.hsec[open]").forEach(o => { if(o !== d) o.open = false; });
-    requestAnimationFrame(() => {
+    if(Date.now() - (window.__sumTap || 0) < 1500) requestAnimationFrame(() => {
       const hdr = document.querySelector(".topbar"), off = (hdr ? hdr.getBoundingClientRect().bottom : 0) + 8, top = d.getBoundingClientRect().top;
       if(top < off || top > window.innerHeight * 0.55) window.scrollTo({top:window.scrollY + top - off, behavior:matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"});
     });
