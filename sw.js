@@ -1,7 +1,8 @@
 /* Preparados: guarda la app en el celular para que abra sin internet. */
-const CACHE = "preparados-v22";
+const CACHE = "preparados-v23";
 const BASE = ["./", "index.html", "manifest.webmanifest", "icons/icon-192.png", "icons/icon-512.png", "icons/icon-maskable-512.png"];
-self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(BASE)).then(() => self.skipWaiting())); });
+/* Al instalar una versión nueva, pide todo de nuevo a internet (sin la copia del navegador) */
+self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(BASE.map(u => new Request(u, {cache:"reload"})))).then(() => self.skipWaiting())); });
 const DATOS = "preparados-datos"; /* la lista de recordatorios que arma la app: no se borra al actualizar */
 self.addEventListener("activate", e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE && k !== DATOS).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
 self.addEventListener("fetch", e => {
@@ -9,9 +10,10 @@ self.addEventListener("fetch", e => {
   if(req.method !== "GET") return;
   const url = new URL(req.url);
   if(url.origin === location.origin && url.pathname.endsWith("/sw.js")) return; /* para ver si hay versión nueva: siempre de internet */
-  /* La página: primero internet (para recibir las mejoras); si no hay, la copia guardada. */
+  /* La página: abre al instante con la copia guardada y, por detrás, busca la versión nueva.
+     Antes esperaba a internet: con poca señal la app tardaba en abrir justo cuando más se la necesita. */
   if(req.mode === "navigate" || (url.origin === location.origin && url.pathname.endsWith("index.html"))){
-    e.respondWith(fetch(req).then(r => { const cp = r.clone(); caches.open(CACHE).then(c => c.put("index.html", cp)); return r; }).catch(() => caches.match("index.html").then(r => r || caches.match("./"))));
+    e.respondWith(abrirPagina(e));
     return;
   }
   /* Íconos, manifiesto y tipografías: la copia guardada y, en segundo plano, se actualiza. */
@@ -22,6 +24,27 @@ self.addEventListener("fetch", e => {
     })));
   }
 });
+
+const firma = r => r ? (r.headers.get("etag") || r.headers.get("last-modified") || r.headers.get("content-length") || "") : "";
+async function marcarNueva(nueva){
+  try{ const d = await caches.open(DATOS); await d.put("./__version.json", new Response(JSON.stringify({nueva, at:Date.now()}), {headers:{"Content-Type":"application/json"}})); }catch(err){}
+}
+async function abrirPagina(e){
+  const c = await caches.open(CACHE);
+  const hit = (await c.match("index.html")) || (await c.match("./"));
+  const net = fetch(new URL("index.html", self.registration.scope).href, {cache:"no-cache"}).then(async r => {
+    if(!r || !r.ok) return null;
+    const cambio = !!hit && firma(hit) !== firma(r);
+    await c.put("index.html", r.clone());
+    if(cambio){
+      await marcarNueva(true);
+      (await self.clients.matchAll({type:"window"})).forEach(cl => cl.postMessage({tipo:"version-nueva"}));
+    }
+    return r;
+  }).catch(() => null);
+  if(hit){ await marcarNueva(false); e.waitUntil(net); return hit; }
+  return (await net) || (await caches.match("./")) || new Response("Sin conexión y sin copia guardada todavía. Abre la app una vez con internet.", {status:503, headers:{"Content-Type":"text/plain; charset=utf-8"}});
+}
 
 /* Recordatorios: Android despierta a la app de vez en cuando (si lo permite) y avisa lo que toca */
 async function revisarRecordatorios(){

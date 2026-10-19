@@ -132,6 +132,9 @@ h1:focus{outline:none}
 .topbar-in{max-width:592px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:10px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 .brand{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-weight:700;font-size:22px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink)}
 .mark{width:13px;height:13px;background:var(--signal);transform:rotate(45deg);border-radius:2px;flex:none}
+.upd{position:fixed;left:max(12px,env(safe-area-inset-left,0px));right:max(12px,env(safe-area-inset-right,0px));bottom:calc(var(--tabbar-h) + 10px + env(safe-area-inset-bottom,0px));z-index:40;max-width:568px;margin:0 auto;display:flex;align-items:center;gap:10px;padding:10px 8px 10px 14px;border-radius:12px;background:var(--ink);color:var(--bg);font-weight:600;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+.upd span{flex:1;min-width:0}.upd .btn{background:var(--signal);color:var(--on-signal);border:0}.upd-x{width:36px;height:36px;border-radius:8px;color:inherit;font-size:22px;line-height:1}
+body.navegando .upd{bottom:calc(10px + env(safe-area-inset-bottom,0px))}
 .top-r{display:flex;align-items:center;gap:6px;min-width:0}
 .gear{flex:none;display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;margin-right:-10px;border-radius:12px;color:var(--ink-2)}
 .gear .ic{width:24px;height:24px}.gear[aria-current="page"]{color:var(--blue);background:var(--surface-2)}
@@ -4820,7 +4823,7 @@ async function recNotif(){
 
 /* ---------- Configuración: todos los ajustes en un lugar (engranaje arriba a la derecha) ----------
    En un celular con control parental se ve todo; para cambiar algo, salvo voz y vibración, pide el PIN. */
-const APP_VER = 22;
+const APP_VER = 23;
 const GEAR_SVG = `<svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>`;
 function renderConfig(){
   const lc = lockCfg(), lockOn = !!(lc && lc.on), f = miFicha(), fp = fpCfg(), aqui = recsAqui(), nRec = REMINDERS.filter(recOn).length;
@@ -4879,6 +4882,32 @@ function renderConfig(){
       <p class="fine">Con internet, las mejoras se bajan solas y aparecen la próxima vez que abres la app.</p>
     </div>
   </section>`;
+}
+/* Versión nueva: la app abre al instante con la copia guardada y avisa cuando bajó una nueva */
+async function actualizarAhora(){
+  try{
+    const r = navigator.serviceWorker && await navigator.serviceWorker.getRegistration();
+    if(r){
+      await r.update().catch(() => {});
+      const w = r.installing || r.waiting;
+      if(w) await new Promise(res => { const t = setTimeout(res, 8000); w.addEventListener("statechange", () => { if(w.state === "activated"){ clearTimeout(t); res(); } }); });
+    }
+  }catch(e){}
+  location.reload();
+}
+function avisoVersion(){
+  if(document.getElementById("upd") || (ui.tab === "inicio" && ui.sub === "ir")) return;
+  const d = document.createElement("div");
+  d.id = "upd"; d.className = "upd"; d.setAttribute("role", "status");
+  d.innerHTML = `<span>Hay una versión nueva de la app.</span><button class="btn btn-sm" data-action="cfg-reload">Actualizar</button><button class="upd-x" type="button" aria-label="Más tarde" data-upd-x="1">×</button>`;
+  document.body.appendChild(d);
+}
+document.addEventListener("click", e => { if(e.target.closest && e.target.closest("[data-upd-x]")){ const d = document.getElementById("upd"); if(d) d.remove(); } });
+if("serviceWorker" in navigator){
+  navigator.serviceWorker.addEventListener("message", e => { if(e.data && e.data.tipo === "version-nueva") avisoVersion(); });
+  let tenia = !!navigator.serviceWorker.controller;
+  navigator.serviceWorker.addEventListener("controllerchange", () => { if(tenia) avisoVersion(); tenia = true; });
+  setTimeout(() => { if(!("caches" in window)) return; caches.open("preparados-datos").then(c => c.match("./__version.json")).then(r => r && r.json()).then(v => { if(v && v.nueva) avisoVersion(); }).catch(() => {}); }, 4000);
 }
 async function cfgUpdate(){
   const st = document.getElementById("cfg-up-st"), say = (t, btn) => { if(st) st.innerHTML = t + (btn ? ` <button class="btn btn-primary btn-sm" data-action="cfg-reload">Actualizar ahora</button>` : ""); };
@@ -6764,7 +6793,7 @@ document.addEventListener("click", e => {
     case "cfg-voz": hablar("Así suena la voz de la navegación."); break;
     case "cfg-persist": ensurePersist(true).then(() => render(false)); break;
     case "cfg-update": cfgUpdate(); break;
-    case "cfg-reload": location.reload(); break;
+    case "cfg-reload": actualizarAhora(); break;
     case "inv-sugg": {
       const sg = INV_SUGG[Number(el.dataset.k)];
       const n = document.getElementById("i-nombre"), c = document.getElementById("i-cat");
