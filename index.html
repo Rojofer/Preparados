@@ -602,6 +602,21 @@ html.ahorro *{animation:none!important;transition:none!important}
 .auto-n{font-size:38px;font-weight:600;line-height:1}
 .auto-u{font-size:13px;color:var(--ink-2)}
 .auto-s{font-size:13px;color:var(--ink-2);overflow-wrap:anywhere}
+.nav-row{display:flex;flex-direction:column;gap:8px;padding:12px 14px;border-radius:var(--r);background:var(--surface);border:2px solid var(--blue)}
+.nav-row-t{display:flex;align-items:center;gap:8px;font-weight:700;font-size:18px;color:var(--blue)}.nav-row-t .ic{width:22px;height:22px}
+.nav-row-b{display:flex;flex-wrap:wrap;gap:8px}.nav-row-b .btn{min-height:44px;font-size:16px}
+.nav-row.empty{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:12px;text-align:left;color:var(--ink)}
+.nav-row.empty strong{display:block;color:var(--blue)}.nav-row.empty span span{font-size:14px;color:var(--ink-2)}
+.nav-main{display:grid;grid-template-columns:150px minmax(0,1fr);gap:14px;align-items:center}
+.nav-dial{width:150px;height:150px}.nav-dial .ring{fill:var(--surface-2);stroke:var(--line);stroke-width:2}.nav-dial .needle{fill:var(--blue)}
+#nav-arrow{transition:transform .25s ease}
+.nav-big{font-family:var(--font-display);font-weight:700;font-size:40px;line-height:1}
+.nav-instr{font-size:19px;line-height:1.4}
+.nav-acc{font-size:14px;font-weight:700}.nav-acc.ok{color:var(--ok)}.nav-acc.mid{color:var(--signal-ink)}.nav-acc.bad{color:var(--crit)}
+.nav-ok .nav-big{color:var(--ok);margin-bottom:10px}
+.nav-v #azmap{height:min(42vh,340px)}
+@media (max-width:360px){.nav-main{grid-template-columns:1fr}.nav-dial{margin:auto}}
+@media (prefers-reduced-motion: reduce){#nav-arrow{transition:none}}
 .msgprev{padding:14px;border-radius:12px;background:var(--surface-2);font-size:17px;line-height:1.45;overflow-wrap:anywhere}
 .fb{display:flex;flex-direction:column;gap:14px;padding:20px 18px;border-radius:16px;background:var(--surface);border:2px solid var(--crit)}
 .fb h1{font-size:40px}
@@ -2596,6 +2611,7 @@ function renderHome(){
       <button class="sb sb-ayuda" data-action="go-ayuda">${icon("sos")}<span>Necesito ayuda</span></button>
       <button class="sb sb-bien" data-action="go-aviso">${icon("heart")}<span>Estoy bien</span></button>
     </div>
+    ${navRow()}
     ${ahora.length ? `<div class="ahora">${ahora.join("")}</div>` : ""}
     <div class="hsecs">
       ${hsec("pasa", "storm", "¿Qué está pasando?", "Toca la situación y sigue los pasos", pasa, "hs-main")}
@@ -2982,13 +2998,14 @@ function renderTools(){
   return `<section class="stack">
     <div class="intro"><h1>Linterna y señales</h1><p class="lede">Funcionan sin señal. Para la linterna, sube el brillo al máximo.</p></div>
     <div class="tools">
-      <button class="tool" data-action="linterna">${icon("torch")}<span class="t-label">Linterna</span><small>Pantalla blanca. Toca para apagar.</small></button>
+      <button class="tool" data-action="linterna" aria-pressed="${!!ui.torchOn}">${icon("torch")}<span class="t-label">Linterna</span><small>${ui.torchOn ? "Encendida. Toca para apagar." : "Usa el flash del celular."}</small></button>
+      <button class="tool" data-action="pantalla">${icon("torch")}<span class="t-label">Pantalla blanca</span><small>Luz suave para leer. Toca para apagar.</small></button>
       <button class="tool" data-action="sos-ask">${icon("sos")}<span class="t-label">SOS luminoso</span><small>Destellos en código Morse.</small></button>
       <button class="tool" data-action="silbato" aria-pressed="${!!whistle}">${icon("whistle")}<span class="t-label">Silbato</span><small>${whistle ? "Sonando. Toca para detener." : "Tres pitidos que se repiten."}</small></button>
       <button class="tool" data-action="metronomo" aria-pressed="${!!metro}">${icon("metro")}<span class="t-label">Ritmo de RCP</span><small>${metro ? "Marcando 110 por minuto." : "Marca 110 compresiones por minuto."}</small></button>
     </div>
     ${sos}${panel}
-    <p class="fine">La versión instalable podrá usar el flash del teléfono en Android.</p>
+    <p class="fine">${ui.torchNo ? "Este celular no dejó usar el flash desde la app: se encendió la pantalla. Revisa que Chrome tenga permiso de cámara (el flash es parte de la cámara)." : "La primera vez, el celular pide permiso de cámara: el flash es parte de la cámara. No se toma ninguna foto."}</p>
   </section>`;
 }
 
@@ -3904,6 +3921,239 @@ function renderManual(){
   </section>`;
 }
 
+/* ---------- Linterna con el flash del celular ---------- */
+let torchTrack = null, torchSosT = null;
+async function torchGet(){
+  if(torchTrack) return torchTrack;
+  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return null;
+  try{
+    const s = await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:"environment"}}});
+    const t = s.getVideoTracks()[0];
+    const caps = t && t.getCapabilities ? t.getCapabilities() : {};
+    if(!caps.torch){ s.getTracks().forEach(x => x.stop()); return null; }
+    torchTrack = t;
+    return t;
+  }catch(e){ return null; }
+}
+async function torchSet(on){ try{ if(torchTrack) await torchTrack.applyConstraints({advanced:[{torch:on}]}); return true; }catch(e){ return false; } }
+function torchOff(){
+  clearTimeout(torchSosT); torchSosT = null;
+  if(torchTrack){ try{ torchTrack.applyConstraints({advanced:[{torch:false}]}); }catch(e){} try{ torchTrack.stop(); }catch(e){} torchTrack = null; }
+  ui.torchOn = false;
+}
+async function torchToggle(){
+  if(ui.torchOn){ torchOff(); afterTool(); return; }
+  const t = await torchGet();
+  if(t && await torchSet(true)){ ui.torchOn = true; ui.torchNo = false; afterTool(); return; }
+  torchOff(); ui.torchNo = true;
+  if(ui.tab === "linterna") render(false);
+  openOverlay("linterna");
+}
+async function torchSos(){
+  const t = await torchGet();
+  if(!t) return;
+  let k = 0;
+  const step = async () => { await torchSet(k % 2 === 0); torchSosT = setTimeout(() => { k = (k + 1) % SOS.length; step(); }, SOS[k] * UNIT); };
+  step();
+}
+
+/* ---------- Llevarme a un lugar: navegación a pie, sin internet ---------- */
+const NAV = {watch:null, fix:null, prev:null, course:null, compass:null, compassAt:0, route:null, routeAt:0, dest:null, arrived:false, orient:false, raf:0};
+function navDestinos(){
+  const pri = l => /casa/i.test(l.nombre) ? 0 : /famili|tia|tío|tio|abuel|herman/i.test(l.nombre) ? 1 : /encuentro/i.test(l.nombre) ? 2 : 3;
+  return state.lugares.slice().sort((a, b) => pri(a) - pri(b));
+}
+function navOrient(){
+  if(NAV.orient) return;
+  NAV.orient = true;
+  const onO = e => {
+    let h = null;
+    if(typeof e.webkitCompassHeading === "number") h = e.webkitCompassHeading;
+    else if((e.absolute || e.type === "deviceorientationabsolute") && typeof e.alpha === "number") h = (360 - e.alpha) % 360;
+    if(h === null) return;
+    const ang = (screen.orientation && typeof screen.orientation.angle === "number") ? screen.orientation.angle : (window.orientation || 0);
+    h = (h + ang + 360) % 360;
+    // suavizado
+    if(NAV.compass === null) NAV.compass = h;
+    else { const d = ((h - NAV.compass + 540) % 360) - 180; NAV.compass = (NAV.compass + d * 0.25 + 360) % 360; }
+    NAV.compassAt = Date.now();
+    if(!NAV.raf) NAV.raf = requestAnimationFrame(() => { NAV.raf = 0; if(ui.sub === "ir") navArrow(); else if(ui.sub === "mapa") drawCompass(); });
+  };
+  window.addEventListener("deviceorientationabsolute", onO);
+  window.addEventListener("deviceorientation", onO);
+}
+function navHeading(){
+  if(NAV.compass !== null && Date.now() - NAV.compassAt < 3000) return {h:NAV.compass, src:"compass"};
+  if(NAV.course !== null) return {h:NAV.course, src:"course"};
+  return {h:null, src:"none"};
+}
+function goNav(id){
+  const l = state.lugares.find(x => x.id === id);
+  if(!l) return;
+  NAV.dest = l; NAV.route = null; NAV.arrived = false; NAV.course = null;
+  if(!NAV.fix && state.ultimaPos && Date.now() - (state.ultimaPos.at || 0) < 10 * 60000) NAV.fix = Object.assign({}, state.ultimaPos, {old:true});
+  go("inicio", {sub:"ir"});
+  navStart();
+}
+function navStart(){
+  navOrient(); keepAwake();
+  if(NAV.watch !== null || !navigator.geolocation) return;
+  try{
+    NAV.watch = navigator.geolocation.watchPosition(p => {
+      const f = {lat:p.coords.latitude, lng:p.coords.longitude, acc:p.coords.accuracy || 0, at:Date.now()};
+      // si llega una lectura mucho peor que la anterior y reciente, se descarta
+      if(NAV.fix && !NAV.fix.old && f.acc > 120 && NAV.fix.acc < f.acc / 2 && Date.now() - NAV.fix.at < 20000) return;
+      if(NAV.fix && !NAV.fix.old){
+        const d = distKm(NAV.fix, f) * 1000;
+        if(d > Math.max(6, f.acc * 0.5)){ NAV.course = rumbo(NAV.fix, f); }
+      }
+      NAV.prev = NAV.fix; NAV.fix = f;
+      state.ultimaPos = f; save();
+      navUpdate();
+    }, e => { NAV.err = e && e.code === 1 ? "perm" : "nofix"; navUpdate(); }, {enableHighAccuracy:true, maximumAge:0, timeout:20000});
+  }catch(e){ NAV.err = "nofix"; }
+}
+function navStop(){
+  if(NAV.watch !== null){ try{ navigator.geolocation.clearWatch(NAV.watch); }catch(e){} NAV.watch = null; }
+  if(!metro && !ui.torchOn) releaseAwake();
+}
+/* Geometría sobre la ruta (coordenadas del plano de Azul) */
+const segM = (a, b) => Math.hypot((b[0] - a[0]) * KX, (b[1] - a[1]) * KY);
+const brg = (a, b) => (Math.atan2((b[0] - a[0]) * KX, (b[1] - a[1]) * KY) * 180 / Math.PI + 360) % 360;
+function navProject(pts, p){
+  let best = {i:0, t:0, d:1e18};
+  for(let i = 1; i < pts.length; i++){
+    const a = pts[i - 1], b = pts[i], dx = (b[0] - a[0]) * KX, dy = (b[1] - a[1]) * KY, L = dx * dx + dy * dy;
+    let t = L ? (((p[0] - a[0]) * KX) * dx + ((p[1] - a[1]) * KY) * dy) / L : 0; t = Math.max(0, Math.min(1, t));
+    const qx = (a[0] - p[0]) * KX + t * dx, qy = (a[1] - p[1]) * KY + t * dy, d = Math.hypot(qx, qy);
+    if(d < best.d) best = {i, t, d};
+  }
+  const a = pts[best.i - 1], b = pts[best.i];
+  best.pt = [a[0] + (b[0] - a[0]) * best.t, a[1] + (b[1] - a[1]) * best.t];
+  return best;
+}
+function navAhead(pts, pr, metros){
+  let rest = metros, cur = pr.pt;
+  for(let i = pr.i; i < pts.length; i++){
+    const L = segM(cur, pts[i]);
+    if(L >= rest){ const t = rest / L; return [cur[0] + (pts[i][0] - cur[0]) * t, cur[1] + (pts[i][1] - cur[1]) * t]; }
+    rest -= L; cur = pts[i];
+  }
+  return pts[pts.length - 1];
+}
+function navInfo(){
+  const f = NAV.fix, d = NAV.dest;
+  if(!f || !d) return null;
+  const directo = {km:distKm(f, d), brg:rumbo(f, d)};
+  if(!enAzul(f) || !enAzul(d)) return Object.assign(directo, {modo:"directo"});
+  const p = toXY(f), q = toXY(d);
+  // nueva ruta si no hay, si te alejaste o cada 30 segundos
+  let pr = NAV.route ? navProject(NAV.route.pts, p) : null;
+  if(!NAV.route || (pr && pr.d > 40 + Math.min(60, f.acc / 2)) || Date.now() - NAV.routeAt > 30000){
+    const r = ruta(p, q);
+    NAV.routeAt = Date.now();
+    if(r){ NAV.route = r; pr = navProject(r.pts, p); }
+  }
+  if(!NAV.route || !pr) return Object.assign(directo, {modo:"directo"});
+  const pts = NAV.route.pts;
+  // distancia que falta por las calles
+  let falta = segM(pr.pt, pts[pr.i]);
+  for(let i = pr.i + 1; i < pts.length; i++) falta += segM(pts[i - 1], pts[i]);
+  const ahead = navAhead(pts, pr, 30);
+  // próxima vuelta
+  let acc = segM(pr.pt, pts[pr.i]), giro = null;
+  const calle0 = calleCerca(pr.pt[0], pr.pt[1]);
+  for(let i = pr.i; i < pts.length - 1; i++){
+    const bin = brg(i === pr.i ? pr.pt : pts[i - 1], pts[i]), bout = brg(pts[i], pts[i + 1]);
+    const delta = ((bout - bin + 540) % 360) - 180;
+    if(Math.abs(delta) > 35 && segM(pts[i], pts[i + 1]) > 12){
+      const after = navAhead(pts, {i:i + 1, pt:pts[i]}, 20), nueva = calleCerca(after[0], after[1]);
+      if(!(nueva && calle0 && nueva === calle0) && acc > 8){
+        giro = {m:acc, dir:delta > 0 ? "derecha" : "izquierda", calle:nueva, fuerte:Math.abs(delta) > 120};
+        break;
+      }
+    }
+    acc += segM(pts[i], pts[i + 1]);
+  }
+  const calle = calle0;
+  const aheadLL = toLL(ahead[0], ahead[1]);
+  return {modo:"calles", km:falta / 1000, brg:rumbo(f, aheadLL), giro, calle, directo};
+}
+function navArrowRot(info){
+  const h = navHeading();
+  return h.h === null ? info.brg : (info.brg - h.h + 360) % 360;
+}
+function navArrow(){
+  const g = document.getElementById("nav-arrow");
+  if(!g || !NAV.info) return;
+  g.setAttribute("transform", `rotate(${navArrowRot(NAV.info).toFixed(0)})`);
+  const s = document.getElementById("nav-src"); if(s) s.textContent = navSrcTxt();
+}
+function navSrcTxt(){
+  const h = navHeading();
+  return h.src === "compass" ? "La flecha sigue a la brújula del celular. Si gira mal, mueve el celular dibujando un 8 en el aire para calibrarla."
+    : h.src === "course" ? "Sin brújula: la flecha se orienta según hacia dónde caminas. Lleva el celular apuntando hacia adelante."
+    : "Camina unos pasos para que la flecha se oriente. Mientras tanto, el norte está arriba.";
+}
+function navUpdate(){
+  if(ui.sub !== "ir") return;
+  NAV.info = navInfo();
+  const m = ui.mapa;
+  if(NAV.fix){ m.yo = {lat:NAV.fix.lat, lng:NAV.fix.lng, acc:NAV.fix.acc, gps:true}; }
+  if(NAV.dest && enAzul(NAV.dest)){ const [x, y] = toXY(NAV.dest); m.sel = {tipo:"Mi lugar", n:NAV.dest.nombre, x, y, lid:NAV.dest.id}; }
+  m.ruta = NAV.route; m.calle = null;
+  if(NAV.info && NAV.info.km < 0.025 && !NAV.arrived){ NAV.arrived = true; try{ navigator.vibrate && navigator.vibrate([200, 100, 200]); }catch(e){} }
+  const box = document.getElementById("nav-box"); if(box) box.innerHTML = navBoxHTML();
+  if(NAV.fix && enAzul(NAV.fix)){ const [x, y] = toXY(NAV.fix); MAP.cx = x; MAP.cy = y; if(MAP.z < 0.7) MAP.z = 0.85; }
+  drawMapa(); navArrow();
+}
+function accTxt(a){ return a <= 15 ? ["buena", "ok"] : a <= 40 ? ["aceptable", "mid"] : ["baja: sal al aire libre y espera", "bad"]; }
+function navBoxHTML(){
+  const f = NAV.fix, d = NAV.dest, info = NAV.info;
+  if(!d) return "";
+  if(!f){
+    return `<div class="nav-wait"><p class="nav-big">Buscando tu ubicación…</p><p>${NAV.err === "perm" ? "No hay permiso para usar la ubicación. Actívalo en los ajustes de Chrome para esta app." : "Sal al aire libre o acércate a una ventana. La primera vez puede tardar un minuto."}</p></div>`;
+  }
+  if(NAV.arrived) return `<div class="nav-ok"><p class="nav-big">Llegaste a ${esc(d.nombre)}</p><button class="btn btn-primary" data-action="nav-stop">Terminar</button></div>`;
+  const [at, ac] = accTxt(f.acc);
+  const min = Math.max(1, Math.round(info.km / 4.5 * 60));
+  const cuadras = Math.max(1, Math.round(info.km * 1000 / 110));
+  let instr = "";
+  if(info.modo === "calles"){
+    instr = info.giro && info.giro.m < info.km * 1000 - 15
+      ? `${info.calle ? `Sigue por <strong>${esc(info.calle)}</strong>. ` : ""}En <strong>${fmtKm(info.giro.m / 1000)}</strong>, ${info.giro.fuerte ? "date vuelta" : `dobla a la <strong>${info.giro.dir}</strong>`}${info.giro.calle && !info.giro.fuerte ? ` por <strong>${esc(info.giro.calle)}</strong>` : ""}.`
+      : `${info.calle ? `Sigue por <strong>${esc(info.calle)}</strong>: ` : ""}llegas en ${fmtKm(info.km)}.`;
+  }else instr = `En línea recta, hacia ${cardinal(info.brg)}. Fuera del plano de Azul no hay calles: usa la app de mapas si tienes una descargada.`;
+  return `<div class="nav-main">
+      <svg viewBox="-60 -60 120 120" class="nav-dial" aria-hidden="true"><circle r="56" class="ring"/><g id="nav-arrow" transform="rotate(${navArrowRot(info).toFixed(0)})"><path class="needle" d="M0 -48l20 44-20-12-20 12z"/></g></svg>
+      <div class="nav-txt"><p class="nav-big">${fmtKm(info.km)}</p><p>unas ${cuadras === 1 ? "1 cuadra" : `${cuadras} cuadras`} · ${min} min a pie</p></div>
+    </div>
+    <p class="nav-instr">${instr}</p>
+    <p class="nav-acc ${ac}">Precisión del GPS: ${Math.round(f.acc)} m, ${at}${f.old ? " (última posición guardada)" : ""}.</p>
+    <p class="fine" id="nav-src">${navSrcTxt()}</p>`;
+}
+function renderNav(){
+  const d = NAV.dest;
+  if(!d) return renderHome();
+  const otros = navDestinos().filter(l => l.id !== d.id).slice(0, 4);
+  const geo = `geo:${d.lat},${d.lng}?q=${d.lat},${d.lng}(${encodeURIComponent(d.nombre)})`;
+  return `<section class="stack nav-v">
+    <button class="back" data-action="nav-stop">${icon("back")}Terminar</button>
+    <div class="intro"><p class="phase">Llevarme a</p><h1>${esc(d.nombre)}</h1></div>
+    <div class="card" id="nav-box" aria-live="polite">${navBoxHTML()}</div>
+    ${enAzul(d) ? `<div class="azwrap"><canvas id="azmap" tabindex="0" aria-label="Plano con el camino"></canvas>
+      <div class="mapbtns"><button class="btn btn-ghost" data-action="map-z" data-f="1.4" aria-label="Acercar">+</button><button class="btn btn-ghost" data-action="map-z" data-f="0.7" aria-label="Alejar">−</button></div></div>` : ""}
+    ${otros.length ? `<div><span class="lbl">Ir a otro lugar</span><div class="chips">${otros.map(l => `<button class="chip" data-action="nav-go" data-id="${esc(l.id)}">${esc(l.nombre)}</button>`).join("")}</div></div>` : ""}
+    <div class="inline"><a class="btn btn-outline" href="${geo}">Abrir en la app de mapas</a><button class="btn btn-ghost" data-action="go-ayuda">Necesito ayuda</button></div>
+    <p class="fine">El GPS funciona sin internet. La pantalla queda encendida mientras navegas. Si la flecha y el plano no coinciden, confía en los nombres de las calles.</p>
+  </section>`;
+}
+function navRow(){
+  const ds = navDestinos().slice(0, 3);
+  if(!ds.length) return `<button class="nav-row empty" data-action="go-mapa">${icon("compass")}<span><strong>Llevarme a casa</strong><span>Primero guarda tu casa y la de un familiar en el mapa</span></span>${icon("chev")}</button>`;
+  return `<div class="nav-row"><span class="nav-row-t">${icon("compass")}Llevarme a</span><div class="nav-row-b">${ds.map(l => `<button class="btn btn-primary btn-sm" data-action="nav-go" data-id="${esc(l.id)}">${esc(l.nombre)}</button>`).join("")}</div></div>`;
+}
+
 /* ---------- Plan 30 días sin luz ---------- */
 const MES_COMIDA = [
   /* [id, nombre, cantidad por persona para 30 días, unidad, nota] */
@@ -4105,12 +4355,17 @@ function recordAyuda(){
   save();
 }
 function ayudaPunto(){
+  if(state.lugares.length) return `<div class="card"><h2>Volver a un lugar seguro</h2>${navRow()}${ayudaPunto0()}</div>`;
+  return ayudaPunto0(true);
+}
+function ayudaPunto0(solo){
   const a = ui.ayuda, pe = puntoEncuentro();
-  if(!pe.lugar && !pe.texto) return `<div class="card"><h2>Punto de encuentro</h2><p>Todavía no acordaron un punto de encuentro. Elígelo con tu familia en el plan y guárdalo en el mapa con el nombre «Punto de encuentro».</p><button class="btn btn-ghost btn-sm" data-action="go-plan">Ir al plan familiar</button></div>`;
+  if(!pe.lugar && !pe.texto) return !solo ? "" : `<div class="card"><h2>Punto de encuentro</h2><p>Todavía no acordaron un punto de encuentro. Elígelo con tu familia en el plan y guárdalo en el mapa con el nombre «Punto de encuentro».</p><button class="btn btn-ghost btn-sm" data-action="go-plan">Ir al plan familiar</button></div>`;
   let dist = "";
   if(pe.lugar && a.geo){ const km = distKm(a.geo, pe.lugar); dist = `<p class="ay-dist"><strong>${km < 0.03 ? "Estás en el punto de encuentro" : `A ${fmtKm(km)}, hacia ${cardinal(rumbo(a.geo, pe.lugar))}`}</strong></p>`; }
-  return `<div class="card"><h2>Punto de encuentro</h2><p class="ay-pe">${esc(pe.texto || pe.lugar.nombre)}</p>${dist}
-    ${pe.lugar ? `<button class="btn btn-primary" data-action="ayuda-ir" data-id="${esc(pe.lugar.id)}">${icon("compass")}Cómo llegar caminando</button>` : `<p class="fine">Guárdalo en el mapa con el nombre «Punto de encuentro» y la app te muestra cómo llegar.</p>`}</div>`;
+  const body = `<h3>Punto de encuentro</h3><p class="ay-pe">${esc(pe.texto || pe.lugar.nombre)}</p>${dist}
+    ${pe.lugar ? `<button class="btn btn-primary" data-action="nav-go" data-id="${esc(pe.lugar.id)}">${icon("compass")}Llevarme al punto de encuentro</button>` : `<p class="fine">Guárdalo en el mapa con el nombre «Punto de encuentro» y la app te lleva.</p>`}`;
+  return solo ? `<div class="card">${body}</div>` : body;
 }
 function renderAyudaMostrar(){
   const a = ui.ayuda, d = ayudaDest()[0], donde = a.geo ? dondeEstoy(a.geo) : "";
@@ -4888,7 +5143,7 @@ const AZUL = {"lat0":-36.835,"lon0":-59.93,"s":100000,"n":["Avenida Manuel Chave
 const MERC = lat => Math.log(Math.tan(Math.PI / 4 + lat * Math.PI / 360));
 const MX = lng => 273.1 + (lng + 73.58) * 22.758;
 const MY = lat => (MERC(-21.78) - MERC(lat)) * 1304.4;
-const LUGAR_SUG = ["Casa","Punto de encuentro","Casa de un familiar","Trabajo","Escuela de los chicos"];
+const LUGAR_SUG = ["Casa","Casa de un familiar","Punto de encuentro","Trabajo","Escuela de las chicas"];
 const POI_T = {hospital:["Hospital","il-heart"], clinic:["Clínica"], fire_station:["Bomberos"], police:["Policía"], pharmacy:["Farmacia"], school:["Escuela"], townhall:["Municipalidad"], energy_supplier:["Gas"], bus_station:["Terminal"]};
 const EXTRA_POI = [["energy_supplier","Camuzzi Gas Pampeana",-36.7825087,-59.8578653,"San Martín 783"],["bus_station","Terminal de Ómnibus",-36.7840637,-59.8517261,"Av. Bartolomé Mitre 1003"]];
 function distKm(a, b){
@@ -5008,6 +5263,7 @@ function ruta(a, b){
 const MAP = {cx:6800, cy:5500, z:0.3, w:0, h:0, drag:null, ptrs:new Map(), moved:false, cv:null, raf:0};
 let geoWatch = null, orientOn = false;
 function startGeo(){
+  navOrient();
   const m = ui.mapa;
   if(!navigator.geolocation){ m.gpsMsg = "Este navegador no puede usar el GPS. Marca dónde estás tocando el mapa."; drawMapPanel(); return; }
   if(geoWatch !== null) return;
@@ -5156,19 +5412,21 @@ function compassHTML(){
   const m = ui.mapa, dest = m.sel;
   if(!dest) return "";
   if(!m.yo) return `<p class="fine">Para la brújula y el camino, primero indica dónde estás: «Usar el GPS» o «Marcar dónde estoy».</p>`;
-  const d = toLL(dest.x, dest.y), km = distKm(m.yo, d), b = rumbo(m.yo, d), rot = m.heading === null ? b : (b - m.heading + 360) % 360;
+  const hd = navHeading().h;
+  const d = toLL(dest.x, dest.y), km = distKm(m.yo, d), b = rumbo(m.yo, d), rot = hd === null ? b : (b - hd + 360) % 360;
   const cuadras = Math.max(1, Math.round(km * 1000 / 110)), min = Math.max(1, Math.round((m.ruta ? m.ruta.m / 1000 : km * 1.25) / 4.5 * 60));
-  const ticks = ["N","E","S","O"].map((t, i) => { const a = (i * 90 - (m.heading || 0)) * Math.PI / 180; return `<text x="${(Math.sin(a) * 72).toFixed(1)}" y="${(-Math.cos(a) * 72 + 5).toFixed(1)}" text-anchor="middle" class="${t === "N" ? "cn" : ""}">${t}</text>`; }).join("");
+  const ticks = ["N","E","S","O"].map((t, i) => { const a = (i * 90 - (hd || 0)) * Math.PI / 180; return `<text x="${(Math.sin(a) * 72).toFixed(1)}" y="${(-Math.cos(a) * 72 + 5).toFixed(1)}" text-anchor="middle" class="${t === "N" ? "cn" : ""}">${t}</text>`; }).join("");
   return `<div class="compass" id="compass">
     <svg viewBox="-90 -90 180 180" class="dial" aria-hidden="true"><circle r="84" class="ring"/><circle r="58" class="ring2"/>${ticks}<g id="c-arrow" transform="rotate(${rot.toFixed(0)})"><path class="needle" d="M0 -62l16 40-16-10-16 10z"/><path class="tail" d="M0 34l7 10h-14z"/></g><circle r="6" class="hub"/></svg>
     <div class="c-txt"><p class="c-dist">${km < 0.03 ? "Llegaste" : fmtKm(km)}</p><p class="c-dir">${km < 0.03 ? "Estás en el lugar." : `Hacia ${cardinal(b)} · ${cuadras === 1 ? "1 cuadra" : `unas ${cuadras} cuadras`}`}</p>
       <p class="fine">${m.ruta ? `Por las calles: ${fmtKm(m.ruta.m / 1000)}, unos ${min} min caminando.` : `Unos ${min} min caminando.`}</p>
-      <p class="fine">${m.heading === null ? "El norte está arriba. Ubica el norte con el sol: al mediodía queda hacia el norte." : "La flecha sigue al celular: camina hacia donde apunta."}</p></div></div>`;
+      <p class="fine">${hd === null ? "El norte está arriba. Ubica el norte con el sol: al mediodía queda hacia el norte." : "La flecha sigue al celular: camina hacia donde apunta."}</p></div></div>`;
 }
 function drawCompass(){
   const m = ui.mapa, g = document.getElementById("c-arrow");
   if(!g || !m.sel || !m.yo){ return; }
-  const b = rumbo(m.yo, toLL(m.sel.x, m.sel.y)), rot = m.heading === null ? b : (b - m.heading + 360) % 360;
+  const hd = navHeading().h;
+  const b = rumbo(m.yo, toLL(m.sel.x, m.sel.y)), rot = hd === null ? b : (b - hd + 360) % 360;
   g.setAttribute("transform", `rotate(${rot.toFixed(0)})`);
 }
 
@@ -5195,7 +5453,7 @@ function lugaresHTML(){
   if(!state.lugares.length) return `<p class="fine">Todavía no guardaste lugares. Busca tu casa o tócala en el mapa y elige «Guardar este lugar».</p>`;
   return `<ul class="nums lugares">${state.lugares.map(l => { const d = m.yo ? distKm(m.yo, l) : null;
     return `<li><div class="n-main"><span class="n-label">${esc(l.nombre)}</span><span class="n-desc">${esc(l.desc || "")}${d !== null ? `${l.desc ? " · " : ""}a ${fmtKm(d)}, hacia ${cardinal(rumbo(m.yo, l))}` : ""}</span></div>
-      <div class="n-actions"><button class="btn btn-primary btn-sm" data-action="lugar-ver" data-id="${esc(l.id)}">Ver</button><button class="btn btn-ghost btn-sm" data-action="lugar-del" data-id="${esc(l.id)}" aria-label="Borrar ${esc(l.nombre)}">Borrar</button></div></li>`; }).join("")}</ul>`;
+      <div class="n-actions"><button class="btn btn-primary btn-sm" data-action="nav-go" data-id="${esc(l.id)}">Llevarme</button><button class="btn btn-ghost btn-sm" data-action="lugar-ver" data-id="${esc(l.id)}">Ver</button><button class="btn btn-ghost btn-sm" data-action="lugar-del" data-id="${esc(l.id)}" aria-label="Borrar ${esc(l.nombre)}">Borrar</button></div></li>`; }).join("")}</ul>`;
 }
 function drawMapPanel(){
   const a = document.getElementById("map-panel"); if(a) a.innerHTML = selHTML();
@@ -5236,7 +5494,9 @@ function renderMapa(){
   </section>`;
 }
 function afterMapaRender(){
-  if(ui.sub !== "mapa" || ui.tab !== "inicio" || ui.mapa.tab === "arg") return;
+  if(ui.tab !== "inicio") return;
+  if(ui.sub === "ir"){ bindMap(); navUpdate(); return; }
+  if(ui.sub !== "mapa" || ui.mapa.tab === "arg") return;
   bindMap(); drawMapa();
 }
 window.addEventListener("resize", () => { if(document.getElementById("azmap")) scheduleDraw(); });
@@ -5257,9 +5517,10 @@ function render(top){
   if(scanStream) stopScan();
   let html;
   if(!(ui.tab === "inicio" && ui.sub === "mapa")) stopGeo();
+  if(!(ui.tab === "inicio" && ui.sub === "ir")) navStop();
   applyAhorro();
   if(ui.tab === "inicio" && !ui.sub && state.ahorro) html = renderAhorro();
-  else if(ui.tab === "inicio") html = ui.sub === "corte" ? renderCorte() : ui.sub === "aviso" ? renderAviso() : ui.sub === "mapa" ? renderMapa() : ui.sub === "ayuda" ? renderAyuda() : ui.sub === "mes" ? renderMes() : ui.sub === "radio" ? renderRadio() : ui.sub === "manual" ? renderManual() : renderHome();
+  else if(ui.tab === "inicio") html = ui.sub === "corte" ? renderCorte() : ui.sub === "aviso" ? renderAviso() : ui.sub === "mapa" ? renderMapa() : ui.sub === "ayuda" ? renderAyuda() : ui.sub === "mes" ? renderMes() : ui.sub === "radio" ? renderRadio() : ui.sub === "manual" ? renderManual() : ui.sub === "ir" ? renderNav() : renderHome();
   else if(ui.tab === "guias") html = ui.guide ? renderGuide() : renderGuides();
   else if(ui.tab === "preparar") html = renderPrep();
   else if(ui.tab === "linterna") html = renderTools();
@@ -5408,9 +5669,9 @@ function stopMetro(){
 }
 const lb = document.getElementById("livebar"), lt = document.getElementById("live-txt");
 function updLivebar(){
-  const show = !!(whistle || metro) && ui.tab !== "linterna";
+  const show = !!(whistle || metro || ui.torchOn) && ui.tab !== "linterna";
   lb.hidden = !show;
-  if(show) lt.textContent = whistle && metro ? "Silbato y ritmo de RCP" : whistle ? "Silbato sonando" : "Ritmo de RCP: 110 por minuto";
+  if(show) lt.textContent = [ui.torchOn ? "Linterna encendida" : "", whistle ? "Silbato sonando" : "", metro ? "Ritmo de RCP: 110 por minuto" : ""].filter(Boolean).join(" · ");
 }
 function afterTool(){
   if(ui.tab === "linterna" || (ui.tab === "guias" && ui.guide)) render(false);
@@ -5442,6 +5703,7 @@ function openOverlay(mode){
   try{ ov.focus({preventScroll:true}); }catch(e){}
 }
 function closeOverlay(){
+  if(torchSosT) torchOff();
   clearTimeout(sosTimer);
   sosTimer = null;
   ov.hidden = true;
@@ -5656,13 +5918,16 @@ document.addEventListener("click", e => {
       updLav();
       break;
     }
-    case "linterna": openOverlay("linterna"); break;
+    case "linterna": torchToggle(); break;
+    case "pantalla": openOverlay("linterna"); break;
+    case "nav-go": goNav(el.dataset.id); break;
+    case "nav-stop": NAV.dest = null; navStop(); ui.mapa.ruta = null; go("inicio"); break;
     case "sos-ask": ui.sosAsk = true; render(false); break;
     case "sos-cancel": ui.sosAsk = false; render(false); break;
-    case "sos-start": ui.sosAsk = false; render(false); openOverlay("sos"); break;
+    case "sos-start": ui.sosAsk = false; render(false); openOverlay("sos"); torchSos(); break;
     case "silbato": if(whistle) stopWhistle(); else startWhistle(); afterTool(); break;
     case "metronomo": if(metro) stopMetro(); else startMetro(); afterTool(); break;
-    case "live-stop": stopWhistle(); stopMetro(); afterTool(); break;
+    case "live-stop": stopWhistle(); stopMetro(); torchOff(); afterTool(); break;
     case "copy": copyText(el); break;
     case "del-ask": ui.delAsk = el.dataset.id; render(false); break;
     case "del-cancel": ui.delAsk = null; render(false); break;
