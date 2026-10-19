@@ -638,6 +638,8 @@ html.ahorro *{animation:none!important;transition:none!important}
 .mf-btn{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:12px;width:100%;padding:10px 14px;border-radius:var(--r);background:var(--surface);border:1px solid var(--line);text-align:left;min-height:56px}
 .mf-btn>.ic{width:26px;height:26px;color:var(--crit)}.mf-btn strong{display:block;font-size:17px}.mf-btn span span{font-size:14px;color:var(--ink-2)}
 .fb-lock{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:12px;border-radius:12px;background:var(--surface-2);font-size:15px}.fb-lock .ic{width:22px;height:22px;color:var(--signal)}
+.nav-acts{display:grid;grid-template-columns:1fr 1fr;gap:8px}.nav-acts .btn{white-space:normal;text-align:center;min-height:52px}.nav-acts .btn .ic{width:18px;height:18px}
+.nav-acts #nav-voy{grid-column:1 / -1;min-height:56px;font-size:17px}
 .msgprev{padding:14px;border-radius:12px;background:var(--surface-2);font-size:17px;line-height:1.45;overflow-wrap:anywhere}
 .fb{display:flex;flex-direction:column;gap:14px;padding:20px 18px;border-radius:16px;background:var(--surface);border:2px solid var(--crit)}
 .fb h1{font-size:40px}
@@ -2497,7 +2499,7 @@ const icon = (name, cls) => `<svg class="ic ${cls || ""}" viewBox="0 0 24 24" ar
 
 /* ---------- Estado: solo en este navegador ---------- */
 const KEY = "preparados.v1";
-const state = {checks:{}, corte:null, contacts:[], punto:"", inv:[], recs:{}, plan:{miembros:[], mascotas:"", tareas:{}, lugares:{}, contacto:{}, sim:null}, fichas:[], provincia:"", ciudad:"Azul", yo:"", trash:[], lastBackup:0, lugares:[], ultimaPos:null, mes:{checks:{}}, radioOk:{}, ahorro:false, manual:{}, miAviso:null, avisos:[]};
+const state = {checks:{}, corte:null, contacts:[], punto:"", inv:[], recs:{}, plan:{miembros:[], mascotas:"", tareas:{}, lugares:{}, contacto:{}, sim:null}, fichas:[], provincia:"", ciudad:"Azul", yo:"", trash:[], lastBackup:0, lugares:[], ultimaPos:null, mes:{checks:{}}, radioOk:{}, navVoz:true, navVib:true, ahorro:false, manual:{}, miAviso:null, avisos:[]};
 function load(){
   try{
     const raw = localStorage.getItem(KEY);
@@ -2526,6 +2528,8 @@ function load(){
     if(s.miAviso && s.miAviso.at && s.miAviso.estado) state.miAviso = s.miAviso;
     if(s.radioOk && typeof s.radioOk === "object") state.radioOk = s.radioOk;
     state.ahorro = !!s.ahorro;
+    if(typeof s.navVoz === "boolean") state.navVoz = s.navVoz;
+    if(typeof s.navVib === "boolean") state.navVib = s.navVib;
     if(s.manual && typeof s.manual === "object") state.manual = s.manual;
     if(s.mes && typeof s.mes === "object") state.mes = {p:s.mes.p, g:s.mes.g, pb:s.mes.pb, checks:s.mes.checks && typeof s.mes.checks === "object" ? s.mes.checks : {}};
     if(s.ultimaPos && isFinite(s.ultimaPos.lat) && isFinite(s.ultimaPos.lng)) state.ultimaPos = {lat:+s.ultimaPos.lat, lng:+s.ultimaPos.lng, acc:+s.ultimaPos.acc || 0, at:+s.ultimaPos.at || 0};
@@ -4015,7 +4019,9 @@ function navHeading(){
 function goNav(id){
   const l = state.lugares.find(x => x.id === id);
   if(!l) return;
-  NAV.dest = l; NAV.route = null; NAV.arrived = false; NAV.course = null;
+  NAV.dest = l; NAV.route = null; NAV.arrived = false; NAV.course = null; NAV.dicho = {}; NAV.desvio = 0;
+  if(state.navVoz === undefined) state.navVoz = true;
+  if(state.navVoz && "speechSynthesis" in window){ try{ speechSynthesis.getVoices(); const u = new SpeechSynthesisUtterance(" "); u.volume = 0; speechSynthesis.speak(u); }catch(e){} }
   if(!NAV.fix && state.ultimaPos && Date.now() - (state.ultimaPos.at || 0) < 10 * 60000) NAV.fix = Object.assign({}, state.ultimaPos, {old:true});
   go("inicio", {sub:"ir"});
   navStart();
@@ -4074,6 +4080,7 @@ function navInfo(){
   const p = toXY(f), q = toXY(d);
   // nueva ruta si no hay, si te alejaste o cada 30 segundos
   let pr = NAV.route ? navProject(NAV.route.pts, p) : null;
+  if(NAV.route && pr && pr.d > 40 + Math.min(60, f.acc / 2)) NAV.desvio = Date.now();
   if(!NAV.route || (pr && pr.d > 40 + Math.min(60, f.acc / 2)) || Date.now() - NAV.routeAt > 30000){
     const r = ruta(p, q);
     NAV.routeAt = Date.now();
@@ -4100,7 +4107,7 @@ function navInfo(){
     if(Math.abs(delta) > 35 && segM(pts[i], pts[i + 1]) > 12){
       const after = navAhead(pts, {i:i + 1, pt:pts[i]}, 20), nueva = calleCerca(after[0], after[1]);
       if(!(nueva && calle0 && nueva === calle0) && acc > 8){
-        giro = {m:acc, dir:delta > 0 ? "derecha" : "izquierda", calle:nueva, fuerte:Math.abs(delta) > 160};
+        giro = {m:acc, dir:delta > 0 ? "derecha" : "izquierda", calle:nueva, fuerte:Math.abs(delta) > 160, key:Math.round(pts[i][0] / 5) + "," + Math.round(pts[i][1] / 5)};
         break;
       }
     }
@@ -4127,6 +4134,50 @@ function navSrcTxt(){
     : h.src === "course" ? "Sin brújula: la flecha se orienta según hacia dónde caminas. Lleva el celular apuntando hacia adelante."
     : "Camina unos pasos para que la flecha se oriente. Mientras tanto, el norte está arriba.";
 }
+/* Voz y vibración para seguir el camino sin mirar la pantalla */
+function hablar(t){
+  if(!state.navVoz || !("speechSynthesis" in window)) return;
+  try{
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(t), vs = speechSynthesis.getVoices();
+    const v = vs.find(x => /es[-_]AR/i.test(x.lang)) || vs.find(x => /^es/i.test(x.lang));
+    if(v) u.voice = v;
+    u.lang = v ? v.lang : "es-AR"; u.rate = 0.95;
+    speechSynthesis.speak(u);
+  }catch(e){}
+}
+function vibrar(p){ try{ if(state.navVib !== false && navigator.vibrate) navigator.vibrate(p); }catch(e){} }
+const metrosTxt = m => m >= 100 ? `${Math.round(m / 50) * 50} metros` : `${Math.max(10, Math.round(m / 10) * 10)} metros`;
+function navAnunciar(){
+  const info = NAV.info, d = NAV.dest;
+  if(!info || !d) return;
+  if(!NAV.dicho) NAV.dicho = {};
+  if(NAV.arrived){ if(!NAV.dicho.llego){ NAV.dicho.llego = 1; hablar(`Llegaste a ${d.nombre}.`); vibrar([400, 150, 400, 150, 400]); } return; }
+  if(!NAV.dicho.inicio){
+    NAV.dicho.inicio = 1;
+    const c = Math.max(1, Math.round(info.km * 1000 / 110));
+    hablar(`Vamos a ${d.nombre}. Son ${c === 1 ? "una cuadra" : `unas ${c} cuadras`}.${info.calle ? ` Sigue por ${info.calle}.` : ""}`);
+    return;
+  }
+  if(NAV.desvio && Date.now() - NAV.desvio < 4000 && Date.now() - (NAV.dicho.desvioAt || 0) > 20000){
+    NAV.dicho.desvioAt = Date.now(); hablar("Te desviaste. Busco otro camino."); vibrar([100, 80, 100, 80, 100]); return;
+  }
+  const g = info.giro;
+  if(info.modo !== "calles" || !g) return;
+  const k = g.key, giro = g.fuerte ? "date vuelta" : `dobla a la ${g.dir}`, por = g.calle && !g.fuerte ? ` por ${g.calle}` : "";
+  if(g.m <= 22 && !NAV.dicho["a" + k]){ NAV.dicho["a" + k] = NAV.dicho["p" + k] = 1; hablar(`Ahora, ${giro}${por}.`); vibrar([200, 100, 200]); }
+  else if(g.m <= 70 && g.m > 22 && !NAV.dicho["p" + k]){ NAV.dicho["p" + k] = 1; hablar(`En ${metrosTxt(g.m)}, ${giro}${por}.`); vibrar(200); }
+}
+function voyEnCaminoHref(){
+  const d = NAV.dest, f = NAV.fix, info = NAV.info;
+  const tels = ayudaDest().map(x => x.tel).join(",");
+  const partes = [`Voy en camino a ${d ? d.nombre : "casa"}.`, state.yo ? `Soy ${state.yo}.` : ""];
+  if(f){ const donde = dondeEstoy(f); if(donde) partes.push(`Estoy en ${donde}.`); }
+  if(info){ const c = Math.max(1, Math.round(info.km * 1000 / 110)); const mn = Math.max(1, Math.round(info.km / 4.5 * 60)); partes.push(`Me faltan ${c === 1 ? "1 cuadra" : `${c} cuadras`}, ${mn === 1 ? "1 minuto" : `unos ${mn} minutos`}.`); }
+  if(f) partes.push(`Ubicación: https://maps.google.com/?q=${f.lat.toFixed(5)},${f.lng.toFixed(5)}`);
+  partes.push(`${hhmm(new Date())} h`);
+  return `sms:${tels}?body=${encodeURIComponent(partes.filter(Boolean).join(" "))}`;
+}
 function navUpdate(){
   if(ui.sub !== "ir") return;
   NAV.info = navInfo();
@@ -4134,8 +4185,10 @@ function navUpdate(){
   if(NAV.fix){ m.yo = {lat:NAV.fix.lat, lng:NAV.fix.lng, acc:NAV.fix.acc, gps:true}; }
   if(NAV.dest && enAzul(NAV.dest)){ const [x, y] = toXY(NAV.dest); m.sel = {tipo:"Mi lugar", n:NAV.dest.nombre, x, y, lid:NAV.dest.id}; }
   m.ruta = NAV.route; m.calle = null;
-  if(NAV.info && NAV.info.km < 0.025 && !NAV.arrived){ NAV.arrived = true; try{ navigator.vibrate && navigator.vibrate([200, 100, 200]); }catch(e){} }
+  if(NAV.info && NAV.info.km < 0.025 && !NAV.arrived) NAV.arrived = true;
+  navAnunciar();
   const box = document.getElementById("nav-box"); if(box) box.innerHTML = navBoxHTML();
+  const vc = document.getElementById("nav-voy"); if(vc) vc.href = voyEnCaminoHref();
   if(NAV.fix && enAzul(NAV.fix)){ const [x, y] = toXY(NAV.fix); MAP.cx = x; MAP.cy = y; if(MAP.z < 0.7) MAP.z = 0.85; }
   drawMapa(); navArrow();
 }
@@ -4178,7 +4231,14 @@ function renderNav(){
     ${enAzul(d) ? `<div class="azwrap"><canvas id="azmap" tabindex="0" aria-label="Plano con el camino"></canvas>
       <div class="mapbtns"><button class="btn btn-ghost" data-action="map-z" data-f="1.4" aria-label="Acercar">+</button><button class="btn btn-ghost" data-action="map-z" data-f="0.7" aria-label="Alejar">−</button></div></div>` : ""}
     ${otros.length ? `<div><span class="lbl">Ir a otro lugar</span><div class="chips">${otros.map(l => { const dd = NAV.fix ? distLugar(NAV.fix, l) : null; return `<button class="chip" data-action="nav-go" data-id="${esc(l.id)}">${esc(l.nombre)}${dd ? ` · ${cuadrasTxt(dd.m)}` : ""}</button>`; }).join("")}</div></div>` : ""}
+    <div class="nav-acts">
+      <a class="btn btn-primary" id="nav-voy" href="${voyEnCaminoHref()}">${icon("phone")}Avisar «voy en camino»</a>
+      ${ayudaDest()[0] ? `<a class="btn btn-outline" href="tel:${esc(ayudaDest()[0].tel)}">${icon("phone")}Llamar a ${esc(ayudaDest()[0].nombre)}</a>` : ""}
+      <button class="btn btn-ghost" data-action="nav-voz" aria-pressed="${state.navVoz !== false}">${state.navVoz !== false ? "🔊 Voz activada" : "🔇 Voz apagada"}</button>
+      <button class="btn btn-ghost" data-action="nav-vib" aria-pressed="${state.navVib !== false}">${state.navVib !== false ? "📳 Vibración activada" : "Vibración apagada"}</button>
+    </div>
     <div class="inline"><a class="btn btn-outline" href="${geo}">Abrir en la app de mapas</a><button class="btn btn-ghost" data-action="go-ayuda">Necesito ayuda</button></div>
+    <p class="fine">«Voy en camino» arma un SMS para la familia con dónde estás y cuánto te falta: lo envías tú en Mensajes. La voz usa la del celular y funciona sin internet si el celular tiene la voz en español descargada.</p>
     <p class="fine">El GPS funciona sin internet. La pantalla queda encendida mientras navegas. Si la flecha y el plano no coinciden, confía en los nombres de las calles.</p>
   </section>`;
 }
@@ -6358,6 +6418,8 @@ document.addEventListener("click", e => {
     case "linterna": torchToggle(); break;
     case "pantalla": openOverlay("linterna"); break;
     case "nav-go": goNav(el.dataset.id); break;
+    case "nav-voz": state.navVoz = state.navVoz === false; save(); if(!state.navVoz){ try{ speechSynthesis.cancel(); }catch(err){} } else hablar("Voz activada."); { const y = window.scrollY; render(false); window.scrollTo(0, y); } break;
+    case "nav-vib": state.navVib = state.navVib === false; save(); if(state.navVib) vibrar(150); { const y = window.scrollY; render(false); window.scrollTo(0, y); } break;
     case "dir-abrir": ui.mapa.tab = "azul"; ui.mapa.dir = Object.assign({}, ui.mapa.dir, {open:true, msg:""}); if(!(ui.tab === "inicio" && ui.sub === "mapa")) go("inicio", {sub:"mapa"}); else render(false); { const f = document.getElementById("d-nombre"); if(f){ f.scrollIntoView({block:"center"}); try{ f.focus({preventScroll:true}); }catch(err){} } } break;
     case "go-llevar": go("inicio", {sub:"llevar"}); break;
     case "go-mificha": go("inicio", {sub:"mificha"}); keepAwake(); break;
