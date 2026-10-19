@@ -626,7 +626,8 @@ html.ahorro *{animation:none!important;transition:none!important}
 @media (prefers-reduced-motion: reduce){#nav-arrow{transition:none}}
 .dir-card{border:2px solid var(--blue)}
 .ren-form{display:flex;flex-direction:column;gap:8px;width:100%}
-.nr-head .inline{gap:6px}
+.nr-head .inline{gap:6px;flex-wrap:nowrap}.nav-row-t{white-space:nowrap}
+@media (max-width:380px){.nr-head .btn-sm{padding-left:10px;padding-right:10px}}
 .pin-ov{position:fixed;inset:0;z-index:200;display:grid;place-items:center;padding:16px;background:rgba(5,10,20,.6)}
 .pin-ov[hidden]{display:none}
 .pin-card{width:min(360px,100%);display:flex;flex-direction:column;gap:12px;padding:20px;border-radius:16px;background:var(--surface);border:1px solid var(--line);box-shadow:0 10px 40px rgba(0,0,0,.35)}
@@ -4210,7 +4211,9 @@ function navBoxHTML(){
     instr = info.giro && info.giro.m < info.km * 1000 - 15
       ? `${info.calle ? `Sigue por <strong>${esc(info.calle)}</strong>. ` : ""}En <strong>${fmtKm(info.giro.m / 1000)}</strong>, ${info.giro.fuerte ? "date vuelta" : `dobla a la <strong>${info.giro.dir}</strong>`}${info.giro.calle && !info.giro.fuerte ? ` por <strong>${esc(info.giro.calle)}</strong>` : ""}.`
       : `${info.calle ? `Sigue por <strong>${esc(info.calle)}</strong>: ` : ""}llegas en ${fmtKm(info.km)}.`;
-  }else instr = `En línea recta, hacia ${cardinal(info.brg)}. Fuera del plano de Azul no hay calles: usa la app de mapas si tienes una descargada.`;
+  }else instr = enAzul(f) && enAzul(d)
+    ? `En línea recta, hacia ${cardinal(info.brg)}. Sigue la flecha por las calles y fíjate que la distancia baje.`
+    : `En línea recta, hacia ${cardinal(info.brg)}. Fuera del plano de Azul no hay calles: usa la app de mapas si tienes una descargada.`;
   return `<div class="nav-main">
       <svg viewBox="-60 -60 120 120" class="nav-dial" aria-hidden="true"><circle r="56" class="ring"/><g id="nav-arrow" transform="rotate(${navArrowRot(info).toFixed(0)})"><path class="needle" d="M0 -48l20 44-20-12-20 12z"/></g></svg>
       <div class="nav-txt"><p class="nav-big">${fmtKm(info.km)}</p><p>unas ${cuadras === 1 ? "1 cuadra" : `${cuadras} cuadras`} · ${min} min a pie</p></div>
@@ -4626,6 +4629,45 @@ document.addEventListener("click", e => {
   askBorrar(a, def);
 }, true);
 document.addEventListener("keydown", e => { if(e.key === "Escape"){ const ov = document.getElementById("conf-ov"); if(ov && !ov.hidden) closeConf(); } });
+
+/* ---------- Botón «atrás» del celular ----------
+   Cada pantalla nueva queda en el historial: «atrás» vuelve a la anterior en vez de cerrar la app. */
+const scrKey = () => [ui.tab, ui.sub || "", ui.guide || "", ui.tab === "numeros" ? ui.planSeg || "" : "", ui.tab === "preparar" ? ui.prep || "" : "", ui.ayuda && ui.ayuda.mostrar && ui.sub === "ayuda" ? "m" : ""].join("|");
+let histPop = false;
+/* La dirección de cada pantalla: si Android recarga la app, vuelve a la misma pantalla */
+const SUB_HASH = {corte:"corte", aviso:"aviso", mapa:"mapa", ayuda:"ayuda", llevar:"llevar", ir:"llevar", mificha:"mificha", mes:"30dias", radio:"radio", manual:"manual"};
+function screenHash(){
+  if(ui.tab === "inicio") return SUB_HASH[ui.sub] || "";
+  if(ui.tab === "guias") return ui.guide ? "guia-" + ui.guide : "guias";
+  if(ui.tab === "preparar") return ui.prep === "inv" ? "inventario" : "preparar";
+  if(ui.tab === "numeros") return {familia:"plan", ficha:"ficha", compartir:"compartir"}[ui.planSeg] || "numeros";
+  return ui.tab;
+}
+const histUrl = () => location.pathname + location.search + (screenHash() ? "#" + screenHash() : "");
+function histSync(){
+  if(histPop) return;
+  const k = scrKey(), cur = history.state && history.state.k;
+  if(k === cur) return;
+  try{ history[cur ? "pushState" : "replaceState"](histState(), "", histUrl()); }catch(e){}
+}
+const histState = () => ({k:scrKey(), tab:ui.tab, sub:ui.sub, guide:ui.guide, planSeg:ui.planSeg, prep:ui.prep, mostrar:!!(ui.ayuda && ui.ayuda.mostrar)});
+window.addEventListener("popstate", e => {
+  const s = e.state;
+  /* Con una ventana abierta (PIN, confirmar, luz de pantalla), «atrás» solo la cierra */
+  const abiertas = ["conf-ov", "pin-ov", "overlay"].map(id => document.getElementById(id)).filter(o => o && !o.hidden);
+  if(abiertas.length){
+    closeConf(); closePin(); if(!ov.hidden) closeOverlay();
+    try{ history.pushState(histState(), "", histUrl()); }catch(err){}
+    return;
+  }
+  if((!s || !s.k) && location.hash.length > 1 && location.hash.slice(1) !== screenHash()) return; /* un acceso directo: lo atiende «hashchange» */
+  if(!s || !s.k) routeHash((location.hash || "").slice(1));
+  else{ ui.tab = s.tab; ui.sub = s.sub; ui.guide = s.guide; if(s.planSeg) ui.planSeg = s.planSeg; if(s.prep) ui.prep = s.prep; if(ui.ayuda) ui.ayuda.mostrar = !!s.mostrar; }
+  ui.resetAsk = null; ui.delAsk = null; ui.sosAsk = false; ui.invEdit = null; ui.invDel = null; ui.fichaEdit = null; ui.fichaBig = null; ui.fichaDel = null;
+  histPop = true;
+  try{ render(true); }finally{ histPop = false; }
+  if(!s || !s.k){ try{ history.replaceState(histState(), "", histUrl()); }catch(e){} }
+});
 
 /* ---------- Plan 30 días sin luz ---------- */
 const MES_COMIDA = [
@@ -5720,12 +5762,17 @@ function grafo(){
   const id = new Map(), nodes = [], adj = [];
   const nid = p => { const k = p[0] + "," + p[1]; let i = id.get(k); if(i === undefined){ i = nodes.length; id.set(k, i); nodes.push(p); adj.push([]); } return i; };
   az.ways.forEach(w => { if(w.c > 6) return; for(let i = 1; i < w.pts.length; i++){ const a = nid(w.pts[i - 1]), b = nid(w.pts[i]); const d = Math.hypot((w.pts[i][0] - w.pts[i - 1][0]) * KX, (w.pts[i][1] - w.pts[i - 1][1]) * KY); adj[a].push([b, d]); adj[b].push([a, d]); } });
-  az.graph = {nodes, adj};
+  /* Islas: senderos de plazas o patios que no tocan ninguna calle. Se arranca y se llega siempre por la red principal. */
+  const comp = new Int32Array(nodes.length).fill(-1), tam = [];
+  for(let i = 0; i < nodes.length; i++){ if(comp[i] >= 0) continue; const c = tam.length, pila = [i]; comp[i] = c; let n = 0;
+    while(pila.length){ const u = pila.pop(); n++; adj[u].forEach(([v]) => { if(comp[v] < 0){ comp[v] = c; pila.push(v); } }); } tam.push(n); }
+  const main = tam.indexOf(Math.max(...tam));
+  az.graph = {nodes, adj, ok:i => comp[i] === main};
   return az.graph;
 }
 function nodoCerca(x, y){
-  const {nodes} = grafo(); let best = -1, bd = 1e18;
-  nodes.forEach((p, i) => { const d = ((p[0] - x) * KX) ** 2 + ((p[1] - y) * KY) ** 2; if(d < bd){ bd = d; best = i; } });
+  const {nodes, ok} = grafo(); let best = -1, bd = 1e18;
+  nodes.forEach((p, i) => { if(!ok(i)) return; const d = ((p[0] - x) * KX) ** 2 + ((p[1] - y) * KY) ** 2; if(d < bd){ bd = d; best = i; } });
   return {i:best, d:Math.sqrt(bd)};
 }
 function ruta(a, b){
@@ -5923,7 +5970,7 @@ function selHTML(){
   const ya = s.lid ? state.lugares.find(l => l.id === s.lid) : null;
   const chips = LUGAR_SUG.filter(n => !state.lugares.some(l => l.nombre === n)).map(n => `<button type="button" class="chip" data-action="lugar-nombre" data-n="${n}">${n}</button>`).join("");
   return `<div class="selcard"><p class="sel-k">${esc(s.tipo)}</p><p class="sel-n">${esc(s.n)}</p>${s.a ? `<p class="fine">${esc(s.a)}</p>` : ""}
-    <div class="inline">${m.yo ? `<button class="btn btn-primary btn-sm" data-action="map-ruta">Cómo llegar</button>` : ""}${ya ? `<button class="btn btn-ghost btn-sm" data-action="lugar-del" data-id="${esc(ya.id)}">Borrar lugar</button>` : `<button class="btn ${m.yo ? "btn-outline" : "btn-primary"} btn-sm" data-action="map-guardar">Guardar este lugar</button>`}<button class="btn btn-ghost btn-sm" data-action="map-cerrar">Cerrar</button></div>
+    <div class="inline">${m.yo ? `<button class="btn btn-primary btn-sm" data-action="map-ruta">Cómo llegar</button>` : ""}${ya ? `<button class="btn btn-ghost btn-sm" data-action="lugar-del" data-id="${esc(ya.id)}">Borrar lugar</button>` : m.guardar ? "" : `<button class="btn ${m.yo ? "btn-outline" : "btn-primary"} btn-sm" data-action="map-guardar">Guardar este lugar</button>`}<button class="btn btn-ghost btn-sm" data-action="map-cerrar">Cerrar</button></div>
     ${m.guardar ? `<form id="form-lugar" class="field" novalidate><label class="lbl" for="l-nombre">¿Cómo lo llamas?</label><input id="l-nombre" maxlength="40" autocomplete="off" value="${esc(m.nombre || (s.punto ? "" : s.n))}" placeholder="Ej.: Casa"><div class="chips">${chips}</div><div class="inline"><button class="btn btn-primary btn-sm" type="submit">Guardar</button></div></form>` : ""}
     ${compassHTML()}</div>`;
 }
@@ -5987,7 +6034,7 @@ function afterMapaRender(){
     const m = ui.mapa, pos = state.ultimaPos; m.sel = null; m.ruta = null; m.calle = null;
     if(pos) m.yo = {lat:pos.lat, lng:pos.lng, acc:pos.acc || 0, gps:true};
     const pts = state.lugares.filter(enAzul).map(toXY).concat(pos && enAzul(pos) ? [toXY(pos)] : []);
-    if(pts.length){ const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]); MAP.cx = (Math.min(...xs) + Math.max(...xs)) / 2; MAP.cy = (Math.min(...ys) + Math.max(...ys)) / 2; bindMap(); drawMapa(); const span = Math.max((Math.max(...xs) - Math.min(...xs)) * KX / (MAP.w || 350), (Math.max(...ys) - Math.min(...ys)) * KY / (MAP.h || 350), 1); MAP.z = Math.max(0.2, Math.min(1.2, 0.85 / span)); drawMapa(); }
+    if(pts.length){ const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]); MAP.cx = (Math.min(...xs) + Math.max(...xs)) / 2; MAP.cy = (Math.min(...ys) + Math.max(...ys)) / 2; bindMap(); drawMapa(); const span = Math.max((Math.max(...xs) - Math.min(...xs)) * KX / (MAP.w || 350), (Math.max(...ys) - Math.min(...ys)) * KY / (MAP.h || 350), 1); MAP.z = Math.max(0.2, Math.min(1.2, 0.65 / span)); drawMapa(); }
     return;
   }
   if(ui.sub === "ir"){ bindMap(); navUpdate(); return; }
@@ -6036,6 +6083,7 @@ function render(top){
   syncQrTimer();
   syncStory();
   afterMapaRender();
+  histSync();
 }
 function go(tab, opts){
   opts = opts || {};
@@ -6764,23 +6812,36 @@ document.addEventListener("visibilitychange", () => { if(document.hidden && ui.s
 
 /* ---------- Inicio ---------- */
 load();
+function routeHash(hash){
+  ui.tab = "inicio"; ui.sub = null; ui.guide = null;
+  if(["guias","preparar","linterna","numeros","aprender"].includes(hash)) ui.tab = hash;
+  else if(hash === "inventario"){ ui.tab = "preparar"; ui.prep = "inv"; }
+  else if(hash === "plan"){ ui.tab = "numeros"; ui.planSeg = "familia"; }
+  else if(hash === "ficha"){ ui.tab = "numeros"; ui.planSeg = "ficha"; }
+  else if(hash === "compartir"){ ui.tab = "numeros"; ui.planSeg = "compartir"; }
+  else if(hash === "extremo"){ ui.tab = "guias"; ui.extOpen = true; }
+  else if(hash === "mapa") ui.sub = "mapa";
+  else if(hash === "aviso") ui.sub = "aviso";
+  else if(hash === "ayuda") ui.sub = "ayuda";
+  else if(hash === "llevar") ui.sub = "llevar";
+  else if(hash === "mificha") ui.sub = "mificha";
+  else if(hash === "30dias") ui.sub = "mes";
+  else if(hash === "radio") ui.sub = "radio";
+  else if(hash === "manual") ui.sub = "manual";
+  else if(hash === "corte") ui.sub = "corte";
+  else if(hash.indexOf("guia-") === 0 && GUIDES.some(g => g.id === hash.slice(5))){ ui.tab = "guias"; ui.guide = hash.slice(5); }
+}
 const hash = (location.hash || "").slice(1);
-if(["guias","preparar","linterna","numeros","aprender"].includes(hash)) ui.tab = hash;
-else if(hash === "inventario"){ ui.tab = "preparar"; ui.prep = "inv"; }
-else if(hash === "plan"){ ui.tab = "numeros"; ui.planSeg = "familia"; }
-else if(hash === "ficha"){ ui.tab = "numeros"; ui.planSeg = "ficha"; }
-else if(hash === "compartir"){ ui.tab = "numeros"; ui.planSeg = "compartir"; }
-else if(hash === "extremo"){ ui.tab = "guias"; ui.extOpen = true; }
-else if(hash === "mapa") ui.sub = "mapa";
-else if(hash === "aviso") ui.sub = "aviso";
-else if(hash === "ayuda") ui.sub = "ayuda";
-else if(hash === "llevar") ui.sub = "llevar";
-else if(hash === "mificha") ui.sub = "mificha";
-else if(hash === "30dias") ui.sub = "mes";
-else if(hash === "radio") ui.sub = "radio";
-else if(hash === "manual") ui.sub = "manual";
-else if(hash === "corte") ui.sub = "corte";
-else if(hash.indexOf("guia-") === 0 && GUIDES.some(g => g.id === hash.slice(5))){ ui.tab = "guias"; ui.guide = hash.slice(5); }
+routeHash(hash);
+/* Si la app abre directo en una pantalla (accesos directos), «atrás» vuelve al Inicio y no cierra la app */
+if((ui.tab !== "inicio" || ui.sub) && !(history.state && history.state.k)){ try{ history.replaceState({k:"inicio|||||", tab:"inicio", sub:null, guide:null}, "", location.pathname + location.search); }catch(e){} }
+/* Un acceso directo tocado con la app ya abierta */
+window.addEventListener("hashchange", () => {
+  const h = (location.hash || "").slice(1); if(!h || h === screenHash()) return;
+  routeHash(h); histPop = true;
+  try{ render(true); }finally{ histPop = false; }
+  try{ history.replaceState(histState(), "", histUrl()); }catch(e){}
+  if(h === "extremo"){ const z = document.getElementById("extremo"); if(z) z.scrollIntoView({block:"start"}); } });
 updNet();
 render(false);
 ensurePersist(false);
