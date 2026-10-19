@@ -1,5 +1,5 @@
 /* Preparados: guarda la app en el celular para que abra sin internet. */
-const CACHE = "preparados-v21";
+const CACHE = "preparados-v22";
 const BASE = ["./", "index.html", "manifest.webmanifest", "icons/icon-192.png", "icons/icon-512.png", "icons/icon-maskable-512.png"];
 self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(BASE)).then(() => self.skipWaiting())); });
 const DATOS = "preparados-datos"; /* la lista de recordatorios que arma la app: no se borra al actualizar */
@@ -8,6 +8,7 @@ self.addEventListener("fetch", e => {
   const req = e.request;
   if(req.method !== "GET") return;
   const url = new URL(req.url);
+  if(url.origin === location.origin && url.pathname.endsWith("/sw.js")) return; /* para ver si hay versión nueva: siempre de internet */
   /* La página: primero internet (para recibir las mejoras); si no hay, la copia guardada. */
   if(req.mode === "navigate" || (url.origin === location.origin && url.pathname.endsWith("index.html"))){
     e.respondWith(fetch(req).then(r => { const cp = r.clone(); caches.open(CACHE).then(c => c.put("index.html", cp)); return r; }).catch(() => caches.match("index.html").then(r => r || caches.match("./"))));

@@ -132,6 +132,13 @@ h1:focus{outline:none}
 .topbar-in{max-width:592px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:10px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 .brand{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-weight:700;font-size:22px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink)}
 .mark{width:13px;height:13px;background:var(--signal);transform:rotate(45deg);border-radius:2px;flex:none}
+.top-r{display:flex;align-items:center;gap:6px;min-width:0}
+.gear{flex:none;display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;margin-right:-10px;border-radius:12px;color:var(--ink-2)}
+.gear .ic{width:24px;height:24px}.gear[aria-current="page"]{color:var(--blue);background:var(--surface-2)}
+.cfg-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+.cfg-row:first-of-type{border-top:0}.cfg-t{display:flex;flex-direction:column;min-width:0}.cfg-t span{font-size:14px;color:var(--ink-2)}
+.cfg-row .btn{flex:none}
+.cfg-lock{display:flex;gap:10px;align-items:flex-start;margin:0;padding:12px 14px;border-radius:12px;background:var(--surface-2);font-size:15px}.cfg-lock .ic{flex:none;margin-top:2px}
 .net{display:flex;align-items:center;gap:6px;min-width:0;font-size:13px;font-weight:700;color:var(--ok);white-space:nowrap}
 .net::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor}
 .net.off{color:var(--warn)}
@@ -730,7 +737,7 @@ body.navegando .view{padding-bottom:calc(28px + env(safe-area-inset-bottom,0px))
 <header class="topbar">
   <div class="topbar-in">
     <button class="brand" data-action="tab" data-tab="inicio" aria-label="Preparados, ir al inicio"><span class="mark" aria-hidden="true"></span>Preparados</button>
-    <span class="net" id="net" role="status">Con conexión</span>
+    <div class="top-r"><span class="net" id="net" role="status">Con conexión</span><button class="gear" id="gear" data-action="go-config" aria-label="Configuración"></button></div>
   </div>
 </header>
 
@@ -4506,7 +4513,7 @@ const LOCK_ACTIONS = new Set([
   "recv-apply","undo-recv","trash-empty","trash-restore","reset-ask","reset-do","fam-del","fam-load","avisos-del-do"
 ]);
 const LOCK_FORMS = new Set(["form-contacto","form-dir","form-ficha","form-inv","form-lugar","form-mem"]);
-const LOCK_INPUTS = "[data-pf],[data-tarea],#punto,[data-ff],[data-foto],[data-dni],.ren-form input,#recv-file";
+const LOCK_INPUTS = "[data-pf],[data-tarea],#punto,[data-ff],[data-foto],[data-dni],.ren-form input,#recv-file,#cfg-yo,#cfg-prov,#cfg-ciudad,[data-recs-aqui],[data-rec-on],select[data-rec]";
 function lockCfg(){ try{ const c = JSON.parse(localStorage.getItem(LOCK_KEY) || "null"); return c && c.hash ? c : null; }catch(e){ return null; } }
 function lockSave(c){ try{ if(c) localStorage.setItem(LOCK_KEY, JSON.stringify(c)); else localStorage.removeItem(LOCK_KEY); return true; }catch(e){ return false; } }
 const isLocked = () => { const c = lockCfg(); return !!(c && c.on) && Date.now() > (ui.unlockUntil || 0); };
@@ -4589,7 +4596,7 @@ document.addEventListener("click", e => {
   const t = lockProtected(e.target);
   if(!t) return;
   e.preventDefault(); e.stopImmediatePropagation();
-  askPin(() => { if(t.matches && t.matches("input,select,textarea")){ t.focus(); if(t.type === "file") t.click(); } else t.click(); });
+  askPin(() => { if(t.matches && t.matches("input,select,textarea")){ t.focus(); if(["file", "checkbox", "radio"].includes(t.type)) t.click(); } else t.click(); });
 }, true);
 document.addEventListener("submit", e => {
   if(e.target.id === "form-pin"){ e.preventDefault(); e.stopImmediatePropagation(); tryPin(); return; }
@@ -4701,7 +4708,7 @@ document.addEventListener("keydown", e => { if(e.key === "Escape"){ const ov = d
 const scrKey = () => [ui.tab, ui.sub || "", ui.guide || "", ui.tab === "numeros" ? ui.planSeg || "" : "", ui.tab === "preparar" ? ui.prep || "" : "", ui.ayuda && ui.ayuda.mostrar && ui.sub === "ayuda" ? "m" : ""].join("|");
 let histPop = false;
 /* La dirección de cada pantalla: si Android recarga la app, vuelve a la misma pantalla */
-const SUB_HASH = {recs:"recordatorios", corte:"corte", aviso:"aviso", mapa:"mapa", ayuda:"ayuda", llevar:"llevar", ir:"llevar", mificha:"mificha", mes:"30dias", radio:"radio", manual:"manual"};
+const SUB_HASH = {config:"configuracion", recs:"recordatorios", corte:"corte", aviso:"aviso", mapa:"mapa", ayuda:"ayuda", llevar:"llevar", ir:"llevar", mificha:"mificha", mes:"30dias", radio:"radio", manual:"manual"};
 function screenHash(){
   if(ui.tab === "inicio") return SUB_HASH[ui.sub] || "";
   if(ui.tab === "guias") return ui.guide ? "guia-" + ui.guide : "guias";
@@ -4809,6 +4816,81 @@ async function recNotif(){
     }
   }catch(e){}
   recsSync(); render(false);
+}
+
+/* ---------- Configuración: todos los ajustes en un lugar (engranaje arriba a la derecha) ----------
+   En un celular con control parental se ve todo; para cambiar algo, salvo voz y vibración, pide el PIN. */
+const APP_VER = 22;
+const GEAR_SVG = `<svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>`;
+function renderConfig(){
+  const lc = lockCfg(), lockOn = !!(lc && lc.on), f = miFicha(), fp = fpCfg(), aqui = recsAqui(), nRec = REMINDERS.filter(recOn).length;
+  const d = state.lastBackup ? diasDesde(state.lastBackup) : null;
+  const fila = (t, estado, boton) => `<div class="cfg-row"><div class="cfg-t"><strong>${t}</strong><span>${estado}</span></div>${boton || ""}</div>`;
+  const provs = `<option value="">Elige tu provincia</option>${PROVINCIAS.map(p => `<option${state.provincia === p ? " selected" : ""}>${p}</option>`).join("")}`;
+  const ciuds = `<option value="">Otra ciudad</option>${Object.keys(CIUDADES).map(c => `<option${state.ciudad === c ? " selected" : ""}>${c}</option>`).join("")}`;
+  return `<section class="stack cfg">
+    <button class="back" data-action="tab" data-tab="inicio">${icon("back")}Inicio</button>
+    <div class="intro"><h1>Configuración</h1><p class="lede">Todos los ajustes de la app en un solo lugar.</p></div>
+    ${lockOn ? `<p class="cfg-lock">${icon("id")}<span>Este celular tiene control parental: para cambiar algo, salvo la voz y la vibración, hace falta el PIN de un adulto.</span></p>` : ""}
+
+    <div class="card"><h2>Quién usa este celular</h2>
+      <div class="field"><label class="lbl" for="cfg-yo">Tu nombre</label><input id="cfg-yo" data-yo="1" maxlength="40" autocomplete="off" value="${esc(state.yo)}" placeholder="${f ? esc(f.nombre) : "Ej.: Sofía"}"><span class="fine">Va en los mensajes de «Necesito ayuda» y «Estoy bien».${!state.yo && f ? " Si lo dejas vacío, se usa el de Mi ficha." : ""}</span></div>
+      ${fila("Mi ficha", f ? `${esc(f.nombre)}${fp ? " · con clave" : " · sin clave"}` : "Todavía no elegiste tu ficha", `<button class="btn btn-ghost btn-sm" data-action="go-mificha">Abrir</button>`)}
+    </div>
+
+    <div class="card"><h2>Navegación</h2>
+      <p class="fine">Para «Llevarme». Esto lo puede cambiar cualquiera.</p>
+      <div class="inline"><button class="btn btn-ghost" data-action="nav-voz" aria-pressed="${state.navVoz !== false}">${state.navVoz !== false ? "Voz activada" : "Voz apagada"}</button><button class="btn btn-ghost" data-action="nav-vib" aria-pressed="${state.navVib !== false}">${state.navVib !== false ? "Vibración activada" : "Vibración apagada"}</button><button class="btn btn-ghost" data-action="cfg-voz">Probar la voz</button></div>
+      <p class="fine">Si la voz no se escucha sin internet, descarga la voz en español en los ajustes del celular (Texto a voz).</p>
+    </div>
+
+    <div class="card"><h2>Seguridad</h2>
+      ${fila("Control parental", lockOn ? "Activado: borrar y cambiar datos pide el PIN" : "Desactivado en este celular", `<button class="btn btn-ghost btn-sm" data-action="plan-seg" data-id="control">${lockOn ? "Ver" : "Activar"}</button>`)}
+      ${fila("Clave de las fichas", fp ? "Activada: sin clave se ve solo lo vital" : "Sin clave", `<button class="btn btn-ghost btn-sm" data-action="go-mificha">${fp ? "Ver" : "Poner"}</button>`)}
+    </div>
+
+    <div class="card"><h2>Recordatorios</h2>
+      ${fila("En este celular", aqui ? `Se muestran · ${nRec === 1 ? "1 elegido" : `${nRec} elegidos`}` : "No se muestran", `<button class="btn btn-ghost btn-sm" data-action="go-recs">Elegir</button>`)}
+    </div>
+
+    <div class="card"><h2>Dónde viven</h2>
+      <div class="field"><label class="lbl" for="cfg-ciudad">Ciudad</label><select id="cfg-ciudad" data-ciudad="1">${ciuds}</select><span class="fine">Trae los teléfonos de la ciudad: hospital, luz, agua y gas.</span></div>
+      <div class="field"><label class="lbl" for="cfg-prov">Provincia</label><select id="cfg-prov" data-prov="1">${provs}</select><span class="fine">Ordena primero las guías de tu zona: sismo, viento Zonda, nevadas…</span></div>
+    </div>
+
+    <div class="card"><h2>Batería y app</h2>
+      ${fila("Modo ahorro de batería", "Pantalla negra y solo lo esencial", `<button class="btn btn-ghost btn-sm" data-action="ahorro-on">Activar</button>`)}
+      ${installEvt ? fila("Instalar en este celular", "Abre sin internet y el GPS funciona", `<button class="btn btn-primary btn-sm" data-action="install">Instalar</button>`) : ""}
+      ${fila("Guardado permanente", ui.persist ? "Activado: el celular no borra los datos solo" : "Sin confirmar todavía", ui.persist ? "" : `<button class="btn btn-ghost btn-sm" data-action="cfg-persist">Pedir</button>`)}
+    </div>
+
+    <div class="card"><h2>Datos y copias</h2>
+      <p class="fine">Todo se guarda solo en este celular, sin cuentas ni internet.</p>
+      ${fila("Copia de seguridad", d === null ? "Todavía no guardaste ninguna" : `La última, hace ${d === 0 ? "menos de un día" : `${d} ${d === 1 ? "día" : "días"}`}`, `<button class="btn btn-ghost btn-sm" data-action="backup">Guardar</button>`)}
+      <p class="st" id="backup-st" role="status"></p>
+      ${fila("Pasar datos a otro celular", "Lugares, plan, teléfonos y fichas, por QR o Quick Share", `<button class="btn btn-ghost btn-sm" data-action="go-compartir">Compartir</button>`)}
+      ${fila("Papelera", state.trash.length ? `${state.trash.length === 1 ? "1 cosa borrada" : `${state.trash.length} cosas borradas`}, se guardan 30 días` : "Vacía", state.trash.length ? `<button class="btn btn-ghost btn-sm" data-action="go-compartir" data-to="papelera">Ver</button>` : "")}
+      ${fila("Manual en papel", "Datos, plan, mapas y guías para la mochila", `<button class="btn btn-ghost btn-sm" data-action="go-manual">Armar</button>`)}
+    </div>
+
+    <div class="card"><h2>Acerca de</h2>
+      ${fila("Preparados", `Versión ${APP_VER}`, `<button class="btn btn-ghost btn-sm" data-action="cfg-update">Buscar actualización</button>`)}
+      <p class="st" id="cfg-up-st" role="status"></p>
+      <p class="fine">Con internet, las mejoras se bajan solas y aparecen la próxima vez que abres la app.</p>
+    </div>
+  </section>`;
+}
+async function cfgUpdate(){
+  const st = document.getElementById("cfg-up-st"), say = (t, btn) => { if(st) st.innerHTML = t + (btn ? ` <button class="btn btn-primary btn-sm" data-action="cfg-reload">Actualizar ahora</button>` : ""); };
+  if(navigator.onLine === false){ say("Sin conexión: conéctate a internet para buscar una versión nueva."); return; }
+  say("Buscando…");
+  try{
+    if(navigator.serviceWorker){ try{ const r = await navigator.serviceWorker.getRegistration(); if(r) await r.update(); }catch(e){} }
+    const txt = await (await fetch("sw.js", {cache:"no-store"})).text();
+    const v = Number((txt.match(/preparados-v(\d+)/) || [])[1]);
+    if(v > APP_VER) say(`Hay una versión nueva (${v}).`, true);
+    else say("Ya tienes la última versión.");
+  }catch(e){ say("No se pudo revisar ahora. Prueba más tarde."); }
 }
 
 /* ---------- Plan 30 días sin luz ---------- */
@@ -6231,7 +6313,7 @@ function render(top){
   if(!(ui.tab === "inicio" && ui.sub === "ir")) navStop();
   applyAhorro();
   if(ui.tab === "inicio" && !ui.sub && state.ahorro) html = renderAhorro();
-  else if(ui.tab === "inicio") html = ui.sub === "corte" ? renderCorte() : ui.sub === "aviso" ? renderAviso() : ui.sub === "mapa" ? renderMapa() : ui.sub === "ayuda" ? renderAyuda() : ui.sub === "mes" ? renderMes() : ui.sub === "radio" ? renderRadio() : ui.sub === "manual" ? renderManual() : ui.sub === "ir" ? renderNav() : ui.sub === "llevar" ? renderLlevar() : ui.sub === "mificha" ? renderMiFicha() : ui.sub === "recs" ? renderRecs() : renderHome();
+  else if(ui.tab === "inicio") html = ui.sub === "corte" ? renderCorte() : ui.sub === "aviso" ? renderAviso() : ui.sub === "mapa" ? renderMapa() : ui.sub === "ayuda" ? renderAyuda() : ui.sub === "mes" ? renderMes() : ui.sub === "radio" ? renderRadio() : ui.sub === "manual" ? renderManual() : ui.sub === "ir" ? renderNav() : ui.sub === "llevar" ? renderLlevar() : ui.sub === "mificha" ? renderMiFicha() : ui.sub === "recs" ? renderRecs() : ui.sub === "config" ? renderConfig() : renderHome();
   else if(ui.tab === "guias") html = ui.guide ? renderGuide() : renderGuides();
   else if(ui.tab === "preparar") html = renderPrep();
   else if(ui.tab === "linterna") html = renderTools();
@@ -6239,6 +6321,7 @@ function render(top){
   else html = renderPlanTab();
   view.innerHTML = html;
   view.querySelectorAll("[data-pct]").forEach(el => { el.style.width = el.dataset.pct + "%"; });
+  { const g = document.getElementById("gear"); if(g){ if(!g.firstChild) g.innerHTML = GEAR_SVG; if(ui.tab === "inicio" && ui.sub === "config") g.setAttribute("aria-current", "page"); else g.removeAttribute("aria-current"); } }
   document.querySelectorAll(".tab").forEach(b => {
     if(b.dataset.tab === ui.tab) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current");
   });
@@ -6677,6 +6760,11 @@ document.addEventListener("click", e => {
     case "rec-snooze": { const d = today0(); d.setDate(d.getDate() + 7); state.recs[el.dataset.id] = Object.assign({}, state.recs[el.dataset.id], {snooze:isoOf(d)}); save(); render(false); break; }
     case "rec-notif": recNotif(); break;
     case "go-recs": go("inicio", {sub:"recs"}); break;
+    case "go-config": go("inicio", {sub:"config"}); break;
+    case "cfg-voz": hablar("Así suena la voz de la navegación."); break;
+    case "cfg-persist": ensurePersist(true).then(() => render(false)); break;
+    case "cfg-update": cfgUpdate(); break;
+    case "cfg-reload": location.reload(); break;
     case "inv-sugg": {
       const sg = INV_SUGG[Number(el.dataset.k)];
       const n = document.getElementById("i-nombre"), c = document.getElementById("i-cat");
@@ -7017,6 +7105,7 @@ function routeHash(hash){
   else if(hash === "manual") ui.sub = "manual";
   else if(hash === "corte") ui.sub = "corte";
   else if(hash === "recordatorios") ui.sub = "recs";
+  else if(hash === "configuracion") ui.sub = "config";
   else if(hash.indexOf("guia-") === 0 && GUIDES.some(g => g.id === hash.slice(5))){ ui.tab = "guias"; ui.guide = hash.slice(5); }
 }
 const hash = (location.hash || "").slice(1);
