@@ -4843,8 +4843,10 @@ function addrIdx(){
   ADDR_IDX = {pts:map, nombres:[...nombres].map(n => ({n, k:normCalle(n)}))};
   return ADDR_IDX;
 }
+/* Nombres viejos que la gente sigue usando */
+const CALLE_EX = {"entre rios":"alfredo prat", "entre rios norte":"alfredo prat norte"};
 function calleMatch(txt){
-  const k = normCalle(txt);
+  let k = normCalle(txt); if(CALLE_EX[k]) k = CALLE_EX[k];
   if(k.length < 2) return [];
   const all = addrIdx().nombres;
   const exact = all.filter(c => c.k === k);
@@ -5272,7 +5274,7 @@ async function recNotif(){
 
 /* ---------- Configuración: todos los ajustes en un lugar (engranaje arriba a la derecha) ----------
    En un celular con control parental se ve todo; para cambiar algo, salvo voz y vibración, pide el PIN. */
-const APP_VER = 32;
+const APP_VER = 33;
 const GEAR_SVG = `<svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>`;
 function renderConfig(){
   const lc = lockCfg(), lockOn = !!(lc && lc.on), f = miFicha(), fp = fpCfg(), aqui = recsAqui(), nRec = REMINDERS.filter(recOn).length;
@@ -6395,7 +6397,7 @@ const AZ_LUG = [
     ["f4","Farmacia Merlo",-36.78375,-59.85244,"Monseñor Cáneva 534"],
     ["f5","Farmacia Colotto",-36.78580,-59.85986,"Av. Perón 850"],
     ["f6","Farmacia Castro",-36.78130,-59.86895,"Colón 942"],
-    ["f7","Farmacia Vinciguerra",-36.77362,-59.86256,"Alfredo Prat 301, esquina Alvear"],
+    ["f7","Farmacia Vinciguerra",-36.77362,-59.86256,"Alfredo Prat 301 (ex Entre Ríos), esquina Alvear"],
     ["f8","Farmacia Santa Lucía",-36.78533,-59.84895,"Av. Piazza 1146"],
     ["f9","Farmacia Diab",-36.77098,-59.85911,"Amado Diab 311, cerca del Hospital Pintos"],
     ["f10","Farmacia Ciotta",-36.77958,-59.86689,"Colón al 800, esquina Roca"],
@@ -6422,7 +6424,7 @@ const AZ_LUG = [
   ], nota:"En una emergencia, primero el 911: manda un patrullero adonde estés."},
   {id:"salud", t:"Hospitales y clínicas", ic:"heart", l:[
     ["h1","Hospital Pintos",-36.76981,-59.85887,"Amado Diab 270","02281435200","Hospital municipal. Guardia las 24 horas"],
-    ["h2","Hospital Materno Infantil Argentina Diego",-36.77636,-59.85933,"Alfredo Prat 521","02281424150","Hospital provincial de niños y maternidad"],
+    ["h2","Hospital Materno Infantil Argentina Diego",-36.77636,-59.85933,"Alfredo Prat 521 (ex Entre Ríos)","02281424150","Hospital provincial de niños y maternidad"],
     ["h3","Sanatorio Azul",-36.78242,-59.85328,"Av. Mitre 943","","Privado"],
     ["h4","Clínica San Martín",-36.78394,-59.85571,"San Martín 902","","Privada"],
     ["h5","IMAC",-36.78348,-59.85349,"Belgrano 961","","Privada"]
