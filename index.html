@@ -5281,7 +5281,7 @@ async function recNotif(){
 
 /* ---------- Configuración: todos los ajustes en un lugar (engranaje arriba a la derecha) ----------
    En un celular con control parental se ve todo; para cambiar algo, salvo voz y vibración, pide el PIN. */
-const APP_VER = 38;
+const APP_VER = 39;
 const GEAR_SVG = `<svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>`;
 function renderConfig(){
   const lc = lockCfg(), lockOn = !!(lc && lc.on), f = miFicha(), fp = fpCfg(), aqui = recsAqui(), nRec = REMINDERS.filter(recOn).length;
@@ -6501,16 +6501,16 @@ const WC_CSS = `.wc-sheet{font-family:Arial,Helvetica,sans-serif;color:#111;marg
 .wc-gr span{font-size:6pt;font-weight:700;letter-spacing:.1em}.wc-gr strong{font-size:14pt;margin-top:.4mm}
 .wc-foot{flex:none;display:flex;justify-content:space-between;align-items:center;background:#C9302C;color:#fff;padding:1.2mm 3mm;font-weight:700;font-size:7pt}
 .wc-foot b{font-size:10pt;letter-spacing:.04em}
-.wc-sec{font-size:7pt;font-weight:700;letter-spacing:.12em;color:#C9302C;margin:0 0 .6mm;padding-bottom:.4mm;border-bottom:0.3mm solid #E3C4C2}
+.wc-sec{font-size:7.6pt;font-weight:700;letter-spacing:.12em;color:#C9302C;margin:0 0 .6mm;padding-bottom:.4mm;border-bottom:0.3mm solid #E3C4C2}
 .wc-sec.az{color:#14284B;border-color:#C7D3EA;margin-top:1.2mm}
 .wc-l{margin:0 0 .5mm;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .wc-l em{font-style:normal;color:#3D4A63;font-weight:700}
 .wc-al{color:#C9302C;font-weight:700}
-.wc-c{display:flex;justify-content:space-between;gap:2mm;margin:0 0 .4mm}.wc-c span{min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.wc-c{display:flex;justify-content:space-between;align-items:baseline;gap:2mm;margin:0 0 .4mm}.wc-c span{min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 .wc-c strong{flex:none;font-size:8.4pt;letter-spacing:.02em;color:#0F1F3D}
-.wc-bb{flex:1;min-height:0;padding:2.2mm 3mm 1mm;display:flex;flex-direction:column;font-size:8.2pt}.wc-bb .wc-c strong{font-size:9pt}
-.wc-bb.wc-small{font-size:7.4pt}.wc-small .wc-c strong{font-size:7.8pt}
-.wc-pie{flex:none;font-size:6.4pt;color:#3D4A63;padding:0 3mm 1.2mm;display:flex;justify-content:space-between}
+.wc-bb{flex:1;min-height:0;padding:2mm 3mm .6mm;display:flex;flex-direction:column;font-size:9pt}.wc-bb .wc-c strong{font-size:10pt}.wc-bb.wc-big{font-size:10.2pt}.wc-bb.wc-big .wc-c strong{font-size:11.2pt}.wc-bb.wc-big .wc-l{margin-bottom:.9mm}
+.wc-bb.wc-small{font-size:7.9pt}.wc-small .wc-c strong{font-size:8.6pt}.wc-bb.wc-xs{font-size:7.1pt;line-height:1.16}.wc-xs .wc-c strong{font-size:7.8pt}.wc-xs .wc-l{margin-bottom:.2mm}.wc-xs .wc-sec.az{margin-top:.6mm}
+.wc-pie{flex:none;font-size:6.8pt;color:#3D4A63;padding:0 3mm 1.2mm;display:flex;justify-content:space-between}
 .wc-bn .wc{border-color:#000}.wc-bn .wc-b{border-left-color:#000}
 .wc-bn .wc-top,.wc-bn .wc-foot{background:#000;color:#fff}.wc-bn .wc-tt{color:#fff}.wc-bn .wc-dia{background:#fff}
 .wc-bn .wc-n,.wc-bn .wc-k,.wc-bn .wc-l em,.wc-bn .wc-c strong,.wc-bn .wc-pie,.wc-bn .wc-al{color:#000}
@@ -6556,7 +6556,7 @@ function tarjetaHTML(f, oculto, color){
   ].join("");
   const cs = wcContactos(f);
   const largo = (salud.replace(/<[^>]+>/g, "").length) + cs.length * 30;
-  const dorso = `<div class="wc wc-b"><div class="wc-bb${largo > 190 ? " wc-small" : ""}"><p class="wc-sec">SALUD</p>${salud || `<p class="wc-l">Sin datos de salud cargados en la ficha.</p>`}
+  const dorso = `<div class="wc wc-b"><div class="wc-bb${largo > 380 ? " wc-small wc-xs" : largo > 215 ? " wc-small" : largo <= 150 ? " wc-big" : ""}"><p class="wc-sec">SALUD</p>${salud || `<p class="wc-l">Sin datos de salud cargados en la ficha.</p>`}
     <p class="wc-sec az">AVISAR A</p>${cs.length ? cs.map(([n, t]) => `<p class="wc-c"><span>${esc(wcCorta(n, 26))}</span><strong>${esc(t)}</strong></p>`).join("") : `<p class="wc-l">Agrega contactos de la familia en la app.</p>`}</div>
     <div class="wc-pie"><span>Si me encuentran, llamen a estos números.</span><span>Actualizada ${fmtDate(new Date())}</span></div></div>`;
   return `<div class="wc-sheet${color ? "" : " wc-bn"}"><p class="wc-ins">Tarjeta de ${esc(f.nombre)}: recorta por el borde de afuera, dobla por la línea de puntos (el frente queda de un lado y el dorso del otro), pega las dos caras y plastifícala. Mide 8,5 × 5,4 cm, como una tarjeta de crédito.</p><div class="wc-strip">${frente}${dorso}</div></div>`;
