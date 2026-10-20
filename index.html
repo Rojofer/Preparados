@@ -4377,6 +4377,7 @@ function renderAhorro(){
 const MANUAL_SEC = [
   ["datos","Datos de la familia","Plan, teléfonos, lugares, inventario y fichas médicas.",true],
   ["mapa","Mapa del barrio y de Azul","Con tus lugares guardados, hospitales, bomberos y policía.",true],
+  ["lugares","Farmacias, policía y hospitales","Las direcciones de Azul y a cuántas cuadras de casa está cada uno.",true],
   ["radio","Radios y cómo comunicarse","Frecuencias y qué hacer sin internet.",true],
   ["hoy","Qué hacer cada día","Las tareas de cada encargo, día por día, para un corte largo.",true],
   ["vademecum","Vademécum","Para qué sirve cada remedio, cuándo no tomarlo y con qué no mezclarlo.",false],
@@ -4415,6 +4416,7 @@ function manualHTML(){
       <p class="pm-leg">Verde: tus lugares · Rojo: hospitales y clínicas · Naranja: bomberos · Azul: policía · Barra de escala abajo a la izquierda. El norte está arriba.</p>${leg ? `<ul>${leg}</ul>` : ""}</section>
       <section class="ps pm-map"><h2>Azul</h2>${ciudad ? `<img src="${ciudad}" alt="Mapa de Azul">` : ""}<p class="pm-leg">Calles y lugares: © colaboradores de OpenStreetMap.</p></section>`);
   }
+  if(sel.lugares && (!state.ciudad || state.ciudad === "Azul")) parts.push(`<section class="ps pm-g"><h2>Farmacias, policía y hospitales de Azul</h2>${azManual()}</section>`);
   if(sel.radio){
     parts.push(`<section class="ps"><h2>Radios</h2>${printTable(["Banda","Frecuencia","Radio"], RADIOS.flatMap(g => g.l).map(([, b, f, n]) => [b, f, n]))}
       <h3>Comunicarse fuera de la zona</h3><ol>${COMS.map(([t, d]) => `<li><strong>${esc(t)}.</strong> ${esc(d)}</li>`).join("")}</ol></section>`);
@@ -5277,7 +5279,7 @@ async function recNotif(){
 
 /* ---------- Configuración: todos los ajustes en un lugar (engranaje arriba a la derecha) ----------
    En un celular con control parental se ve todo; para cambiar algo, salvo voz y vibración, pide el PIN. */
-const APP_VER = 34;
+const APP_VER = 35;
 const GEAR_SVG = `<svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>`;
 function renderConfig(){
   const lc = lockCfg(), lockOn = !!(lc && lc.on), f = miFicha(), fp = fpCfg(), aqui = recsAqui(), nRec = REMINDERS.filter(recOn).length;
@@ -6453,6 +6455,21 @@ function azCat(c, pos){
   }).join("");
   return `<details class="hsec az-cat" data-azcat="${c.id}"${ui.azOpen === c.id ? " open" : ""}><summary><span class="g-ic">${icon(c.ic)}</span><span class="hs-t"><strong>${c.t}</strong><span>${sub}</span></span><span class="hs-chev" aria-hidden="true"></span></summary>
     <div class="hs-body"><ul class="nr-list az-list">${rows}</ul><p class="fine">${c.nota}</p></div></details>`;
+}
+/* Para el manual en papel: tablas por tipo, ordenadas desde casa */
+function azManual(){
+  const casa = state.lugares.find(l => tipoLugar(l) === "casa") || state.lugares.find(l => /casa/i.test(l.nombre));
+  const desde = casa && enAzul(casa) ? casa : null;
+  const cats = AZ_LUG.map(c => {
+    let ls = c.l.map(r => azLugar(r[0]));
+    const d = new Map(); if(desde) ls.forEach(l => d.set(l.id, distLugar(desde, l).m));
+    if(desde) ls.sort((a, b) => d.get(a.id) - d.get(b.id));
+    const head = ["Lugar","Dirección"].concat(desde ? ["Desde casa"] : [], ["Teléfono y notas"]);
+    const rows = ls.map(l => [l.nombre, l.dir].concat(desde ? [d.get(l.id) < 30 ? "Al lado" : cuadrasTxt(d.get(l.id))] : [],
+      [[l.tel ? telFmt(l.tel) : "", l.det, l.ojo ? `Confirmar: ${l.ojo}` : ""].filter(Boolean).join(". ")]));
+    return `<h3>${c.t}</h3>${printTable(head, rows)}<p>${c.nota}</p>`;
+  }).join("");
+  return `<p>${desde ? `Ordenados del más cerca al más lejos desde «${esc(casa.nombre)}», caminando por las calles.` : "Para ver a cuántas cuadras está cada uno, guarda la dirección de tu casa en «Llevarme»."} En una emergencia, primero el 911. Revisado en octubre de 2026: lo que dice «Confirmar» conviene chequearlo.</p>${cats}`;
 }
 function azLugaresHTML(){
   const pos = state.ultimaPos, lejos = pos && !enAzul(pos);
