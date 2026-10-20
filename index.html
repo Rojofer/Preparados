@@ -3500,7 +3500,7 @@ function renderFichas(){
     : `<div class="empty"><p><strong>Todavía no hay fichas.</strong> Crea una para ti y otra para cada persona de la casa.</p></div>`;
   const sinFicha = state.plan.miembros.filter(m => !state.fichas.some(f => f.nombre === m.nombre));
   const chips = sinFicha.length ? `<p class="fine">Del plan familiar:</p><div class="chips" role="group" aria-label="Crear desde el plan familiar">${sinFicha.map(m => `<button type="button" class="chip" data-action="ficha-from" data-id="${esc(m.id)}">${esc(m.nombre)}</button>`).join("")}</div>` : "";
-  const todas = state.fichas.length ? `<div class="card"><h2>Imprimir las fichas</h2><p class="fine">Todas juntas, para tener una copia en papel en la mochila de cada uno.</p><div class="inline"><button class="btn btn-primary" data-action="fichas-print">Imprimir todas</button><button class="btn btn-outline" data-action="fichas-dl">Descargar para imprimir</button></div><p class="st" id="print-st" role="status"></p></div>` : "";
+  const todas = state.fichas.length ? `<div class="card"><h2>Imprimir las fichas</h2><p class="fine">Todas juntas, para tener una copia en papel en la mochila de cada uno.</p><div class="inline"><button class="btn btn-primary" data-action="fichas-print">Imprimir todas</button><button class="btn btn-outline" data-action="fichas-dl">Descargar para imprimir</button></div><p class="fine">O una tarjeta para la billetera de cada uno, con sus datos, lo de salud y a quién avisar:</p><div class="inline"><button class="btn btn-ghost" data-action="tarjetas-print">${icon("id")}Tarjetas para la billetera</button><button class="btn btn-ghost" data-action="tarjetas-dl">Descargarlas</button></div><p class="st" id="print-st" role="status"></p></div>` : "";
   return `${list}
     ${todas}
     ${trashLink() ? `<div class="inline">${trashLink()}</div>` : ""}
@@ -4758,6 +4758,7 @@ function renderMiFicha(){
   return `<section class="stack mi-ficha">${backBtn()}
     ${fichaBig(f).replace(/<button class="back"[^>]*>[\s\S]*?<\/button>/, "")}
     <div class="inline"><button class="btn btn-primary" data-action="ficha-edit-mia" data-id="${esc(f.id)}">Editar mi ficha</button><button class="btn btn-ghost" data-action="mia-cambiar">No es mi ficha</button></div>
+    ${tarjetaCard(f)}
     ${clave}</section>`;
 }
 async function fpSubmit(form){
@@ -5010,7 +5011,7 @@ async function tryPin(){
 const FP_KEY = "preparados.fpin", MIA_KEY = "preparados.mia";
 function fpCfg(){ try{ const c = JSON.parse(localStorage.getItem(FP_KEY) || "null"); return c && c.hash ? c : null; }catch(e){ return null; } }
 const fpLocked = () => !!fpCfg() && Date.now() > (ui.fpUntil || 0);
-const FP_ACTIONS = new Set(["ficha-edit","ficha-edit-mia","ficha-full","ficha-print","ficha-dl","fichas-print","fichas-dl","print-all","dl-all","manual-print","manual-dl","backup","share-file","share-qr","fp-off","fp-cambiar"]);
+const FP_ACTIONS = new Set(["ficha-edit","ficha-edit-mia","ficha-full","ficha-print","ficha-dl","fichas-print","fichas-dl","tarjeta-print","tarjeta-dl","tarjetas-print","tarjetas-dl","print-all","dl-all","manual-print","manual-dl","backup","share-file","share-qr","fp-off","fp-cambiar"]);
 document.addEventListener("click", e => {
   if(!fpLocked()) return;
   const a = e.target.closest && e.target.closest("[data-action]");
@@ -5279,7 +5280,7 @@ async function recNotif(){
 
 /* ---------- Configuración: todos los ajustes en un lugar (engranaje arriba a la derecha) ----------
    En un celular con control parental se ve todo; para cambiar algo, salvo voz y vibración, pide el PIN. */
-const APP_VER = 35;
+const APP_VER = 36;
 const GEAR_SVG = `<svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>`;
 function renderConfig(){
   const lc = lockCfg(), lockOn = !!(lc && lc.on), f = miFicha(), fp = fpCfg(), aqui = recsAqui(), nRec = REMINDERS.filter(recOn).length;
@@ -6479,6 +6480,86 @@ function azLugaresHTML(){
     ${srcBox(["osm","azRefes","azHosp","azGuia"], "Ubicaciones de OpenStreetMap, cruzadas en octubre de 2026 con el registro oficial de farmacias, la lista de hospitales de la Provincia y la guía judicial de Azul. Lo que dice «Confirmar» tiene una sola fuente o fuentes que no coinciden.")}</div>`;
 }
 
+/* ---------- Tarjeta para la billetera: datos de la ficha y a quién avisar, tamaño tarjeta de crédito ----------
+   Se imprime como una tira: frente y dorso uno al lado del otro; se recorta, se dobla por la mitad y se plastifica. */
+const WC_CSS = `.wc-sheet{font-family:Arial,Helvetica,sans-serif;color:#111;margin:0 0 8mm;break-inside:avoid;page-break-inside:avoid}
+.wc-ins{font-size:10px;color:#555;margin:0 0 2mm}
+.wc-strip{display:flex;flex-wrap:wrap;gap:0;width:max-content;max-width:100%}
+.wc{position:relative;box-sizing:border-box;width:85.6mm;height:54mm;overflow:hidden;background:#fff;border:0.3mm solid #9AA3B2;display:flex;flex-direction:column;-webkit-print-color-adjust:exact;print-color-adjust:exact;font-size:7.6pt;line-height:1.22}
+.wc-b{border-left:0.4mm dashed #9AA3B2}
+.wc-top{display:flex;align-items:center;justify-content:space-between;gap:2mm;background:#14284B;color:#fff;padding:1.6mm 3mm;flex:none}
+.wc-brand{display:flex;align-items:center;gap:1.4mm;font-weight:700;font-size:6.4pt;letter-spacing:.12em}
+.wc-dia{width:2.4mm;height:2.4mm;background:#F26A1B;transform:rotate(45deg);border-radius:.3mm}
+.wc-tt{font-weight:700;font-size:7.4pt;letter-spacing:.08em;color:#FFB27F}
+.wc-body{flex:1;min-height:0;display:flex;gap:2.5mm;padding:2.2mm 3mm 1.5mm}
+.wc-id{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:1.2mm}.wc-f .wc-l{font-size:8.6pt}.wc-f .wc-gr{align-self:center}
+.wc-n{font-size:13.5pt;font-weight:700;line-height:1.08;margin:0 0 .6mm;color:#0F1F3D}
+.wc-k{display:block;font-size:5.6pt;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#5A6A86}
+.wc-v{font-weight:700}
+.wc-gr{flex:none;align-self:flex-start;width:17mm;height:17mm;border-radius:50%;background:#C9302C;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
+.wc-gr span{font-size:5pt;font-weight:700;letter-spacing:.1em}.wc-gr strong{font-size:15pt;margin-top:.4mm}
+.wc-foot{flex:none;display:flex;justify-content:space-between;align-items:center;background:#C9302C;color:#fff;padding:1.2mm 3mm;font-weight:700;font-size:7pt}
+.wc-foot b{font-size:10pt;letter-spacing:.04em}
+.wc-sec{font-size:6pt;font-weight:700;letter-spacing:.12em;color:#C9302C;margin:0 0 .6mm;padding-bottom:.4mm;border-bottom:0.3mm solid #E3C4C2}
+.wc-sec.az{color:#14284B;border-color:#C7D3EA;margin-top:1.2mm}
+.wc-l{margin:0 0 .5mm;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.wc-l em{font-style:normal;color:#5A6A86;font-weight:700}
+.wc-al{color:#C9302C;font-weight:700}
+.wc-c{display:flex;justify-content:space-between;gap:2mm;margin:0 0 .4mm}.wc-c span{min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.wc-c strong{flex:none;font-size:8.4pt;letter-spacing:.02em;color:#0F1F3D}
+.wc-bb{flex:1;min-height:0;padding:2.2mm 3mm 1mm;display:flex;flex-direction:column;font-size:8.2pt}.wc-bb .wc-c strong{font-size:9pt}
+.wc-bb.wc-small{font-size:7pt}.wc-small .wc-c strong{font-size:7.8pt}
+.wc-pie{flex:none;font-size:5.4pt;color:#5A6A86;padding:0 3mm 1.2mm;display:flex;justify-content:space-between}
+@media print{.wc-ins{display:block}}`;
+try{ const st = document.createElement("style"); st.textContent = WC_CSS + `.wc-prev{overflow-x:auto;padding:4px 0}.wc-prev .wc-strip{gap:10px;flex-direction:column}.wc-prev .wc{border-radius:3mm;box-shadow:0 2px 10px rgba(15,31,61,.18)}.wc-prev .wc-b{border-left:0.3mm solid #9AA3B2}.wc-prev .wc-ins{display:none}`; document.head.appendChild(st); }catch(e){}
+const wcCorta = (t, n) => { t = String(t || "").replace(/\s+/g, " ").trim(); return t.length > n ? t.slice(0, n - 1).trim() + "…" : t; };
+const wcDni = v => /^\d{7,8}$/.test(String(v || "").replace(/\D/g, "")) && !/[a-z]/i.test(v) ? String(v).replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".") : String(v || "");
+/* A quién avisar: el contacto de la ficha y después la familia de la app, sin repetir y sin la misma persona */
+function wcContactos(f){
+  const out = [], vistos = new Set(), dig = t => String(t || "").replace(/\D/g, "").slice(-8);
+  const add = (n, t) => { const k = dig(t); if(!t || !k || vistos.has(k) || out.length >= 3) return; vistos.add(k); out.push([n || "Contacto", t]); };
+  add(f.contacto, f.contactoTel);
+  const yo = norm(f.nombre).split(" ")[0];
+  const ok = c => norm(c.nombre).split(" ")[0] !== yo;
+  state.contacts.filter(c => ok(c) && (c.tipo || "Familia") === "Familia").forEach(c => add(c.nombre, c.tel));
+  state.contacts.filter(c => ok(c) && c.tipo === "Vecino o amigo").forEach(c => add(c.nombre, c.tel));
+  return out;
+}
+function tarjetaHTML(f, oculto){
+  const v = k => fichaVal(f, FICHA_FIELDS.find(d => d.k === k)) || "";
+  const gr = f.grupo && f.grupo !== "No sé" ? f.grupo : "";
+  const nac = v("nac"), dni = f.dni ? wcDni(f.dni) : "", dom = f.domicilio || "";
+  const idRows = [
+    dni ? `<p class="wc-l"><em>DNI</em> <span class="wc-v">${oculto ? "••••••••" : esc(dni)}</span></p>` : "",
+    nac ? `<p class="wc-l"><em>Nacimiento</em> <span class="wc-v">${esc(nac)}</span></p>` : "",
+    dom ? `<p class="wc-l"><em>Domicilio</em> <span class="wc-v">${oculto ? "protegido con la clave" : esc(wcCorta(dom, 60))}</span></p>` : "",
+    f.comunica ? `<p class="wc-l"><em>Para comunicarse</em> ${esc(wcCorta(f.comunica, 60))}</p>` : ""
+  ].join("");
+  const frente = `<div class="wc wc-f"><div class="wc-top"><span class="wc-brand"><i class="wc-dia"></i>PREPARADOS</span><span class="wc-tt">EN CASO DE EMERGENCIA</span></div>
+    <div class="wc-body"><div class="wc-id"><span class="wc-k">Nombre</span><p class="wc-n">${esc(wcCorta(f.nombre, 40))}</p>${idRows}</div>${gr ? `<div class="wc-gr"><span>GRUPO</span><strong>${esc(gr)}</strong></div>` : ""}</div>
+    <div class="wc-foot"><span>Emergencias <b>911</b> · SAME <b>107</b></span><span>Salud y a quién avisar ↻</span></div></div>`;
+  const salud = [
+    f.alergias ? `<p class="wc-l wc-al">Alergias: ${esc(wcCorta(f.alergias, 70))}</p>` : "",
+    f.condiciones ? `<p class="wc-l"><em>Enfermedades</em> ${esc(wcCorta(f.condiciones, 70))}</p>` : "",
+    f.medicacion ? `<p class="wc-l"><em>Medicación</em> ${esc(wcCorta(f.medicacion, 100))}</p>` : "",
+    f.dispositivos ? `<p class="wc-l"><em>Implantes o aparatos</em> ${esc(wcCorta(f.dispositivos, 50))}</p>` : "",
+    f.obra ? `<p class="wc-l"><em>Obra social</em> ${esc(wcCorta(f.obra, 30))}${f.afiliado ? ` · N.° ${oculto ? "••••" : esc(wcCorta(f.afiliado, 24))}` : ""}</p>` : ""
+  ].join("");
+  const cs = wcContactos(f);
+  const largo = (salud.replace(/<[^>]+>/g, "").length) + cs.length * 30;
+  const dorso = `<div class="wc wc-b"><div class="wc-bb${largo > 190 ? " wc-small" : ""}"><p class="wc-sec">SALUD</p>${salud || `<p class="wc-l">Sin datos de salud cargados en la ficha.</p>`}
+    <p class="wc-sec az">AVISAR A</p>${cs.length ? cs.map(([n, t]) => `<p class="wc-c"><span>${esc(wcCorta(n, 26))}</span><strong>${esc(t)}</strong></p>`).join("") : `<p class="wc-l">Agrega contactos de la familia en la app.</p>`}</div>
+    <div class="wc-pie"><span>Si me encuentran, llamen a estos números.</span><span>Actualizada ${fmtDate(new Date())}</span></div></div>`;
+  return `<div class="wc-sheet"><p class="wc-ins">Tarjeta de ${esc(f.nombre)}: recorta por el borde de afuera, dobla por la línea de puntos (el frente queda de un lado y el dorso del otro), pega las dos caras y plastifícala. Mide 8,5 × 5,4 cm, como una tarjeta de crédito.</p><div class="wc-strip">${frente}${dorso}</div></div>`;
+}
+function tarjetasDoc(ids){ return `<header class="ph"><h1>Tarjetas para la billetera</h1><p>Imprime al 100 % (tamaño real, sin «ajustar a la página»). Si cambian los datos, imprime una nueva.</p></header>${state.fichas.filter(f => ids.includes(f.id)).map(f => tarjetaHTML(f)).join("")}`; }
+function tarjetaCard(f){
+  return `<div class="card"><h2>Tarjeta para la billetera</h2><p class="fine">Tus datos, lo de salud y a quién avisar, en una tarjeta del tamaño de una de crédito.</p>
+    <div class="wc-prev">${tarjetaHTML(f, fpLocked())}</div>
+    <div class="inline"><button class="btn btn-primary" data-action="tarjeta-print" data-id="${esc(f.id)}">Imprimir</button><button class="btn btn-outline" data-action="tarjeta-dl" data-id="${esc(f.id)}">Descargar para imprimir</button></div>
+    <p class="fine">Lleva tu DNI y tu domicilio: si pierdes la billetera, quien la encuentre los ve. Imprime al 100 %, sin «ajustar a la página».</p><p class="st" id="wc-st" role="status"></p></div>`;
+}
+
 /* ---------- Plan 30 días sin luz ---------- */
 const MES_COMIDA = [
   /* [id, nombre, cantidad por persona para 30 días, unidad, nota] */
@@ -7473,7 +7554,7 @@ function printDoc(html){
   try{ window.print(); }catch(e){}
 }
 async function downloadDoc(name, title, html, stId){
-  const doc = `<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${title}</title><style>body{margin:16px;background:#fff}${PRINT_CSS}@media print{body{margin:0}}</style></head><body>${html}<script>setTimeout(function(){try{window.print()}catch(e){}},400)<\/script></body></html>`;
+  const doc = `<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${title}</title><style>body{margin:16px;background:#fff}${PRINT_CSS}${WC_CSS}@media print{body{margin:0}}</style></head><body>${html}<script>setTimeout(function(){try{window.print()}catch(e){}},400)<\/script></body></html>`;
   const r = await saveFile(name, doc);
   const st = document.getElementById(stId);
   if(st) st.textContent = r === "saved" ? "Listo: el archivo quedó en Descargas. Ábrelo e imprime desde el navegador." : r === "declined" ? "No se guardó el archivo." : "No se pudo crear el archivo.";
@@ -8521,6 +8602,10 @@ document.addEventListener("click", e => {
     case "ficha-dl": downloadFichas([el.dataset.id]); break;
     case "fichas-print": printFichas(state.fichas.map(f => f.id)); break;
     case "fichas-dl": downloadFichas(state.fichas.map(f => f.id)); break;
+    case "tarjeta-print": printDoc(tarjetasDoc([el.dataset.id])); break;
+    case "tarjeta-dl": { const f = state.fichas.find(x => x.id === el.dataset.id); if(f) downloadDoc(`tarjeta-${f.nombre.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^\w]+/g, "-").toLowerCase().slice(0, 30)}.html`, "Tarjeta para la billetera", tarjetasDoc([f.id]), "wc-st"); break; }
+    case "tarjetas-print": printDoc(tarjetasDoc(state.fichas.map(f => f.id))); break;
+    case "tarjetas-dl": downloadDoc("tarjetas-billetera.html", "Tarjetas para la billetera", tarjetasDoc(state.fichas.map(f => f.id)), "print-st"); break;
     case "dni-del": dniDel(el.dataset.k); break;
     case "foto-del": { const f = state.fichas.find(x => x.id === ui.fichaEdit); if(f){ delete f.foto; f.upd = Date.now(); save(); render(false); } break; }
     case "backup": backupFile(); ensurePersist(true); break;
