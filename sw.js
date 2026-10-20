@@ -1,5 +1,5 @@
 /* Preparados: guarda la app en el celular para que abra sin internet. */
-const CACHE = "preparados-v44";
+const CACHE = "preparados-v45";
 const BASE = ["./", "index.html", "manifest.webmanifest", "icons/icon-192.png", "icons/icon-512.png", "icons/icon-maskable-512.png", "icons/sc-ayuda.png", "icons/sc-problema.png", "icons/sc-hoy.png", "icons/sc-llevar.png", "region.json"];
 /* Al instalar una versión nueva, pide todo de nuevo a internet (sin la copia del navegador) */
 self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(BASE.map(u => new Request(u, {cache:"reload"})))).then(() => self.skipWaiting())); });

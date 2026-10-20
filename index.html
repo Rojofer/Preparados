@@ -723,6 +723,15 @@ body.navegando .view{padding-bottom:calc(28px + env(safe-area-inset-bottom,0px))
 .vd-fam{display:flex;flex-direction:column;gap:6px}.vd-fi{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;background:var(--surface-2)}
 .vd-fi>div{display:flex;flex-direction:column;min-width:0}.vd-fi span{font-size:14px;color:var(--ink-2)}
 .vd-form{display:flex;flex-direction:column;gap:10px;margin-top:6px}
+.mf-btn.al-home{margin-bottom:10px}.mf-btn.al-home>.ic:first-child{color:var(--ink-2)}
+.al-l{list-style:none;margin:0;padding:0;display:grid;gap:8px}.al-l li{display:grid;grid-template-columns:22px minmax(0,1fr);gap:10px;align-items:start;padding:10px 12px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+.al-l strong{display:block;font-size:17px}.al-l em{display:block;font-style:normal;font-weight:600;margin-top:4px}
+.al-c{width:22px;height:22px;border-radius:50%;border:2px solid var(--ink);margin-top:2px}.al-verde .al-c{background:#2e8b3d}.al-amar .al-c{background:#f2c200}.al-nar .al-c{background:#f07c00}.al-roja .al-c{background:#d0201a}
+.en-cfg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 12px;margin:10px 0}.en-cfg select{width:100%}
+.desp{scroll-margin-top:76px}.desp-l{display:grid;gap:8px;margin:10px 0}.desp-s{border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}.desp-s.hoy{border-color:var(--signal);border-width:2px}
+.desp-s>summary{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:center;padding:10px 12px;cursor:pointer;list-style:none;min-height:52px}.desp-s>summary::-webkit-details-marker{display:none}
+.desp-s>summary strong{display:block}.desp-s>summary span span{font-size:14px;color:var(--ink-2)}.desp-n{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:var(--surface);color:var(--ink);border:2px solid var(--ink);font-weight:700}.desp-s.hoy .desp-n{border-color:var(--signal)}
+.desp-s .checks{padding:0 12px 12px}
 .mf-btn.pb-home{border-left:6px solid var(--signal)}.mf-btn.az-home{border-left:6px solid var(--blue);margin-bottom:10px}.mf-btn.az-home>.ic:first-child{color:var(--blue)}
 .az-ul{margin:4px 0 8px;padding-left:20px}.az-ul li{margin:4px 0}.azul h3{margin:12px 0 4px;font-size:17px}
 .az-ars{list-style:none;margin:6px 0;padding:0;display:flex;flex-direction:column;gap:6px}.az-ar{display:flex;flex-direction:column;padding:8px 12px;border-radius:10px;background:var(--surface-2)}.az-ar span{font-size:15px;color:var(--ink-2)}.az-ar.cerca{border-left:5px solid var(--warn)}.az-ar.cerca span{color:var(--ink);font-weight:700}.pb-home>.ic:first-child{color:var(--signal-ink)}
@@ -958,6 +967,11 @@ const SRC = {
   meshtastic:["Meshtastic","https://meshtastic.org/"],
   meshRegion:["Meshtastic: región LoRa por país (Argentina: ANZ)","https://meshtastic.org/docs/configuration/region-by-country/"],
   osm:["OpenStreetMap: datos del mapa de Azul (ODbL)","https://www.openstreetmap.org/copyright"],
+  dengueGba:["Ministerio de Salud PBA: prevención del dengue","https://www.ms.gba.gov.ar/sitios/veranocuidadopba/cuidados-de-verano/prevencion-del-dengue/"],
+  dengueSint:["Ministerio de Salud: síntomas y signos de alarma del dengue","https://www.argentina.gob.ar/sintomas-y-signos-de-alarma"],
+  dengueVac:["Provincia de Buenos Aires: vacuna contra el dengue","https://dengue.gba.gob.ar/preguntas-frecuentes"],
+  repelUnc:["CIME, Universidad Nacional de Córdoba: repelentes (2024)","https://www.fcq.unc.edu.ar/wp-content/uploads/2024/03/informe-cime-fcq-unc_1.2024-consulta-repelentes.pdf"],
+  dengueLluvia:["Provincia de Buenos Aires: descacharrar todo el año y cada vez que llueve","https://gba.gob.ar/saludprovincia/noticias/salud_realiz%C3%B3_dos_jornadas_de_descacharrado_en_los_135_municipios"],
   azNoaa:["NOAA: El Niño, discusión del 8/10/2026","https://www.cpc.ncep.noaa.gov/products/analysis_monitoring/enso_advisory/ensodisc.shtml"],
   azSmn:["SMN: pronóstico trimestral de octubre de 2026","https://bichosdecampo.com/wp-content/uploads/2026/10/pronostico_climatico_trimestral_102026.pdf"],
   azPlan:["Azul activa un plan de prevención por el Súper Niño (agosto de 2026)","https://agroempresario.com/publicacion/120767/ante-la-amenaza-del-super-nino-el-municipio-de-azul-pone-en-marcha-un-operativo-de-prevencion-urbana-y-rural/"],
@@ -975,6 +989,10 @@ const SRC = {
   azRefes:["Guiafarma: farmacias de Azul (registro REFES)","https://guiafarma.com.ar/farmacias-de-turno/buenos-aires/azul"],
   azHosp:["Ministerio de Salud PBA: hospitales provinciales","https://www.gba.gob.ar/saludprovincia/hospitales"],
   azGuia:["Guía judicial de Azul: comisarías","https://stabogados.com.ar/defensa/zonas/azul/guia-judicial"],
+  smnColores:["Chequeado: qué significan las alertas amarillas, naranjas y rojas del SMN","https://chequeado.com/el-explicador/que-significan-las-alertas-meteorologicas-amarillas-naranjas-y-rojas/"],
+  smnApp:["Gobierno argentino: la app oficial del SMN avisa cuando hay alerta para tu ciudad","https://www.argentina.gob.ar/node/356042"],
+  smnWeb:["SMN: alertas vigentes","https://www.smn.gob.ar/alertas"],
+  alertAR:["TeleSemana: ENACOM licitó el sistema AlertAR (julio de 2026)","https://www.telesemana.com/blog/2026/07/14/el-enacom-llamo-a-una-licitacion-express-para-el-sistema-alertar/"],
   rgSrtm:["Relieve: SRTM de la NASA, vía los mosaicos Terrarium de Mapzen en AWS","https://registry.opendata.aws/terrain-tiles/"],
   gmapsOff:["Google Maps: mapas sin conexión en Android","https://support.google.com/maps/answer/6291838?hl=es-419&co=GENIE.Platform%3DAndroid"],
   ign:["IGN: límites provinciales (vía argentina-map-react, MIT)","https://www.ign.gob.ar/NuestrasActividades/InformacionGeoespacial/CapasSIG"]
@@ -2560,7 +2578,7 @@ const KIT = [
   {title:"Luz y energía",items:[["k-linternas","Linternas LED y pilas"],["k-bateria","Batería externa cargada"],["k-radio","Radio a pilas o a manivela"]]},
   {title:"Frío y cocina",items:[["k-conservadora","Conservadora y botellas de agua congeladas"],["k-termometro","Termómetro para heladera y freezer"],["k-garrafa","Anafe o garrafa, para usar solo con ventilación"]]},
   {title:"Herramientas",items:[["k-llaves","Saber dónde están las llaves de paso de gas y agua"],["k-pinza","Pinza o llave inglesa para cerrarlas"],["k-cinta","Cinta, nylon, bolsas de residuos y precintos"],["k-matafuegos","Matafuegos"]]},
-  {title:"Salud",items:[["k-botiquin","Botiquín completo"],["k-remedios","Reserva de los medicamentos habituales"]]},
+  {title:"Salud",items:[["k-botiquin","Botiquín completo"],["k-remedios","Reserva de los medicamentos habituales"],["k-repelente","Repelente registrado (DEET de menos del 30 %, icaridina o IR3535) y tul para las camas"]]},
   {title:"Información",items:[["k-contactos","Contactos y números anotados en papel"],["k-copias","Copias de los documentos"],["k-punto","Punto de encuentro familiar acordado"],["k-smn","App del SMN con avisos activados"]]},
   {title:"Según tu familia",optional:true,items:[["k-mascotas","Mascotas: comida y agua"],["k-bebes","Bebés: pañales y leche"],["k-electro","Electrodependientes: equipo de respaldo e inscripción en el registro"]]}
 ];
@@ -2675,7 +2693,7 @@ function load(){
     if(typeof s.navVib === "boolean") state.navVib = s.navVib;
     if(s.manual && typeof s.manual === "object") state.manual = s.manual;
     if(typeof s.wcColor === "boolean") state.wcColor = s.wcColor;
-    if(s.mes && typeof s.mes === "object") state.mes = {p:s.mes.p, g:s.mes.g, pb:s.mes.pb, d:s.mes.d, checks:s.mes.checks && typeof s.mes.checks === "object" ? s.mes.checks : {}};
+    if(s.mes && typeof s.mes === "object") state.mes = {p:s.mes.p, g:s.mes.g, pb:s.mes.pb, d:s.mes.d, mah:s.mes.mah, panel:s.mes.panel, est:s.mes.est, despIni:typeof s.mes.despIni === "string" ? s.mes.despIni.slice(0, 10) : "", checks:s.mes.checks && typeof s.mes.checks === "object" ? s.mes.checks : {}};
     if(s.ultimaPos && isFinite(s.ultimaPos.lat) && isFinite(s.ultimaPos.lng)) state.ultimaPos = {lat:+s.ultimaPos.lat, lng:+s.ultimaPos.lng, acc:+s.ultimaPos.acc || 0, at:+s.ultimaPos.at || 0};
     if(Array.isArray(s.avisos)) state.avisos = s.avisos.filter(a => a && a.at && a.estado && a.from).slice(0, 20);
   }catch(e){}
@@ -2748,7 +2766,8 @@ function renderHome(){
     : `<button class="tile" data-action="guide" data-id="${t.guide}" aria-label="${t.label}: ${t.hint}">${icon(t.icon)}<span class="t-label">${t.label}</span></button>`).join("");
   const zona = state.provincia ? zonaSug(state.provincia).map(id => GUIDES.find(x => x.id === id)).filter(Boolean) : [];
   const azBtn = state.ciudad === "Azul" ? `<button class="mf-btn az-home" data-action="go-azul">${icon("waves")}<span><strong>Azul y el Súper Niño</strong><span>El arroyo, qué hacer con cada alerta y el 103</span></span>${icon("chev")}</button>` : "";
-  const pasa = `${azBtn}<div class="tiles">${tiles}</div>
+  const alBtn = `<button class="mf-btn al-home" data-action="go-alertas">${icon("storm")}<span><strong>Alertas del tiempo</strong><span>Las del SMN, qué significa cada color y cómo recibirlas</span></span>${icon("chev")}</button>`;
+  const pasa = `${azBtn}${alBtn}<div class="tiles">${tiles}</div>
     ${zona.length ? `<span class="lbl">En ${esc(state.provincia)}, también</span><div class="chips">${zona.map(g => `<button class="chip" data-action="guide" data-id="${g.id}">${g.title}</button>`).join("")}</div>` : `<button class="btn btn-ghost btn-sm" data-action="go-zona">Guías para tu provincia</button>`}
     <button class="btn btn-ghost btn-sm" data-action="tab" data-tab="guias">Ver todas las guías</button>`;
   const ext = GUIDES.filter(g => g.group === "extremo");
@@ -3165,6 +3184,7 @@ function renderComida(){
       <div class="inline"><button class="btn btn-primary" data-action="comida-inv">Pasar la lista al inventario</button></div>
       <p class="saved" id="comida-ok" role="status"></p>
     </article>
+    <div class="card"><h2>Para un mes, de a poco</h2><p>Para un corte largo: comida para cocinar con gas, repartida en 8 semanas de compras, sin gastar todo junto.</p><button class="btn btn-outline" data-action="go-desp">${icon("cal")}Comprar de a poco: 8 semanas</button></div>
     <div class="card"><h2>Cómo guardarla</h2><ul class="mini"><li>En un lugar fresco, seco y ventilado.</li><li>Lo que vence primero se consume primero: anota los vencimientos en el inventario.</li><li>Revisa la reserva cada 6 meses y repón lo que uses.</li><li>Descarta las latas hinchadas o que pierden.</li></ul><div class="inline"><button class="btn btn-outline" data-action="guide" data-id="reserva-comida">Guía: armar la reserva</button></div></div>
     ${srcFoot(["readyFood","femaFood","readyKit","anmat"])}`;
 }
@@ -4061,7 +4081,7 @@ const APRENDER = [
    ["ojo","No subas al techo con lluvia, viento o de noche, ni sin otra persona abajo."],
    ["tip","Sumen cinta autosoldable y precintos a la caja de herramientas."]]}
  ]},
- {id:"salud", t:"Salud y botiquín", ic:"heart", sub:"El botiquín, los remedios, cuidar a un enfermo, picaduras y golpes.", lec:[
+ {id:"salud", t:"Salud y botiquín", ic:"heart", sub:"El botiquín, los remedios, cuidar a un enfermo, picaduras, dengue y golpes.", lec:[
   {id:"sa-botiquin", t:"Armar el botiquín de la casa", min:4, b:[
    ["p","Un botiquín completo resuelve casi todo lo común. Que esté en una caja con tapa, en un lugar fresco y que todos conozcan."],
    ["h","Para curar"],
@@ -4094,6 +4114,21 @@ const APRENDER = [
    ["p","Lava con mucha agua y jabón durante 10 minutos y consulten siempre: puede necesitar antibiótico o vacuna."],
    ["ojo","Si después de una picadura alguien tiene la cara o la boca hinchadas, ronchas en todo el cuerpo o le cuesta respirar: llamen al 911 ya."],
    ["tip","Antes de ponerse zapatillas o ropa guardada, sacúdanlas. Corran los muebles para limpiar detrás una vez por mes."]]},
+  {id:"sa-dengue", t:"Mosquitos y dengue", min:5, b:[
+   ["p","El mosquito del dengue, el Aedes aegypti, vive cerca de la gente y pone sus huevos en cualquier recipiente que junte agua. Con lluvia y calor hay muchos más, y la temporada va de la primavera al otoño."],
+   ["h","Sin agua quieta, no hay mosquitos"],
+   ["ul",["Tapen tanques, tachos, baldes y bidones. En un corte se guarda agua: que esté siempre tapada.","Cepillen con agua bebederos (también el del gato), rejillas, canaletas y platos de macetas: los huevos quedan pegados en las paredes.","Den vuelta lo que no se usa y pueda juntar agua, y tiren a la basura, en bolsa, lo que no sirve.","Pasto corto y patio sin yuyos."]],
+   ["tip","Háganlo cada vez que llueve. Es la principal forma de prevenir el dengue."],
+   ["h","Que no piquen"],
+   ["ul",["Ropa clara, con mangas y pantalón largos, sobre todo temprano a la mañana y al atardecer.","Tul o mosquitero en camas, cunas, puertas y ventanas.","Adentro, tabletas. Los espirales, solo afuera y a más de 1,5 m de la gente.","Repelente registrado por ANMAT, sobre la piel que queda al aire: con DEET de menos del 30 %, icaridina o IR3535. La citronela no tiene eficacia probada."]],
+   ["h","Repelente en las chicas"],
+   ["ul",["Lo pone un adulto: primero en sus manos y después en la piel de ellas.","Nunca en las manos, los ojos o la boca, ni sobre heridas o debajo de la ropa.","En la cara, se pone primero en las manos y se pasa suave."]],
+   ["h","Si aparece fiebre"],
+   ["p","Puede ser dengue si hay fiebre de 38 °C o más con dolor de cabeza o detrás de los ojos, dolor de músculos o articulaciones, náuseas, vómitos o diarrea, malestar o manchas en la piel."],
+   ["ul",["No se automediquen: nada de aspirina, ibuprofeno, ketorolac ni inyecciones.","Tomen mucho líquido y vayan a la salita o al hospital."]],
+   ["ojo","Vayan a la guardia ya si hay dolor fuerte de panza, vómitos que no paran, sangrado de encías o nariz, mucho sueño o irritabilidad, o le cuesta respirar."],
+   ["h","La vacuna"],
+   ["p","En la provincia de Buenos Aires es gratis de 15 a 59 años: dos dosis, separadas al menos 3 meses. No se aplica en el embarazo ni en la lactancia. Para menores de 15, como las chicas, se puede desde los 4 años con orden médica y se compra: consulten al pediatra."]]},
   {id:"sa-golpes", t:"Golpes, torceduras y fracturas", min:3, b:[
    ["h","Golpe o torcedura"],
    ["ol",["Que descanse la parte golpeada.","Frío envuelto en un trapo, 15 minutos cada 2 o 3 horas.","Una venda elástica, sin apretar de más: si los dedos se ponen fríos o morados, aflojar.","La pierna o el brazo en alto, sobre almohadas."]],
@@ -4163,7 +4198,7 @@ function renderAprender(){
     <div class="field"><label class="lbl" for="apr-q">Buscar</label><input id="apr-q" type="search" autocomplete="off" value="${esc(a.q || "")}" placeholder="Ej.: huerta, nudos, puerta"></div>
     <div id="apr-list">${hits ? (hits.length ? `<ul class="apr-list">${hits.map(row).join("")}</ul>` : `<p class="fine">No encontré «${esc(a.q)}».</p>`) :
       `<div class="hsecs">${APRENDER.map(t => `<details class="hsec apr-t" data-apr="${t.id}"${a.open === t.id ? " open" : ""}><summary><span class="g-ic">${icon(t.ic)}</span><span class="hs-t"><strong>${t.t}</strong><span>${t.sub}</span></span><span class="hs-chev" aria-hidden="true"></span></summary><div class="hs-body"><ul class="apr-list">${t.lec.map(row).join("")}</ul></div></details>`).join("")}</div>`}</div>
-    ${srcBox(["botulismo","robosMza","sroCasero","stcChicos","lavandinaDil","sodis","ponzonosos","legitima","pimienta","taser"], "Lecturas de referencia. Ante una emergencia, llama al 911.")}
+    ${srcBox(["botulismo","robosMza","sroCasero","stcChicos","lavandinaDil","sodis","ponzonosos","legitima","pimienta","taser","dengueGba","dengueSint","dengueVac","repelUnc"], "Lecturas de referencia. Ante una emergencia, llama al 911.")}
   </section>`;
 }
 
@@ -5194,7 +5229,7 @@ document.addEventListener("keydown", e => { if(e.key === "Escape"){ const ov = d
 const scrKey = () => [ui.tab, ui.sub || "", ui.guide || "", ui.tab === "numeros" ? ui.planSeg || "" : "", ui.tab === "preparar" ? ui.prep || "" : "", ui.ayuda && ui.ayuda.mostrar && ui.sub === "ayuda" ? "m" : "", ui.sub === "prob" ? ui.pbId || "" : ""].join("|");
 let histPop = false;
 /* La dirección de cada pantalla: si Android recarga la app, vuelve a la misma pantalla */
-const SUB_HASH = {region:"region", azul:"azul", pedido:"pedido-ficha", vade:"vademecum", queda:"cuanto-queda", hoy:"hoy", prob:"problema", config:"configuracion", recs:"recordatorios", corte:"corte", aviso:"aviso", mapa:"mapa", ayuda:"ayuda", llevar:"llevar", ir:"llevar", mificha:"mificha", mes:"30dias", radio:"radio", manual:"manual"};
+const SUB_HASH = {alertas:"alertas", region:"region", azul:"azul", pedido:"pedido-ficha", vade:"vademecum", queda:"cuanto-queda", hoy:"hoy", prob:"problema", config:"configuracion", recs:"recordatorios", corte:"corte", aviso:"aviso", mapa:"mapa", ayuda:"ayuda", llevar:"llevar", ir:"llevar", mificha:"mificha", mes:"30dias", radio:"radio", manual:"manual"};
 function screenHash(){
   if(ui.tab === "inicio") return ui.sub === "prob" && ui.pbId ? "problema-" + ui.pbId : SUB_HASH[ui.sub] || "";
   if(ui.tab === "guias") return ui.guide ? "guia-" + ui.guide : "guias";
@@ -5204,7 +5239,7 @@ function screenHash(){
 }
 const histUrl = () => location.pathname + location.search + (screenHash() ? "#" + screenHash() : "");
 const NAVS = [];   /* pantallas anteriores dentro de la app, para el botón «volver» */
-const SUB_LBL = {region:"Mapa de la región", azul:"Azul y el Súper Niño", pedido:"Tu ficha", vade:"Vademécum", prob:"Tengo un problema", hoy:"¿Qué hago hoy?", queda:"¿Cuánto nos queda?", config:"Configuración", recs:"Recordatorios", corte:"Contador de corte", aviso:"Estoy bien", mapa:"Mapa", ayuda:"Necesito ayuda", llevar:"Llevarme", ir:"Llevarme", mificha:"Mi ficha", mes:"Plan de corte largo", radio:"Radio", manual:"Manual en papel"};
+const SUB_LBL = {alertas:"Alertas del tiempo", region:"Mapa de la región", azul:"Azul y el Súper Niño", pedido:"Tu ficha", vade:"Vademécum", prob:"Tengo un problema", hoy:"¿Qué hago hoy?", queda:"¿Cuánto nos queda?", config:"Configuración", recs:"Recordatorios", corte:"Contador de corte", aviso:"Estoy bien", mapa:"Mapa", ayuda:"Necesito ayuda", llevar:"Llevarme", ir:"Llevarme", mificha:"Mi ficha", mes:"Plan de corte largo", radio:"Radio", manual:"Manual en papel"};
 const TAB_LBL = {inicio:"Inicio", guias:"Guías", preparar:"Preparar", aprender:"Aprender", numeros:"Familia", linterna:"Herramientas"};
 function scrLabel(st){
   if(!st) return "Inicio";
@@ -5324,7 +5359,7 @@ async function recNotif(){
 
 /* ---------- Configuración: todos los ajustes en un lugar (engranaje arriba a la derecha) ----------
    En un celular con control parental se ve todo; para cambiar algo, salvo voz y vibración, pide el PIN. */
-const APP_VER = 44;
+const APP_VER = 45;
 const GEAR_SVG = `<svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>`;
 function renderConfig(){
   const lc = lockCfg(), lockOn = !!(lc && lc.on), f = miFicha(), fp = fpCfg(), aqui = recsAqui(), nRec = REMINDERS.filter(recOn).length;
@@ -5656,6 +5691,14 @@ const PROBLEMAS = [
       "Para prevenir: botas y guantes en el agua y el barro, los chicos fuera de los charcos, y nada de basura ni escombros donde vivan ratas."],
    ayuda:"La leptospirosis se contagia por la orina de animales, como las ratas, que queda en el agua y el barro. Con síntomas, la consulta es en el día.",
    tel:["hosp", "107"], ir:[["p","diarrea"], ["h","vademecum"], ["h","azul"]]},
+  {id:"dengue", c:"salud", t:"Fiebre con dolor de cuerpo o detrás de los ojos: ¿dengue?", kw:"dengue fiebre mosquito dolor ojos huesos articulaciones manchas sarpullido picadura",
+   p:["Puede ser dengue si hay fiebre de 38 °C o más con dolor de cabeza o detrás de los ojos, dolor de músculos o articulaciones, náuseas, vómitos o diarrea, o manchas en la piel.",
+      "No te automediques: nada de aspirina, ibuprofeno, ketorolac ni inyecciones.",
+      "Que tome mucho líquido, de a poco y seguido, y que descanse.",
+      "Vayan a la salita o al hospital para que lo evalúen, aunque se sienta mejor.",
+      "Que siga usando repelente: si lo pica un mosquito, puede contagiar a otros de la casa."],
+   pri:"Vayan a la guardia ya si hay dolor fuerte de panza, vómitos que no paran, sangrado de encías o nariz, mucho sueño o irritabilidad, o le cuesta respirar.",
+   tel:["hosp", "107"], ir:[["l","sa-dengue"], ["p","mosquitos"], ["h","vademecum"]]},
   {id:"quemadura", c:"salud", t:"Una quemadura", kw:"quemadura quemo quemé agua caliente fuego ampolla",
    p:["Pon la quemadura bajo agua fresca, no helada, durante 20 minutos.",
       "Saca anillos, pulseras o ropa de esa zona antes de que se hinche, si no están pegados a la piel.",
@@ -5723,6 +5766,14 @@ const PROBLEMAS = [
    casa:["Botas de goma", "Guantes", "Lavandina", "Detergente"],
    ayuda:"Antes de volver a dar la luz, si el agua llegó a los enchufes, que revise la instalación un electricista.",
    tel:["luz", "911"], ir:[["p","comida-mojada"], ["p","herida"], ["p","fiebre-agua"]]},
+  {id:"mosquitos", c:"casa", t:"Hay muchos mosquitos", kw:"mosquitos picaduras dengue aedes agua estancada descacharrar repelente",
+   p:["Recorran el patio y la casa: vacíen, den vuelta o tiren todo lo que junte agua. Tapen baldes, tachos y bidones.",
+      "Cepillen bebederos, rejillas, canaletas y platos de macetas: los huevos quedan pegados en las paredes.",
+      "Repelente sobre la piel que queda al aire, y en las chicas lo pone un adulto.",
+      "Tul o mosquitero en las camas. Adentro, tabletas; los espirales, solo afuera.",
+      "Después de cada lluvia, otra vuelta por el patio."],
+   casa:["Cepillo", "Bolsas de residuos", "Tapas o tela para los baldes", "Repelente"],
+   tel:["hosp"], ir:[["l","sa-dengue"], ["p","dengue"]]},
   {id:"fuego", c:"casa", t:"Se prendió fuego algo en casa", kw:"fuego incendio llamas aceite sarten olla humo matafuegos",
    urg:true, kid:true, pri:"Si el fuego es más grande que un tacho de basura o el humo llena la habitación: salgan todos ya, cierren la puerta al salir y llamen al 100 o al 911 desde afuera.",
    p:["Aceite que se prende en una olla: apaga la hornalla y tapa la olla con una tapa o una tabla. Nunca agua.",
@@ -5803,7 +5854,7 @@ const PB_TEL = {
   apoyo:{n:"0800 345 1435", tel:"08003451435", sh:"Prevención del suicidio", ic:"phone"},
   hosp:{city:"heart"}, luz:{city:"bolt"}, agua:{city:"drop"}, gas:{city:"flame"}
 };
-const PB_IR_H = {azul:"Azul y el Súper Niño", vademecum:"Vademécum", "cuanto-queda":"¿Cuánto nos queda?", inventario:"Inventario", radio:"Radio y comunicación", aviso:"Estoy bien", plan:"Plan familiar", corte:"Contador de corte", "30dias":"Plan de corte largo", ficha:"Fichas médicas", mificha:"Mi ficha", ayuda:"Necesito ayuda"};
+const PB_IR_H = {alertas:"Alertas del tiempo", azul:"Azul y el Súper Niño", vademecum:"Vademécum", "cuanto-queda":"¿Cuánto nos queda?", inventario:"Inventario", radio:"Radio y comunicación", aviso:"Estoy bien", plan:"Plan familiar", corte:"Contador de corte", "30dias":"Plan de corte largo", ficha:"Fichas médicas", mificha:"Mi ficha", ayuda:"Necesito ayuda"};
 const PB_IR_A = {"ahorro-on":"Modo ahorro de batería", linterna:"Linterna", silbato:"Silbato"};
 const PB_STOP = ["que","los","las","del","una","uno","hay","nos","con","por","para","tengo","tiene","tenemos","esta","estan","esta","anda","andan","funciona","mucho","muy","algo","como","hago","hacer","pasa","casa"];
 const pbFind = id => PROBLEMAS.find(x => x.id === id);
@@ -5929,6 +5980,7 @@ const HOY_T = [
   /* Agua */
   {id:"a-llenar", e:"agua", d:"1", t:"Mientras haya presión, llenar todo: bidones, ollas con tapa, botellas, baldes y la bañera.", ir:["p","poca-agua"]},
   {id:"a-separar", e:"agua", d:"1", t:"Separar el agua para tomar y cocinar (bidones cerrados) de la del baño (bañera y baldes)."},
+  {id:"a-mosquitos", e:"agua", d:"c7:3", t:"Vuelta por el patio contra el mosquito: tapar baldes y bidones, vaciar o dar vuelta lo que junta agua y cepillar bebederos. Y otra vez cada vez que llueva.", ir:["p","mosquitos"]},
   {id:"a-contar", e:"agua", d:"*", t:"Contar cuánta agua queda y anotarlo en la app. Para tomar y cocinar hacen falta {agua} litros por día.", ir:["h","cuanto-queda"]},
   {id:"a-canilla", e:"agua", d:"2+", t:"Probar la canilla a la mañana y a la noche: si hay presión, rellenar lo que se usó."},
   {id:"a-lluvia", e:"agua", d:"c4:2", t:"Si llueve, poner afuera baldes y fuentes limpias. Esa agua se trata antes de tomarla.", ir:["p","agua-turbia"]},
@@ -6148,7 +6200,7 @@ function renderQueda(){
   const back = `${backBtn()}`;
   const intro = `<div class="intro"><h1>¿Cuánto nos queda?</h1><p class="lede">Para cuántos días alcanza lo que tienen guardado${dia ? ", y hasta qué día del corte llega" : ""}.</p></div>`;
   if(!state.inv.length) return `<section class="stack qd">${back}${intro}
-    <div class="card"><h2>Primero, el inventario</h2><p>Carga lo que tienen guardado: bidones de agua, comida, cartuchos de gas, remedios y lo del gato, con la cantidad («20 litros», «2 kg», «6 latas»). Con eso la app hace la cuenta.</p><button class="btn btn-primary" data-action="go-inv">Ir al inventario</button></div></section>`;
+    <div class="card"><h2>Primero, el inventario</h2><p>Carga lo que tienen guardado: bidones de agua, comida, cartuchos de gas, remedios y lo del gato, con la cantidad («20 litros», «2 kg», «6 latas»). Con eso la app hace la cuenta.</p><button class="btn btn-primary" data-action="go-inv">Ir al inventario</button></div>${energiaHTML()}</section>`;
   const r = t.r.map(x => Object.assign({}, x, {hoy:qdHoy(x.dias)})).sort((x, y) => x.hoy - y.hoy);
   const m = r[0];
   const fechaDia = n => { const f = today0(); f.setDate(f.getDate() + n); return `${["domingo","lunes","martes","miércoles","jueves","viernes","sábado"][f.getDay()]} ${pad(f.getDate())}/${pad(f.getMonth() + 1)}`; };
@@ -6172,6 +6224,7 @@ function renderQueda(){
     ${verd}
     ${r.length ? `<div class="auto-g">${tiles}</div>` : ""}
     ${dia && desde ? `<p class="fine">${cuenta} Hasta que cuenten de nuevo, la app descuenta ${desde === 1 ? "ese día" : "esos días"} sola.</p>` : ""}
+    ${energiaHTML()}
     ${falta.length ? `<div class="card"><h2>Para el plan de ${d} días les falta</h2><ul class="qd-falta">${falta.map(x => `<li>${x}</li>`).join("")}</ul><div class="inline"><button class="btn btn-ghost btn-sm" data-action="go-mes">Plan de corte largo</button></div></div>` : !dia && r.length ? `<div class="card"><h2>Para el plan de ${d} días</h2><p>Con lo que cargaron, alcanza. Revisen cada tanto que no venza nada.</p></div>` : ""}
     <details class="hsec qd-contar"${dia ? " open" : ""}><summary><span class="g-ic">${icon("can")}</span><span class="hs-t"><strong>Contar lo que queda</strong><span>${dia ? cuenta : "Cambia las cantidades si usaron algo"}</span></span><span class="hs-chev" aria-hidden="true"></span></summary>
       <div class="hs-body"><p class="fine">Escribe cuánto queda de cada cosa: «12 litros», «2 bidones de 20 litros», «3 kg», «4 latas», «2 cartuchos». Si se terminó, pon 0.</p>
@@ -6739,6 +6792,35 @@ function tetanoEstado(f){
   if(a >= 10) return {k:"vence", t:`La última fue hace ${Math.floor(a)} años: corresponde un refuerzo. Consulten en el vacunatorio.`};
   return {k:"ok", t:`Al día: la última fue en ${d.getFullYear()}. La próxima, en ${d.getFullYear() + 10}.`};
 }
+/* ---------- Alertas del tiempo ----------
+   La app no puede leer las alertas del SMN sola: el servidor del SMN no deja que otras páginas las lean
+   (el encabezado de permiso viene mal escrito). Por eso abre la página oficial y explica cómo recibirlas. */
+const ALERTA_COL = [
+  ["verde","Verde","No se esperan fenómenos peligrosos.","Vida normal."],
+  ["amar","Amarilla","Puede haber fenómenos que causen daños y corten un rato las actividades.","Estar atentos: celulares cargados y mirar de nuevo a la tarde."],
+  ["nar","Naranja","Se esperan fenómenos peligrosos para las personas y las casas.","Prepararse: entrar lo que vuela, cargar todo, llenar bidones y acordar quién busca a las chicas."],
+  ["roja","Roja","Fenómenos excepcionales: pueden causar una emergencia o un desastre.","Quedarse en lugar seguro y seguir las instrucciones oficiales (Defensa Civil 103)."]
+];
+function renderAlertas(){
+  const az = state.ciudad === "Azul", on = navigator.onLine !== false;
+  return `<section class="stack al">
+    ${backBtn()}
+    <div class="intro"><h1>Alertas del tiempo</h1><p class="lede">Si hay alerta para ${az ? "Azul" : "tu zona"}, qué significa cada color y cómo enterarse aunque no miren el teléfono.</p></div>
+    <div class="card"><h2>Ver las alertas de hoy</h2>
+      <a class="btn btn-primary" href="https://www.smn.gob.ar/alertas" target="_blank" rel="noopener">${icon("storm")}Alertas del SMN${az ? ": buscar Azul" : ""}</a>
+      <p class="fine">${on ? "" : "<strong>Ahora no hay internet:</strong> la página se abre cuando vuelva. Mientras, la radio. "}La app no puede mostrarlas sola: el servidor del SMN no deja que otras páginas lean sus alertas. Por eso abre la página oficial. Se actualizan a las 6 y a las 18, y más seguido si hace falta.</p></div>
+    <div class="card"><h2>Qué significa cada color</h2>
+      <ul class="al-l">${ALERTA_COL.map(([k, t, q, h]) => `<li class="al-${k}"><span class="al-c" aria-hidden="true"></span><span><strong>${t}</strong>${q}<em>${h}</em></span></li>`).join("")}</ul>
+      <p class="fine">Puede haber dos a la vez, por ejemplo amarilla por viento y naranja por lluvia. Los <strong>avisos a corto plazo</strong> valen por 3 horas: tormenta fuerte, lluvia intensa, granizo o ráfagas que ya se ven en el radar. Con aviso, adentro.</p>
+      ${az ? `<button class="btn btn-ghost btn-sm" data-action="go-azul">Qué hacer en Azul con alerta naranja o roja</button>` : ""}</div>
+    <div class="card"><h2>Que el aviso llegue solo</h2><ul class="az-ul">
+      <li><strong>App oficial del SMN</strong> («SMN: Tiempo y Pronóstico», gratis en Google Play y App Store): avisa cuando hay alerta para la ciudad. Guarden ${az ? "Azul" : "su ciudad"} como favorita y permitan las notificaciones. Conviene en los dos teléfonos de los adultos.</li>
+      <li><strong>Alertas al celular, sin app (AlertAR):</strong> el ENACOM está armando un sistema que manda el aviso a todos los celulares de la zona, sin anotarse. En julio de 2026 lo licitó; todavía no hay fecha de inicio confirmada. Para recibirlo cuando empiece, dejen activadas las <strong>alertas de emergencia</strong> del teléfono: en Android suelen estar en Ajustes › Seguridad y emergencia › Alertas de emergencia inalámbricas; en iPhone, al final de Ajustes › Notificaciones.</li>
+      <li><strong>Sin luz ni internet:</strong> la radio a pilas o a manivela. Los avisos salen por las emisoras locales.</li></ul>
+      <div class="inline"><button class="btn btn-ghost btn-sm" data-action="go-radio">Radio y comunicación</button>${az ? `<a class="btn btn-ghost btn-sm" href="tel:103">Defensa Civil Azul: 103</a>` : ""}</div></div>
+    ${srcBox(["smnWeb","smnColores","smnApp","alertAR"])}
+  </section>`;
+}
 function renderAzul(){
   const pos = state.ultimaPos && Date.now() - (state.ultimaPos.at || 0) < 30 * 60000 ? state.ultimaPos : null;
   const lugs = state.lugares.filter(enAzul).map(l => [l.nombre, arroyoDist(l)]).concat(pos && enAzul(pos) ? [["Donde estás ahora", arroyoDist(pos)]] : []).filter(x => x[1] !== null);
@@ -6768,7 +6850,8 @@ function renderAzul(){
         <li>Documentos en bolsas herméticas y la mochila lista.</li>
         <li>Revisen la antitetánica de todos (abajo).</li>
         <li>Elijan, desde la escuela y el trabajo, un camino a casa que no cruce el arroyo ni pase por el balneario.</li>
-        <li>Agenden el 103 de Defensa Civil.</li></ul>
+        <li>Agenden el 103 de Defensa Civil.</li>
+        <li>Después de cada lluvia, una vuelta por el patio contra el mosquito del dengue: lluvia y calor traen mosquitos.</li></ul>
       <h3>Con alerta naranja o roja para Azul</h3><ul class="az-ul">
         <li>Carguen celulares y powerbanks, y llenen bidones: después de una inundación, el agua de la canilla puede no ser apta.</li>
         <li>Suban a una altura lo que se arruina con agua: documentos, remedios, comida y aparatos.</li>
@@ -6779,14 +6862,14 @@ function renderAzul(){
         <li>No crucen agua que corre ni puentes tapados: 15 cm voltean a una persona y 30 cm arrastran un auto.</li>
         <li>Si entra agua: corten la luz y el gas solo si no tienen que pisar agua, y suban al lugar más alto. Llamen al 103 o al 911.</li>
         <li>Si Defensa Civil pide evacuar, salgan con la mochila y avisen con «Estoy bien».</li></ul>
-      <h3>Después</h3><div class="inline">${pbIr(["p","comida-mojada"])}${pbIr(["p","limpiar-inundacion"])}${pbIr(["p","fiebre-agua"])}${pbIr(["g","agua-segura"])}</div></div>
+      <h3>Después</h3><div class="inline">${pbIr(["p","comida-mojada"])}${pbIr(["p","limpiar-inundacion"])}${pbIr(["p","fiebre-agua"])}${pbIr(["p","mosquitos"])}${pbIr(["g","agua-segura"])}</div></div>
     <div class="card"><h2>La antitetánica de la familia</h2><p class="fine">Con heridas en agua de inundación o limpiando, importa tenerla al día. En adultos, una dosis cada 10 años.</p>
       ${tet.length ? `<ul class="az-ars">${tet.map(([f, e]) => `<li class="az-ar${e.k === "ok" ? "" : " cerca"}"><strong>${esc(f.nombre)}</strong><span>${e.t}</span></li>`).join("")}</ul>` : `<p class="fine">Carguen las fichas de la familia con la fecha de la última antitetánica.</p>`}
       <button class="btn btn-ghost btn-sm" data-action="act" data-type="ficha">Abrir las fichas</button></div>
     <div class="card"><h2>Dónde informarse</h2><ul class="az-ul">
       <li><strong>Sin internet:</strong> la radio. En una emergencia, los avisos suelen salir por las emisoras locales.</li>
       <li><strong>Con internet:</strong> las <a href="https://www.smn.gob.ar/alertas" target="_blank" rel="noopener">alertas del SMN</a> y las cuentas de Defensa Civil Azul (<a href="https://www.instagram.com/defensacivilazul/" target="_blank" rel="noopener">@defensacivilazul</a>).</li></ul>
-      <div class="inline"><button class="btn btn-ghost btn-sm" data-action="go-radio">Radio y comunicación</button>${luz ? `<a class="btn btn-ghost btn-sm" href="tel:${luz.tel}">Cortes de luz: ${luz.n}</a>` : ""}</div></div>
+      <div class="inline"><button class="btn btn-ghost btn-sm" data-action="go-alertas">Alertas del tiempo</button><button class="btn btn-ghost btn-sm" data-action="go-radio">Radio y comunicación</button>${luz ? `<a class="btn btn-ghost btn-sm" href="tel:${luz.tel}">Cortes de luz: ${luz.n}</a>` : ""}</div></div>
     ${srcBox(["azNoaa","azSmn","azPlan","az2002","az2012","az2012b","azIsidora","azManantiales","azIhlla","dcAzul","azAnmat","azLepto","azDt"])}
   </section>`;
 }
@@ -7139,7 +7222,7 @@ function mesNeeds(){
   const panelW = Math.max(100, Math.ceil(wh / 2.2 / 50) * 50);
   const estWh = wh * 2 <= 300 ? 300 : wh * 2 <= 500 ? 500 : 1000;
   return {c, wh, panelW, estWh, verano:Math.round(panelW * 5.5), invierno:Math.round(panelW * 2.2),
-    diasPB:Math.floor(c.pb * 50 / (c.p * 12) * 10) / 10, pilasLuz:Math.round(45 * mesD() / 2.5),
+    diasPB:Math.floor(c.pb * enCfg().mah * 3.7 / 1000 * 0.68 / (c.p * 12) * 10) / 10, pilasLuz:Math.round(45 * mesD() / 2.5),
     agua7:Math.ceil(c.p * 4 * 7 + c.g * 0.25 * 7), agua30:c.p * 4 * mesD() + c.g * 0.25 * mesD()};
 }
 function mesCosaTxt(id, x){
@@ -7152,9 +7235,9 @@ function mesEtapas(){
   const d = mesD();
   return MES_ETAPAS.filter(([t]) => !(d === 7 && t === "Semanas 2 a 4")).map(([t, items]) => [d === 15 && t === "Semanas 2 a 4" ? "Semana 2 (días 8 a 15)" : t, items]);
 }
-function mesCheck(id, txt){
-  const on = !!state.mes.checks[id];
-  return `<label class="check${on ? " on" : ""}" for="mes-${id}"><input type="checkbox" id="mes-${id}" data-mes="${id}"${on ? " checked" : ""}><span>${txt}</span></label>`;
+function mesCheck(id, txt, pre){
+  const on = !!state.mes.checks[id], fid = `${pre || "mes"}-${id}`;
+  return `<label class="check${on ? " on" : ""}" for="${fid}"><input type="checkbox" id="${fid}" data-mes="${id}"${on ? " checked" : ""}><span>${txt}</span></label>`;
 }
 function mesLink(k){
   if(!k) return "";
@@ -7164,6 +7247,64 @@ function mesLink(k){
   if(k === "aviso") return `<button class="btn btn-ghost btn-sm" data-action="go-aviso">Estoy bien</button>`;
   if(k.indexOf("guia:") === 0){ const g = GUIDES.find(x => x.id === k.slice(5)); return g ? `<button class="btn btn-ghost btn-sm" data-action="guide" data-id="${g.id}">${g.title}</button>` : ""; }
   return "";
+}
+/* ---------- Energía: para cuántos días alcanza la carga ---------- */
+const EN_MAH = [5000, 10000, 20000, 30000], EN_PANEL = [0, 20, 50, 100, 200, 400], EN_EST = [0, 300, 500, 1000, 2000];
+function enCfg(){ const m = state.mes, num = (v, l, d) => l.includes(+v) ? +v : d; return {mah:num(m.mah, EN_MAH, 20000), panel:num(m.panel, EN_PANEL, 0), est:num(m.est, EN_EST, 0)}; }
+function energia(){
+  const c = mesCfg(), e = enCfg(), need = mesNeeds().wh;
+  const guardado = Math.round(c.pb * e.mah * 3.7 / 1000 * 0.68 + e.est * 0.85);
+  const mes = new Date().getMonth(), verano = mes >= 9 || mes <= 2, sol = Math.round(e.panel * (verano ? 5.5 : 2.2));
+  const r1 = x => x >= 3 ? Math.floor(x) : Math.floor(x * 10) / 10;
+  const sinSol = need ? r1(guardado / need) : 0;
+  const conSol = sol >= need ? Infinity : r1(guardado / (need - sol));
+  return {need, guardado, sol, verano, sinSol, conSol, c, e};
+}
+function energiaHTML(){
+  const n = energia(), c = n.c, e = n.e;
+  const sel = (k, list, lbl, fmt) => `<div class="field"><label class="lbl" for="en-${k}">${lbl}</label><select id="en-${k}" data-en="${k}">${list.map(v => `<option value="${v}"${e[k] === v ? " selected" : ""}>${fmt(v)}</option>`).join("")}</select></div>`;
+  const num = `<div class="field mes-n"><span class="lbl" id="lbl-mes-pb">Powerbanks</span><div class="stepper" role="group" aria-labelledby="lbl-mes-pb"><button data-action="mes-step" data-k="pb" data-d="-1" aria-label="Restar">−</button><span class="mono">${c.pb}</span><button data-action="mes-step" data-k="pb" data-d="1" aria-label="Sumar">+</button></div></div>`;
+  const veredicto = !n.guardado && !n.sol ? `<p>Carguen cuántos powerbanks tienen, o si tienen una estación de energía o un panel solar.</p>`
+    : `<p class="qd-big">${n.conSol === Infinity ? `<strong>Con sol, alcanza todos los días</strong>` : `Alcanza para <span class="mono">${fmtQ(n.verano && n.sol ? n.conSol : n.sinSol)}</span> ${(n.verano && n.sol ? n.conSol : n.sinSol) === 1 ? "día" : "días"}`}</p>
+      <p>Guardado: <strong>${fmtNum(n.guardado)} Wh</strong>. Gastan <strong>${fmtNum(n.need)} Wh por día</strong> (${c.p} celulares, 3 luces LED y la radio).${n.sol ? ` El panel suma unos <strong>${fmtNum(n.sol)} Wh</strong> en un día de sol de esta época${n.verano ? "" : " (en invierno rinde menos de la mitad)"}.` : ""}${n.sol && n.conSol !== Infinity ? ` Sin sol, ${fmtQ(n.sinSol)} días.` : ""}</p>`;
+  return `<div class="card en-card"><h2>${icon("bolt")}Batería: ¿para cuántos días?</h2>${veredicto}
+    <div class="en-cfg">${num}${sel("mah", EN_MAH, "De cuántos mAh", v => `${fmtNum(v)} mAh`)}${sel("est", EN_EST, "Estación de energía", v => v ? `${fmtNum(v)} Wh` : "No tenemos")}${sel("panel", EN_PANEL, "Panel solar", v => v ? `${v} W` : "No tenemos")}</div>
+    <p class="fine">Aproximado: 12 Wh por celular por día; de un powerbank llega al celular cerca de dos tercios de lo que dice la caja. Para que dure: modo ahorro, brillo bajo, datos solo un rato y cargar con sol. ${pbIr(["p","bateria"])}</p></div>`;
+}
+document.addEventListener("change", e => { const el = e.target; if(!el.matches || !el.matches("[data-en]")) return; state.mes[el.dataset.en] = +el.value; save(); const y = window.scrollY; render(false); window.scrollTo(0, y); });
+/* ---------- Despensa escalonada: 30 días de comida comprando de a poco, en 8 semanas ---------- */
+const DESP = [
+  ["Lo que más rinde", ["c-arroz","c-fideos","c-aceite","c-azucar"]],
+  ["Legumbres, polenta e infusiones", ["c-legumbres","c-polenta","c-yerba"]],
+  ["Latas con proteína", ["c-pescado","c-carne"]],
+  ["Desayunos y meriendas", ["c-leche","c-avena","c-galletitas"]],
+  ["Verduras, fruta y dulce", ["c-tomate","c-fruta","c-dulce"]],
+  ["Extras y el gato", ["c-frutos","c-sopas","c-gato","c-arena"]],
+  ["Higiene", ["o-papel","o-femenina","o-toallitas","o-bolsas"]],
+  ["Cocina, luz y salud", ["o-fosforos","o-pilas","o-lavandina","o-remedios"]]
+];
+function despTxt(id){
+  const c = mesCfg(), d = mesD(), f = d / 30;
+  const mc = MES_COMIDA.find(x => "c-" + x[0] === id); if(mc) return `<strong>${mc[1]}</strong> <span class="mono">${fmtQ(Math.ceil(mc[2] * c.p * f * 10) / 10)} ${mc[3]}</span>`;
+  if(id === "c-gato") return c.g ? `<strong>Alimento para ${c.g === 1 ? "el gato" : `los ${c.g} gatos`}</strong> <span class="mono">${fmtQ(Math.ceil(1.8 * c.g * f * 10) / 10)} kg</span>` : "";
+  if(id === "c-arena") return c.g ? `<strong>Piedras sanitarias</strong> <span class="mono">${fmtQ(Math.ceil(15 * c.g * f))} kg</span>` : "";
+  for(const [, items] of MES_COSAS){ const x = items.find(i => "o-" + i[0] === id); if(x) return mesCosaTxt(x[0], x[1]); }
+  return "";
+}
+function despSemana(){ const d = parseISO(state.mes.despIni || ""); if(!d) return 0; return Math.min(9, Math.floor((today0() - d) / 864e5 / 7) + 1); }
+function despensaHTML(){
+  const sem = despSemana(), d = mesD();
+  const hecho = id => !!state.mes.checks[id];
+  const semanas = DESP.map(([t, ids], i) => { const its = ids.map(id => [id, despTxt(id)]).filter(x => x[1]); const ok = its.every(([id]) => hecho(id));
+    return `<details class="desp-s${sem === i + 1 ? " hoy" : ""}"${sem === i + 1 ? " open" : ""}><summary><span class="mono desp-n">${i + 1}</span><span><strong>Semana ${i + 1}: ${t}</strong><span>${ok ? "Listo" : sem === i + 1 ? "Esta semana" : sem > i + 1 ? "Quedó pendiente" : `${its.filter(([id]) => hecho(id)).length} de ${its.length}`}</span></span></summary>
+      <div class="checks">${its.map(([id, txt]) => mesCheck(id, txt, "desp")).join("")}</div></details>`; }).join("");
+  return `<div class="card desp"><h2>Comprar de a poco: 8 semanas</h2>
+    <p>Para llegar a ${d} días de comida sin gastar todo junto: cada semana, un grupo. Lo que tildan acá se tilda también en la lista de abajo.</p>
+    ${sem ? `<p class="fine">${sem > 8 ? "Ya pasaron las 8 semanas: completen lo que haya quedado." : `Van por la semana ${sem}.`} <button class="btn btn-ghost btn-sm" data-action="desp-ini" data-v="0">Empezar de nuevo</button></p>` : `<button class="btn btn-primary btn-sm" data-action="desp-ini" data-v="1">Empezar esta semana</button>`}
+    <div class="desp-l">${semanas}</div>
+    <ul class="az-ul"><li>Guarden todo junto y con fecha; lo más viejo, adelante. Lo que usen, repónganlo en la compra siguiente.</li>
+      <li>Si llegara a faltar el gas: polenta instantánea, fideos finos y legumbres en lata se cocinan rápido o no necesitan cocción.</li>
+      <li>Comprar de a poco reparte el gasto y no deja las góndolas vacías: no hace falta comprar todo de golpe.</li></ul></div>`;
 }
 function renderMes(){
   const n = mesNeeds(), c = n.c, d = mesD(), f = d / 30;
@@ -7195,9 +7336,10 @@ function renderMes(){
     <h2 class="sec">Energía: comparación</h2>
     <div class="cmp">
       <article class="cmp-c"><h3>Pilas y powerbanks</h3><p class="cmp-k">$ · sin ruido</p>
-        ${num("pb","Powerbanks de 20.000 mAh",c.pb)}
+        ${num("pb",`Powerbanks de ${fmtNum(enCfg().mah)} mAh`,c.pb)}
         <p>Alcanzan para unos <strong>${fmtQ(n.diasPB)} días</strong> de celulares. Las luces a pilas del mes gastarían unas <strong>${fmtNum(n.pilasLuz)} pilas AA</strong>.</p>
-        <p class="cmp-v ${n.diasPB >= d ? "ok" : "no"}">${n.diasPB >= d ? `Alcanzan para los ${d} días.` : `Solas no llegan a ${d} días: sirven de respaldo.`}</p></article>
+        <p class="cmp-v ${n.diasPB >= d ? "ok" : "no"}">${n.diasPB >= d ? `Alcanzan para los ${d} días.` : `Solas no llegan a ${d} días: sirven de respaldo.`}</p>
+        <button class="btn btn-ghost btn-sm" data-action="go-queda">Calcular con lo que tienen</button></article>
       <article class="cmp-c rec"><p class="cmp-badge">Recomendado para ustedes</p><h3>Estación de energía + panel solar</h3><p class="cmp-k">$$ · sin ruido · sin combustible</p>
         <p>Una estación de <strong>${fmtNum(n.estWh)} Wh</strong> y un panel de <strong>${n.panelW} W</strong>. El panel carga unos ${fmtNum(n.verano)} Wh por día en verano y ${fmtNum(n.invierno)} Wh en invierno.</p>
         <p class="cmp-v ok">Cubre celulares, luces y radio los ${d} días. No alcanza para la heladera.</p></article>
@@ -7216,6 +7358,7 @@ function renderMes(){
     <h2 class="sec">${d === 7 ? "Día por día" : "Semana por semana"}</h2>
     <ol class="mes-plan">${etapas}</ol>
 
+    ${despensaHTML()}
     <div class="card-h"><h2 class="sec">Lista para ${d} días</h2><span class="mono mes-prog">${hechos}/${total}</span></div>
     <h3 class="phase-h">Comida sin heladera, para ${c.p} ${c.p === 1 ? "persona" : "personas"}</h3>
     <div class="checks">${comida}${gato}</div>
@@ -8525,7 +8668,7 @@ function render(top){
   if(!(ui.tab === "inicio" && ui.sub === "ir")) navStop();
   applyAhorro();
   if(ui.tab === "inicio" && !ui.sub && state.ahorro) html = renderAhorro();
-  else if(ui.tab === "inicio") html = ui.sub === "corte" ? renderCorte() : ui.sub === "aviso" ? renderAviso() : ui.sub === "mapa" ? renderMapa() : ui.sub === "ayuda" ? renderAyuda() : ui.sub === "mes" ? renderMes() : ui.sub === "radio" ? renderRadio() : ui.sub === "manual" ? renderManual() : ui.sub === "ir" ? renderNav() : ui.sub === "llevar" ? renderLlevar() : ui.sub === "mificha" ? renderMiFicha() : ui.sub === "recs" ? renderRecs() : ui.sub === "config" ? renderConfig() : ui.sub === "prob" ? renderProb() : ui.sub === "hoy" ? renderHoy() : ui.sub === "queda" ? renderQueda() : ui.sub === "vade" ? renderVade() : ui.sub === "pedido" ? renderPedido() : ui.sub === "azul" ? renderAzul() : ui.sub === "region" ? renderRegion() : renderHome();
+  else if(ui.tab === "inicio") html = ui.sub === "corte" ? renderCorte() : ui.sub === "aviso" ? renderAviso() : ui.sub === "mapa" ? renderMapa() : ui.sub === "ayuda" ? renderAyuda() : ui.sub === "mes" ? renderMes() : ui.sub === "radio" ? renderRadio() : ui.sub === "manual" ? renderManual() : ui.sub === "ir" ? renderNav() : ui.sub === "llevar" ? renderLlevar() : ui.sub === "mificha" ? renderMiFicha() : ui.sub === "recs" ? renderRecs() : ui.sub === "config" ? renderConfig() : ui.sub === "prob" ? renderProb() : ui.sub === "hoy" ? renderHoy() : ui.sub === "queda" ? renderQueda() : ui.sub === "vade" ? renderVade() : ui.sub === "pedido" ? renderPedido() : ui.sub === "azul" ? renderAzul() : ui.sub === "region" ? renderRegion() : ui.sub === "alertas" ? renderAlertas() : renderHome();
   else if(ui.tab === "guias") html = ui.guide ? renderGuide() : renderGuides();
   else if(ui.tab === "preparar") html = renderPrep();
   else if(ui.tab === "linterna") html = renderTools();
@@ -8869,6 +9012,7 @@ document.addEventListener("click", e => {
     case "go-mapa": go("inicio", {sub:"mapa"}); break;
     case "go-ayuda": goAyuda(); break;
     case "go-mes": go("inicio", {sub:"mes"}); break;
+    case "go-desp": go("inicio", {sub:"mes"}); { const dc = document.querySelector(".desp"); if(dc) dc.scrollIntoView({block:"start"}); } break;
     case "go-radio": go("inicio", {sub:"radio"}); break;
     case "go-manual": go("inicio", {sub:"manual"}); break;
     case "ahorro-on": state.ahorro = true; save(); go("inicio"); break;
@@ -8878,6 +9022,7 @@ document.addEventListener("click", e => {
     case "apr-lec": { const a = ui.apr || (ui.apr = {lec:null, q:"", open:"casa"}); a.lec = el.dataset.id; const l = APR_ALL().find(x => x.id === a.lec); if(l) a.open = l.tema.id; render(true); break; }
     case "apr-back": ui.apr.lec = null; render(true); { const d = document.querySelector(`[data-apr="${ui.apr.open}"]`); if(d) d.scrollIntoView({block:"start"}); } break;
     case "mes-ficha": ui.planSeg = "ficha"; go("numeros"); break;
+    case "desp-ini": state.mes.despIni = el.dataset.v === "1" ? isoOf(today0()) : ""; save(); { const y = window.scrollY; render(false); window.scrollTo(0, y); } break;
     case "mes-step": { const c = mesCfg(), k = el.dataset.k, lim = {p:[1,12], g:[0,6], pb:[0,10]}[k]; state.mes[k] = Math.max(lim[0], Math.min(lim[1], c[k] + Number(el.dataset.d))); save(); const y = window.scrollY; render(false); window.scrollTo(0, y); break; }
     case "mes-print": printDoc(mesPrintHTML()); break;
     case "mes-dias": { state.mes.d = MES_DIAS.includes(+el.dataset.d) ? +el.dataset.d : 30; save(); const y = window.scrollY; render(false); window.scrollTo(0, y); break; }
@@ -9113,6 +9258,7 @@ document.addEventListener("click", e => {
     case "ficha-from": { const m = state.plan.miembros.find(x => x.id === el.dataset.id); if(m) newFicha(m.nombre); break; }
     case "ficha-edit": ui.fichaEdit = el.dataset.id; ui.fichaDel = null; render(false); window.scrollTo(0, 0); break;
     case "go-azul": go("inicio", {sub:"azul"}); break;
+    case "go-alertas": go("inicio", {sub:"alertas"}); break;
     case "go-region": go("inicio", {sub:"region"}); break;
     case "rg-z": if(RG_V.zoomAt) RG_V.zoomAt(+el.dataset.f, RG_V.w / 2, RG_V.h / 2); break;
     case "rg-ver": if(RG){ const v = el.dataset.v, pos = state.ultimaPos;
@@ -9201,7 +9347,7 @@ document.addEventListener("change", e => {
   if(e.target.matches("[data-av-tel]")){ ui.aviso.off = Object.assign({}, ui.aviso.off, {[e.target.dataset.avTel]:!e.target.checked}); render(false); return; }
   if(e.target.matches("[data-man]")){ state.manual[e.target.dataset.man] = e.target.checked; save(); e.target.closest(".check").classList.toggle("on", e.target.checked); return; }
   if(e.target.matches("[data-radio]")){ state.radioOk[e.target.dataset.radio] = e.target.checked; save(); e.target.closest("li").classList.toggle("on", e.target.checked); return; }
-  if(e.target.matches("[data-mes]")){ state.mes.checks[e.target.dataset.mes] = e.target.checked; save(); e.target.closest(".check").classList.toggle("on", e.target.checked); const pr = document.querySelector(".mes-prog"); if(pr){ const [, tot] = pr.textContent.split("/"); pr.textContent = `${Object.keys(state.mes.checks).filter(k => state.mes.checks[k]).length}/${tot}`; } return; }
+  if(e.target.matches("[data-mes]")){ state.mes.checks[e.target.dataset.mes] = e.target.checked; save(); document.querySelectorAll(`[data-mes="${e.target.dataset.mes}"]`).forEach(x => { x.checked = e.target.checked; x.closest(".check").classList.toggle("on", e.target.checked); }); const pr = document.querySelector(".mes-prog"); if(pr){ const [, tot] = pr.textContent.split("/"); pr.textContent = `${Object.keys(state.mes.checks).filter(k => state.mes.checks[k]).length}/${tot}`; } return; }
   if(e.target.matches("[data-ay-tel]")){ ui.ayuda.off[e.target.dataset.ayTel] = !e.target.checked; render(false); return; }
   const t = e.target;
   if(t.matches("[data-check]")){
@@ -9382,6 +9528,7 @@ function routeHash(hash){
   else if(hash === "hoy"){ ui.sub = "hoy"; ui.hoyVer = 0; }
   else if(hash === "problema"){ ui.sub = "prob"; ui.pbId = null; }
   else if(hash === "azul") ui.sub = "azul";
+  else if(hash === "alertas") ui.sub = "alertas";
   else if(hash === "region") ui.sub = "region";
   else if(hash.indexOf("pedido-ficha") === 0){ const q = new URLSearchParams(hash.split("?")[1] || ""); if(q.get("n") || q.get("de")) pedGuardar({n:(q.get("n") || "").slice(0, 40), de:(q.get("de") || "").slice(0, 40), at:Date.now()}); ui.sub = "pedido"; }
   else if(hash.indexOf("problema-") === 0 && PROBLEMAS.some(x => x.id === hash.slice(9))){ ui.sub = "prob"; ui.pbId = hash.slice(9); }
