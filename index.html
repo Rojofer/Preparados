@@ -829,7 +829,7 @@ body.navegando .view{padding-bottom:calc(28px + env(safe-area-inset-bottom,0px))
     <button class="tab" data-action="tab" data-tab="guias"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4.5A1.5 1.5 0 0 1 5.5 3H20v15H5.5A1.5 1.5 0 0 0 4 19.5z"/><path d="M4 19.5A1.5 1.5 0 0 0 5.5 21H20v-3"/><path d="M8 7h8M8 11h6"/></svg><span>Guías</span></button>
     <button class="tab" data-action="tab" data-tab="preparar"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="3"/><path d="m8 12.5 3 3 5.5-6.5"/></svg><span>Preparar</span></button>
     <button class="tab" data-action="tab" data-tab="aprender"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.5C10 5 7 4.5 3 5v13c4-.5 7 0 9 1.5 2-1.5 5-2 9-1.5V5c-4-.5-7 0-9 1.5z"/><path d="M12 6.5v13"/></svg><span>Aprender</span></button>
-    <button class="tab" data-action="tab" data-tab="numeros"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 19v-1.5a3.5 3.5 0 0 0-3.5-3.5h-5A3.5 3.5 0 0 0 4 17.5V19"/><circle cx="10" cy="8" r="3.5"/><path d="M20 19v-1.5a3.5 3.5 0 0 0-2.5-3.35"/><path d="M15.5 4.6a3.5 3.5 0 0 1 0 6.8"/></svg><span>Plan</span></button>
+    <button class="tab" data-action="tab" data-tab="numeros"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 19v-1.5a3.5 3.5 0 0 0-3.5-3.5h-5A3.5 3.5 0 0 0 4 17.5V19"/><circle cx="10" cy="8" r="3.5"/><path d="M20 19v-1.5a3.5 3.5 0 0 0-2.5-3.35"/><path d="M15.5 4.6a3.5 3.5 0 0 1 0 6.8"/></svg><span>Familia</span></button>
   </div>
 </nav>
 
@@ -2233,7 +2233,7 @@ const GUIDES = [
     {ph:"Antes, con internet",img:"fam-link",t:"Para chicos: Family Link",d:"Si alguna es menor de 13, Google Family Link te deja supervisar su cuenta y ver la ubicación de su celular. Se instala en los dos teléfonos."},
     {ph:"Antes",img:"fam-sos",t:"Activa Emergencia SOS",d:"Ajustes → «Seguridad y emergencia» → «Emergencia SOS» → «Iniciar configuración». Después, 5 toques al botón de encendido llaman al 911 y pueden compartir la ubicación con los contactos de emergencia. Requiere Android 12 o más nuevo; no anda en modo avión ni con el ahorro de batería."},
     {ph:"Antes",img:"fam-samsung",t:"En Samsung: mensajes SOS",d:"Ajustes → «Funciones avanzadas» o «Seguridad y emergencia» → «Enviar mensajes SOS». Con 3 toques al botón lateral manda un SMS con la ubicación a los contactos elegidos: sirve con poca señal y sin internet."},
-    {ph:"En la emergencia",img:"fam-ayuda",t:"Botón «Necesito ayuda»",d:"En el Inicio de Preparados: toma la ubicación del GPS, dice en qué calle de Azul estás y arma un SMS para toda la familia. Carga antes sus teléfonos en Plan → Números.",a:{type:"ayuda",label:"Abrir «Necesito ayuda»"}},
+    {ph:"En la emergencia",img:"fam-ayuda",t:"Botón «Necesito ayuda»",d:"En el Inicio de Preparados: toma la ubicación del GPS, dice en qué calle de Azul estás y arma un SMS para toda la familia. Carga antes sus teléfonos en Familia → Teléfonos.",a:{type:"ayuda",label:"Abrir «Necesito ayuda»"}},
     {ph:"Sin red",img:"red-plan",t:"Sin red, vale el plan",d:"Sin datos ni señal, ningún celular puede mandar su ubicación. Por eso acuerden dónde encontrarse y a qué hora: «si no hay señal, a las 12 y a las 18 en la plaza San Martín».",a:{type:"guide",id:"sin-red",label:"Cómo comunicarse sin red"}}
    ],
    quiz:[
@@ -2752,7 +2752,7 @@ function renderHome(){
       ${bar("Mochila: lo mínimo", pm, "mochila")}
       ${bar("Botiquín: lo mínimo", pb, "botiquin")}
       ${bar("Kit del hogar", pk, "kit")}
-      <div class="inline"><button class="btn btn-ghost btn-sm" data-action="tab" data-tab="preparar">Seguir preparando</button><button class="btn btn-ghost btn-sm" data-action="go-inv">Inventario</button><button class="btn btn-ghost btn-sm" data-action="go-recs">Recordatorios</button><button class="btn btn-ghost btn-sm" data-action="act" data-type="ficha">Fichas</button><button class="btn btn-ghost btn-sm" data-action="go-vade">Vademécum</button><button class="btn btn-ghost btn-sm" data-action="go-manual">Manual en papel</button></div>`;
+      <div class="inline"><button class="btn btn-ghost btn-sm" data-action="tab" data-tab="preparar">Seguir preparando</button><button class="btn btn-ghost btn-sm" data-action="go-inv">Inventario</button><button class="btn btn-ghost btn-sm" data-action="go-recs">Recordatorios</button><button class="btn btn-ghost btn-sm" data-action="go-manual">Manual en papel</button></div>`;
   return `<section class="stack home">
     <div class="sos-bar" role="group" aria-label="Acciones urgentes">
       <a class="sb sb-911" href="tel:911">${icon("phone")}<span>911</span></a>
@@ -3089,7 +3089,7 @@ function renderInv(){
       <div class="inline"><button class="btn btn-primary" type="submit">${ed ? "Guardar cambios" : "Agregar"}</button>${ed ? `<button class="btn btn-ghost" type="button" data-action="inv-cancel">Cancelar</button>` : ""}</div>
     </form>
     ${trashLink() ? `<div class="inline">${trashLink()}</div>` : ""}
-    <p class="fine">Lo que cargas queda en este teléfono; para pasarlo a tu familia, usa Plan → Compartir. El agua guardada se cambia cada 6 meses y la mochila se revisa cada 3 a 6 meses.</p>`;
+    <p class="fine">Lo que cargas queda en este teléfono; para pasarlo a tu familia, usa Familia → Compartir. El agua guardada se cambia cada 6 meses y la mochila se revisa cada 3 a 6 meses.</p>`;
 }
 function saveInv(form){
   const nombre = form.querySelector("#i-nombre").value.trim();
@@ -3174,8 +3174,9 @@ function renderPrep(){
 function renderTools(){
   const sos = ui.sosAsk ? `<div class="confirm warn" role="group" aria-label="Confirmar SOS"><p>La pantalla va a parpadear fuerte. Si alguien es sensible a las luces intermitentes, que no la mire.</p><div class="inline"><button class="btn btn-signal" data-action="sos-start">Empezar SOS</button><button class="btn btn-ghost" data-action="sos-cancel">Cancelar</button></div></div>` : "";
   const panel = metro ? `<div class="card metro-panel"><div class="pulse mono" data-pulse aria-hidden="true">110</div><p><strong>Comprime con cada pulso.</strong> Entre 100 y 120 por minuto, sin parar hasta que llegue la ayuda.</p><button class="btn btn-ghost" data-action="metronomo">Detener</button></div>` : "";
-  return `<section class="stack">
-    <div class="intro"><h1>Linterna y señales</h1><p class="lede">Funcionan sin señal. Para la linterna, sube el brillo al máximo.</p></div>
+  return `<section class="stack">${backBtn()}
+    <div class="intro"><h1>Herramientas</h1><p class="lede">Todas funcionan sin señal. Para la linterna, sube el brillo al máximo.</p></div>
+    <h2 class="sec">Luz y señales</h2>
     <div class="tools">
       <button class="tool" data-action="linterna" aria-pressed="${!!ui.torchOn}">${icon("torch")}<span class="t-label">Linterna</span><small>${ui.torchOn ? "Encendida. Toca para apagar." : "Usa el flash del celular."}</small></button>
       <button class="tool" data-action="pantalla">${icon("torch")}<span class="t-label">Pantalla blanca</span><small>Luz suave para leer. Toca para apagar.</small></button>
@@ -3185,6 +3186,15 @@ function renderTools(){
     </div>
     ${sos}${panel}
     <p class="fine">${ui.torchNo ? "Este celular no dejó usar el flash desde la app: se encendió la pantalla. Revisa que Chrome tenga permiso de cámara (el flash es parte de la cámara)." : "La primera vez, el celular pide permiso de cámara: el flash es parte de la cámara. No se toma ninguna foto."}</p>
+    <h2 class="sec">Para orientarse y aguantar</h2>
+    <div class="tools">
+      <button class="tool" data-action="go-llevar">${icon("compass")}<span class="t-label">Llevarme</span><small>Te guía a casa o a una farmacia, calle por calle.</small></button>
+      <button class="tool" data-action="go-mapa">${icon("compass")}<span class="t-label">Mapa y brújula</span><small>El plano de Azul y para dónde queda cada lugar.</small></button>
+      <button class="tool" data-action="go-radio">${icon("radio")}<span class="t-label">Radio</span><small>Qué emisoras sintonizar y cómo avisar sin internet.</small></button>
+      <button class="tool" data-action="ahorro-on">${icon("bolt")}<span class="t-label">Ahorro de batería</span><small>Pantalla negra y solo lo esencial.</small></button>
+      <button class="tool" data-action="go-corte">${icon("bolt")}<span class="t-label">Contador de corte</span><small>Cuántas horas van sin luz y qué hacer.</small></button>
+      <button class="tool" data-action="go-compartir" data-to="qs">${icon("phone")}<span class="t-label">Compartir sin internet</span><small>Pasar los datos a otro celular.</small></button>
+    </div>
   </section>`;
 }
 
@@ -3324,11 +3334,11 @@ function renderFamilia(){
     <div class="stepnav"><button class="btn btn-ghost" data-action="plan-step" data-n="${s - 1}"${s === 0 ? " disabled" : ""}>Anterior</button><button class="btn btn-primary" data-action="plan-step" data-n="${last ? -1 : s + 1}">${last ? "Ver el plan" : "Siguiente"}</button></div>`;
 }
 function renderPlanTab(){
-  const tabs = [["numeros","Números"],["familia","Plan familiar"],["ficha","Ficha médica"],["compartir","Compartir"]];
-  const seg = `<div class="seg seg-${tabs.length}" role="tablist" aria-label="Plan">${tabs.map(([k, l]) => `<button role="tab" aria-selected="${ui.planSeg === k}" data-action="plan-seg" data-id="${k}">${l}</button>`).join("")}</div>`;
+  const tabs = [["numeros","Teléfonos"],["familia","Plan"],["ficha","Fichas"],["compartir","Compartir"]];
+  const seg = `<div class="seg seg-${tabs.length}" role="tablist" aria-label="Familia">${tabs.map(([k, l]) => `<button role="tab" aria-selected="${ui.planSeg === k}" data-action="plan-seg" data-id="${k}">${l}</button>`).join("")}</div>`;
   if(ui.planSeg === "control") return renderControl();
   const body = ui.planSeg === "familia" ? renderFamilia() : ui.planSeg === "ficha" ? renderFichas() : ui.planSeg === "compartir" ? renderCompartir() : renderNums();
-  return `<section class="stack"><div class="intro"><h1>Plan</h1><p class="lede">Los números de emergencia, el plan de tu familia y cómo pasarlo a los demás celulares.</p></div>${seg}${body}</section>`;
+  return `<section class="stack"><div class="intro"><h1>Familia</h1><p class="lede">Los teléfonos, el plan, las fichas médicas y cómo pasar todo a los demás celulares.</p></div>${seg}${body}</section>`;
 }
 
 /* ---------- Ficha médica ---------- */
@@ -3501,7 +3511,7 @@ function renderFichas(){
     ${trashLink() ? `<div class="inline">${trashLink()}</div>` : ""}
     <form class="card" id="form-ficha" novalidate><h3>Nueva ficha</h3>${chips}<div class="field"><label class="lbl" for="f-nombre">Nombre</label><input id="f-nombre" maxlength="40" autocomplete="off" placeholder="Ej.: Yo"></div><p class="form-err" id="f-err" hidden>Escribe un nombre.</p><button class="btn btn-primary" type="submit">Crear ficha</button></form>
     <div class="card"><p><strong>Cárgala también en el teléfono.</strong> En iPhone, en la app Salud, «Ficha médica»; en Android, en los ajustes de emergencia o de información médica, según el modelo. Así se puede ver con la pantalla bloqueada.</p></div>
-    <p class="fine">Los datos quedan guardados solo en este teléfono, salvo que los pases a tu familia desde «Compartir». Guarda una copia de seguridad cada tanto desde Plan → Compartir.</p>
+    <p class="fine">Los datos quedan guardados solo en este teléfono, salvo que los pases a tu familia desde «Compartir». Guarda una copia de seguridad cada tanto desde Familia → Compartir.</p>
     ${srcBox(["planMza"], "Mendoza recomienda tener a mano el DNI, el grupo sanguíneo, la obra social y la medicación de cada integrante.")}`;
 }
 function setFicha(el){
@@ -4753,6 +4763,7 @@ function renderMiFicha(){
   return `<section class="stack mi-ficha">${backBtn()}
     ${fichaBig(f).replace(/<button class="back"[^>]*>[\s\S]*?<\/button>/, "")}
     <div class="inline"><button class="btn btn-primary" data-action="ficha-edit-mia" data-id="${esc(f.id)}">Editar mi ficha</button><button class="btn btn-ghost" data-action="mia-cambiar">No es mi ficha</button></div>
+    <button class="mf-btn" data-action="act" data-type="ficha">${icon("id")}<span><strong>Fichas de toda la familia</strong><span>Ver, cargar o imprimir las de los demás</span></span>${icon("chev")}</button>
     ${tarjetaCard(f)}
     ${clave}</section>`;
 }
@@ -5097,7 +5108,7 @@ document.addEventListener("click", e => {
 document.addEventListener("submit", e => { if(e.target.id === "form-ctl"){ e.preventDefault(); const go = () => ctlSubmit(e.target); if(lockCfg() && isLocked()) askPin(go); else go(); } });
 
 /* ---------- Avisos antes de borrar ---------- */
-const PAPELERA = "Queda en la papelera 30 días (Plan → Compartir → Papelera), por si fue un error.";
+const PAPELERA = "Queda en la papelera 30 días (Familia → Compartir → Papelera), por si fue un error.";
 const BORRAR = {
   "lugar-del":{to:"lugar-del", t:el => { const l = state.lugares.find(x => x.id === el.dataset.id); return `¿Borrar el lugar «${l ? l.nombre : ""}»?`; }, d:"Deja de aparecer en Llevarme y en el mapa. " + PAPELERA},
   "del-ask":{to:"del-do", t:el => { const c = state.contacts.find(x => x.id === el.dataset.id); return `¿Borrar el contacto «${c ? c.nombre : ""}»?`; }, d:"Deja de recibir los SMS de «Necesito ayuda». " + PAPELERA},
@@ -5156,7 +5167,7 @@ function screenHash(){
 const histUrl = () => location.pathname + location.search + (screenHash() ? "#" + screenHash() : "");
 const NAVS = [];   /* pantallas anteriores dentro de la app, para el botón «volver» */
 const SUB_LBL = {vade:"Vademécum", prob:"Tengo un problema", hoy:"¿Qué hago hoy?", queda:"¿Cuánto nos queda?", config:"Configuración", recs:"Recordatorios", corte:"Contador de corte", aviso:"Estoy bien", mapa:"Mapa", ayuda:"Necesito ayuda", llevar:"Llevarme", ir:"Llevarme", mificha:"Mi ficha", mes:"Plan de corte largo", radio:"Radio", manual:"Manual en papel"};
-const TAB_LBL = {inicio:"Inicio", guias:"Guías", preparar:"Preparar", aprender:"Aprender", numeros:"Plan", linterna:"Herramientas"};
+const TAB_LBL = {inicio:"Inicio", guias:"Guías", preparar:"Preparar", aprender:"Aprender", numeros:"Familia", linterna:"Herramientas"};
 function scrLabel(st){
   if(!st) return "Inicio";
   if(st.guide){ const g = GUIDES.find(x => x.id === st.guide); if(g) return g.title; }
@@ -5275,7 +5286,7 @@ async function recNotif(){
 
 /* ---------- Configuración: todos los ajustes en un lugar (engranaje arriba a la derecha) ----------
    En un celular con control parental se ve todo; para cambiar algo, salvo voz y vibración, pide el PIN. */
-const APP_VER = 40;
+const APP_VER = 41;
 const GEAR_SVG = `<svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>`;
 function renderConfig(){
   const lc = lockCfg(), lockOn = !!(lc && lc.on), f = miFicha(), fp = fpCfg(), aqui = recsAqui(), nRec = REMINDERS.filter(recOn).length;
@@ -6839,7 +6850,7 @@ function renderAyuda(){
       ${dest.length ? `<span class="lbl">Le llega a</span><ul class="ay-dest">${dest.map(d => `<li><label><input type="checkbox" data-ay-tel="${esc(d.tel)}"${ui.ayuda.off[d.tel] === true ? "" : " checked"}> ${esc(d.nombre)} <span class="mono">${esc(d.ver)}</span></label></li>`).join("")}</ul>
         <a class="btn btn-signal btn-big" id="ay-sms" href="${ayudaSmsHref(sel.map(d => d.tel))}" data-action="ayuda-sent">Mandar SMS${sel.length > 1 ? ` a ${sel.length} personas` : sel.length ? ` a ${esc(sel[0].nombre)}` : ""}</a>
         ${sel.length > 1 ? `<details class="ay-uno"><summary>Si el SMS sale solo para uno, mándalo de a uno</summary><div class="inline">${sel.map(d => `<a class="btn btn-ghost btn-sm" data-ay-one="${esc(d.tel)}" href="${ayudaSmsHref([d.tel])}" data-action="ayuda-sent">SMS a ${esc(d.nombre)}</a>`).join("")}</div></details>` : ""}`
-      : `<p>Todavía no hay teléfonos de la familia guardados. Cárgalos en <strong>Plan → Números</strong> para mandarles el SMS con un toque.</p><a class="btn btn-signal" id="ay-sms" href="${ayudaSmsHref([])}" data-action="ayuda-sent">Escribir un SMS</a><button class="btn btn-ghost btn-sm" data-action="go-numeros">Cargar teléfonos</button>`}
+      : `<p>Todavía no hay teléfonos de la familia guardados. Cárgalos en <strong>Familia → Teléfonos</strong> para mandarles el SMS con un toque.</p><a class="btn btn-signal" id="ay-sms" href="${ayudaSmsHref([])}" data-action="ayuda-sent">Escribir un SMS</a><button class="btn btn-ghost btn-sm" data-action="go-numeros">Cargar teléfonos</button>`}
       <div class="inline"><a class="btn btn-ghost btn-sm" id="ay-wa" href="https://wa.me/?text=${encodeURIComponent(ayudaText())}" target="_blank" rel="noopener" data-action="ayuda-sent">WhatsApp</a><button class="btn btn-ghost btn-sm" data-action="ayuda-copy">Copiar</button></div>
       <p class="saved" id="ay-ok" role="status"></p>
       ${dest.length ? `<div class="ay-stick" id="ay-stick" hidden><a class="btn btn-signal btn-big" id="ay-sms2" href="${ayudaSmsHref(sel.map(d => d.tel))}" data-action="ayuda-sent">Mandar SMS${sel.length > 1 ? ` a ${sel.length} personas` : sel.length ? ` a ${esc(sel[0].nombre)}` : ""}</a></div>` : ""}
@@ -6912,7 +6923,7 @@ function renderAviso(){
       <p class="fine" id="geo-st" role="status">${a.geo ? `Ubicación agregada${a.geo.acc ? `, con una precisión de unos ${Math.round(a.geo.acc)} m` : ""}.` : ""}</p>
       <span class="lbl">Mensaje</span>
       <p class="msgprev" id="aviso-prev">${esc(avisoText())}</p>
-      ${ayudaDest().length ? `<span class="lbl">Le llega a</span><ul class="ay-dest">${ayudaDest().map(d => `<li><label><input type="checkbox" data-av-tel="${esc(d.tel)}"${(ui.aviso.off || {})[d.tel] ? "" : " checked"}> ${esc(d.nombre)} <span class="mono">${esc(d.ver)}</span></label></li>`).join("")}</ul>` : `<p class="fine">Carga los teléfonos de la familia en Plan → Números para mandarles el SMS a todos de un toque.</p>`}
+      ${ayudaDest().length ? `<span class="lbl">Le llega a</span><ul class="ay-dest">${ayudaDest().map(d => `<li><label><input type="checkbox" data-av-tel="${esc(d.tel)}"${(ui.aviso.off || {})[d.tel] ? "" : " checked"}> ${esc(d.nombre)} <span class="mono">${esc(d.ver)}</span></label></li>`).join("")}</ul>` : `<p class="fine">Carga los teléfonos de la familia en Familia → Teléfonos para mandarles el SMS a todos de un toque.</p>`}
       <div class="inline">
         <a class="btn btn-primary" id="aviso-wa" href="${l.wa}" target="_blank" rel="noopener" data-action="aviso-sent">WhatsApp</a>
         <a class="btn btn-primary" id="aviso-sms" href="${l.sms}" data-action="aviso-sent">${(() => { const n = avisoSel(); return n.length > 1 ? `SMS a ${n.length} personas` : n.length ? `SMS a ${esc(n[0].nombre)}` : "SMS"; })()}</a>
@@ -7245,7 +7256,7 @@ async function sendFile(){
     const file = new File([text], name, {type:"text/plain"});
     if(navigator.canShare && navigator.canShare({files:[file]})){
       await navigator.share({files:[file], title:"Datos de Preparados"});
-      say("Listo. En el otro celular: Plan → Compartir → Recibir → «Abrir archivo» y elige el archivo que llegó.");
+      say("Listo. En el otro celular: Familia → Compartir → Recibir → «Abrir archivo» y elige el archivo que llegó.");
       return;
     }
   }catch(e){ if(e && e.name === "AbortError") return; }
@@ -7373,7 +7384,7 @@ const STORY = [
   ["sw-4","Los celulares se buscan solos, como dos walkie-talkies, y se conectan directo entre ellos."],
   ["sw-5","En la app, uno toca «Enviar por Quick Share» y elige el otro celular. El otro toca «Aceptar»."],
   ["sw-6","El archivo viaja por el aire: el plan, los contactos y los avisos de la familia."],
-  ["sw-7","En el otro celular: Plan → Compartir → «Abrir archivo» → «Guardar». ¡Listo!"]
+  ["sw-7","En el otro celular: Familia → Compartir → «Abrir archivo» → «Guardar». ¡Listo!"]
 ];
 let storyTimer = null;
 function storyHTML(){
@@ -7401,7 +7412,7 @@ function renderCompartir(){
   const many = sh.parts && sh.parts.length > 1;
   const qr = sh.parts ? `<div class="card" id="qrbox"><div class="card-h"><h2>Código QR</h2><span class="mono count" id="qr-count">${many ? `${sh.part + 1} de ${sh.parts.length}` : ""}</span></div>
       <div class="qrwrap" id="qr-img">${qrSVG(sh.parts[sh.part]) || "<p>No se pudo dibujar el código.</p>"}</div>
-      <p class="fine">En el otro celular: Plan → Compartir → Recibir → «Escanear QR».${many ? ` Son ${sh.parts.length} códigos y pasan solos: que apunte la cámara hasta que lleguen todos.` : ""}</p>
+      <p class="fine">En el otro celular: Familia → Compartir → Recibir → «Escanear QR».${many ? ` Son ${sh.parts.length} códigos y pasan solos: que apunte la cámara hasta que lleguen todos.` : ""}</p>
       ${many ? `<div class="qrnav"><button class="btn btn-ghost" data-action="qr-prev">Anterior</button><button class="btn btn-ghost" data-action="qr-auto">${sh.qrAuto ? "Pausar" : "Pasar solos"}</button><button class="btn btn-ghost" data-action="qr-next">Siguiente</button></div>` : ""}
       <div class="inline"><button class="btn btn-ghost" data-action="qr-copy">Copiar como texto</button><button class="btn btn-ghost" data-action="qr-close">Cerrar</button></div>
       <p class="st" id="qr-st" role="status"></p></div>` : "";
