@@ -143,7 +143,7 @@ body.navegando .upd{bottom:calc(10px + env(safe-area-inset-bottom,0px))}
 .cfg-row .btn{flex:none}
 .cfg-lock{display:flex;gap:10px;align-items:flex-start;margin:0;padding:12px 14px;border-radius:12px;background:var(--surface-2);font-size:15px}.cfg-lock .ic{flex:none;margin-top:2px}
 .net{display:flex;align-items:center;gap:6px;min-width:0;font-size:13px;font-weight:700;color:var(--ok);white-space:nowrap}
-.net::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor}
+.net::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:currentColor}
 .net.off{color:var(--warn)}
 @media (max-width:359px){.brand{font-size:18px;gap:8px;letter-spacing:.05em}.net{font-size:11px}}
 
@@ -545,15 +545,9 @@ body:has(input:focus,textarea:focus) .ay-stick{display:none}
 .mes-plan .inline{margin-top:4px}
 .mes-prog{font-size:18px;color:var(--ink-2)}
 .check strong{font-weight:700}.check .mono{white-space:nowrap}
-.sos-bar{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.sb-llevar{background:var(--blue);color:var(--on-blue,#fff);font-size:18px}
-.sb{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:76px;padding:8px 6px;border-radius:var(--r);font-weight:700;font-size:16px;line-height:1.15;text-align:center;text-decoration:none}
-.sb .ic{width:26px;height:26px}
-.sb-911{background:var(--surface);color:var(--crit);border:2px solid var(--crit)}.sb-911 span{font-family:var(--font-data);font-size:22px}
-.sb-ayuda{background:var(--crit);color:var(--on-crit);font-size:18px}
-.sb-bien{background:var(--surface);color:var(--ok);border:2px solid var(--ok)}
-.sb-ficha{background:var(--surface);color:var(--ink);border:2px solid var(--ink)}.sb-ficha .ic{color:var(--crit)}
-.sb-prob{background:var(--signal);color:var(--on-signal);font-size:18px}
+.sos-bar{display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:1fr;gap:8px}
+.sb{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:84px;padding:10px 8px;border-radius:var(--r);background:var(--tile);color:var(--tile-ink,#fff);border:1px solid var(--tile-edge);font-weight:700;font-size:19px;line-height:1.15;text-align:center;text-decoration:none}
+.sb .ic{width:28px;height:28px;color:var(--signal)}
 .ahora{display:flex;flex-direction:column;gap:8px}
 .net-line{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:var(--surface-2);font-size:15px;text-align:left;color:var(--ink)}
 .hsecs{display:flex;flex-direction:column;gap:8px}
@@ -574,7 +568,7 @@ body:has(input:focus,textarea:focus) .ay-stick{display:none}
 .tools4{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 .tool4{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 4px;border-radius:12px;background:var(--surface-2);font-size:14px;font-weight:700;line-height:1.2;text-align:center;min-height:84px;justify-content:center}
 .tool4 .ic{width:26px;height:26px;color:var(--signal)}
-@media (max-width:340px){.tools4{grid-template-columns:repeat(2,minmax(0,1fr))}.sb{font-size:14px}}
+@media (max-width:340px){.tools4{grid-template-columns:repeat(2,minmax(0,1fr))}.sb{font-size:16px}}
 .apr-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
 .apr-row{display:flex;justify-content:space-between;align-items:center;gap:12px;width:100%;min-height:52px;padding:10px 12px;border-radius:10px;text-align:left;font-size:17px;font-weight:700;background:var(--surface-2)}
 .apr-row .mono{flex:none;font-size:13px;font-weight:500;color:var(--ink-2)}
@@ -5281,7 +5275,7 @@ async function recNotif(){
 
 /* ---------- Configuración: todos los ajustes en un lugar (engranaje arriba a la derecha) ----------
    En un celular con control parental se ve todo; para cambiar algo, salvo voz y vibración, pide el PIN. */
-const APP_VER = 39;
+const APP_VER = 40;
 const GEAR_SVG = `<svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>`;
 function renderConfig(){
   const lc = lockCfg(), lockOn = !!(lc && lc.on), f = miFicha(), fp = fpCfg(), aqui = recsAqui(), nRec = REMINDERS.filter(recOn).length;
