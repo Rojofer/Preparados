@@ -634,6 +634,15 @@ html.ahorro *{animation:none!important;transition:none!important}
 .ml-yo{background:var(--blue)}.ml-casa{background:var(--pl-casa)}.ml-fam{background:var(--pl-fam)}.ml-pe{background:var(--pl-pe)}.ml-otro{background:var(--pl-otro)}.ml-hosp{background:var(--crit)}.map-ley .ml-pol{background:var(--map-police);border-radius:2px}
 .nr-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .nr-pos{margin-top:-4px}
+.az-lug{display:flex;flex-direction:column;gap:8px}
+.az-h{font-size:1.1rem;margin:6px 0 0}
+.az-list{margin-bottom:8px}
+.az-it{display:flex;gap:6px;align-items:stretch}
+.az-it .nr-item{flex:1;min-width:0}
+.az-det{color:var(--ink-2)}
+.az-ojo{color:var(--warn,#b25b00);font-weight:600}
+.az-tel{display:grid;place-items:center;min-width:52px;border-radius:12px;background:var(--surface-2);color:inherit}
+.az-tel .ic{width:22px;height:22px}
 .nr-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
 .nr-item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;width:100%;padding:10px 12px;border-radius:12px;background:var(--surface-2);text-align:left;min-height:56px}
 .nr-t{display:flex;flex-direction:column;line-height:1.3;min-width:0}.nr-t strong{font-size:17px}.nr-t span{font-size:14px;color:var(--ink-2)}
@@ -941,6 +950,9 @@ const SRC = {
   meshtastic:["Meshtastic","https://meshtastic.org/"],
   meshRegion:["Meshtastic: región LoRa por país (Argentina: ANZ)","https://meshtastic.org/docs/configuration/region-by-country/"],
   osm:["OpenStreetMap: datos del mapa de Azul (ODbL)","https://www.openstreetmap.org/copyright"],
+  azRefes:["Guiafarma: farmacias de Azul (registro REFES)","https://guiafarma.com.ar/farmacias-de-turno/buenos-aires/azul"],
+  azHosp:["Ministerio de Salud PBA: hospitales provinciales","https://www.gba.gob.ar/saludprovincia/hospitales"],
+  azGuia:["Guía judicial de Azul: comisarías","https://stabogados.com.ar/defensa/zonas/azul/guia-judicial"],
   gmapsOff:["Google Maps: mapas sin conexión en Android","https://support.google.com/maps/answer/6291838?hl=es-419&co=GENIE.Platform%3DAndroid"],
   ign:["IGN: límites provinciales (vía argentina-map-react, MIT)","https://www.ign.gob.ar/NuestrasActividades/InformacionGeoespacial/CapasSIG"]
 };
@@ -2596,6 +2608,7 @@ const ICON = {
   smile:'<circle cx="12" cy="12" r="9.5"/><path d="M8.3 14.2a4.6 4.6 0 0 0 7.4 0"/><path d="M9 9.5h.01M15 9.5h.01"/>',
   cash:'<rect x="2.5" y="6" width="19" height="12" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M6 9.5v5M18 9.5v5"/>',
   shield:'<path d="M12 2.5 4.5 5.5v6c0 4.6 3.2 8.6 7.5 10 4.3-1.4 7.5-5.4 7.5-10v-6z"/><path d="m9 12 2 2 4-4"/>',
+  cross:'<path d="M9.5 3.5h5v6h6v5h-6v6h-5v-6h-6v-5h6z"/>',
   back:'<path d="m15 5-7 7 7 7"/>',
   chev:'<path d="m9 5 7 7-7 7"/>'
 };
@@ -4492,7 +4505,7 @@ function navHeading(){
   return {h:null, src:"none"};
 }
 function goNav(id){
-  const l = state.lugares.find(x => x.id === id);
+  const l = state.lugares.find(x => x.id === id) || azLugar(id);
   if(!l) return;
   NAV.dest = l; NAV.route = null; NAV.arrived = false; NAV.course = null; NAV.dicho = {}; NAV.desvio = 0;
   if(state.navVoz === undefined) state.navVoz = true;
@@ -4658,7 +4671,7 @@ function navUpdate(){
   NAV.info = navInfo();
   const m = ui.mapa;
   if(NAV.fix){ m.yo = {lat:NAV.fix.lat, lng:NAV.fix.lng, acc:NAV.fix.acc, gps:true}; }
-  if(NAV.dest && enAzul(NAV.dest)){ const [x, y] = toXY(NAV.dest); m.sel = {tipo:"Mi lugar", n:NAV.dest.nombre, x, y, lid:NAV.dest.id}; }
+  if(NAV.dest && enAzul(NAV.dest)){ const [x, y] = toXY(NAV.dest); m.sel = {tipo:NAV.dest.cat ? ({farm:"Farmacia", pol:"Policía", salud:"Salud"})[NAV.dest.cat] : "Mi lugar", n:NAV.dest.nombre, x, y, lid:NAV.dest.id}; }
   m.ruta = NAV.route; m.calle = null;
   if(NAV.info && NAV.info.km < 0.025 && !NAV.arrived) NAV.arrived = true;
   navAnunciar();
@@ -4703,7 +4716,7 @@ function renderNav(){
   const geo = `geo:${d.lat},${d.lng}?q=${d.lat},${d.lng}(${encodeURIComponent(d.nombre)})`;
   return `<section class="stack nav-v">
     <button class="back" data-action="nav-stop">${icon("back")}Terminar</button>
-    <div class="intro"><p class="phase">Llevarme a</p><h1>${esc(d.nombre)}</h1></div>
+    <div class="intro"><p class="phase">Llevarme a</p><h1>${esc(d.nombre)}</h1>${d.dir ? `<p class="lede">${esc(d.dir)}</p>` : ""}${d.tel ? `<a class="btn btn-ghost btn-sm" href="tel:${d.tel}">${icon("phone")}Llamar: ${telFmt(d.tel)}</a>` : ""}</div>
     <div class="card" id="nav-box" aria-live="polite">${navBoxHTML()}</div>
     ${enAzul(d) ? `<div class="azwrap"><canvas id="azmap" tabindex="0" aria-label="Plano con el camino"></canvas>
       <div class="mapbtns"><button class="btn btn-ghost" data-action="map-z" data-f="1.4" aria-label="Acercar">+</button><button class="btn btn-ghost" data-action="map-z" data-f="0.7" aria-label="Alejar">−</button></div></div>` : ""}
@@ -4757,6 +4770,7 @@ function renderLlevar(){
     ${backBtn()}
     <div class="intro"><h1>Llevarme</h1><p class="lede">Elige adónde ir: la app te guía calle por calle, sin internet.</p></div>
     ${hay ? navRow(99) : `<div class="card"><p>Todavía no guardaste lugares. Agrega la dirección de tu casa y la de tus familiares.</p></div>`}
+    ${azLugaresHTML()}
     ${hay ? `<div class="azwrap"><canvas id="azmap" tabindex="0" aria-label="Plano con tus lugares"></canvas><div class="mapbtns"><button class="btn btn-ghost" data-action="map-z" data-f="1.4" aria-label="Acercar">+</button><button class="btn btn-ghost" data-action="map-z" data-f="0.7" aria-label="Alejar">−</button></div></div>${mapLeyenda()}` : ""}
     <div class="inline"><button class="btn btn-primary" data-action="dir-abrir">+ Agregar una dirección</button><button class="btn btn-ghost" data-action="go-lugares">Editar lugares</button><button class="btn btn-ghost" data-action="go-mapa">Abrir el mapa</button></div>
   </section>`;
@@ -5258,7 +5272,7 @@ async function recNotif(){
 
 /* ---------- Configuración: todos los ajustes en un lugar (engranaje arriba a la derecha) ----------
    En un celular con control parental se ve todo; para cambiar algo, salvo voz y vibración, pide el PIN. */
-const APP_VER = 31;
+const APP_VER = 32;
 const GEAR_SVG = `<svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>`;
 function renderConfig(){
   const lc = lockCfg(), lockOn = !!(lc && lc.on), f = miFicha(), fp = fpCfg(), aqui = recsAqui(), nRec = REMINDERS.filter(recOn).length;
@@ -6367,6 +6381,80 @@ function vdAdd(){
 function vdManual(){
   return VD_CATS.map(c => `<h3>${c.t}</h3>${VADE.filter(v => v.c === c.id).map(v => `<div class="pb-m"><p><strong>${esc(v.n)}</strong> (${VD_TIPO[v.tipo][0].toLowerCase()}). ${esc(v.sirve)}</p>${v.no.length ? `<p><em>No:</em> ${v.no.map(esc).join(" ")}</p>` : ""}${v.mezcla.length ? `<p><em>No mezclar con:</em> ${v.mezcla.map(esc).join(" ")}</p>` : ""}${v.alarma ? `<p><em>Consulta si:</em> ${esc(v.alarma)}</p>` : ""}</div>`).join("")}`).join("") +
     `<p>Dosis: la del prospecto o la del médico. Intoxicaciones: 0800-333-0160.</p>`;
+}
+
+/* ---------- Lugares de Azul: farmacias, policía y hospitales, para «Llevarme» ----------
+   Revisado el 19/10/2026: ubicación de OpenStreetMap, cruzada con el registro oficial de farmacias (REFES, vía guiafarma.com.ar),
+   la página de hospitales de la Provincia y la guía judicial de Azul. «ojo»: dato que no pude confirmar con una segunda fuente.
+   Cada lugar: [id, nombre, lat, lng, dirección, teléfono, detalle, ojo] */
+const AZ_LUG = [
+  {id:"farm", t:"Farmacias", ic:"cross", l:[
+    ["f1","Farmacia Marchissio",-36.77752,-59.86445,"San Martín 399, esquina Colón"],
+    ["f2","Farmacia Peroggi",-36.77863,-59.86097,"Hipólito Yrigoyen 548, esquina Moreno"],
+    ["f3","Farmacia Burgan",-36.77801,-59.85811,"Av. 25 de Mayo 499, esquina Mitre"],
+    ["f4","Farmacia Merlo",-36.78375,-59.85244,"Monseñor Cáneva 534"],
+    ["f5","Farmacia Colotto",-36.78580,-59.85986,"Av. Perón 850"],
+    ["f6","Farmacia Castro",-36.78130,-59.86895,"Colón 942"],
+    ["f7","Farmacia Vinciguerra",-36.77362,-59.86256,"Alfredo Prat 301, esquina Alvear"],
+    ["f8","Farmacia Santa Lucía",-36.78533,-59.84895,"Av. Piazza 1146"],
+    ["f9","Farmacia Diab",-36.77098,-59.85911,"Amado Diab 311, cerca del Hospital Pintos"],
+    ["f10","Farmacia Ciotta",-36.77958,-59.86689,"Colón al 800, esquina Roca"],
+    ["f11","Farmacia SASMA",-36.77638,-59.86465,"Rivadavia 616","","Farmacia de la mutual"],
+    ["f12","Farmacia Fidalgo",-36.77347,-59.85798,"Burgos 314"],
+    ["f13","Farmacia San Martín",-36.78374,-59.85587,"San Martín 900, esquina Castellar"],
+    ["f14","Farmacia Del Fuerte Azul",-36.78084,-59.85501,"Av. Mitre 809"],
+    ["f15","Farmacia López",-36.78065,-59.86028,"San Martín 643, esquina Necochea"],
+    ["f16","Farmacia Orianda",-36.77564,-59.86131,"Av. Mitre 428"],
+    ["f17","Farmacia Lucero",-36.78838,-59.87114,"Av. 25 de Mayo 1264","","Lunes a viernes de 8:30 a 19:30, sábados de 8:30 a 13","El registro oficial la tiene en Guaminí 601"],
+    ["f18","Farmacia Argañaraz",-36.79129,-59.88036,"Av. Pellegrini 1693","","","Solo figura en el mapa"],
+    ["f19","Farmacia Soncini",-36.77996,-59.85925,"Hipólito Yrigoyen 650, esquina Necochea"]
+  ], nota:"De noche y los fines de semana atiende la farmacia de turno: la lista suele estar pegada en la puerta de cada farmacia."},
+  {id:"pol", t:"Policía", ic:"shield", l:[
+    ["p1","Comisaría Primera",-36.77346,-59.86665,"Belgrano y Las Flores","02281431368"],
+    ["p2","DDI Azul (Investigaciones)",-36.77410,-59.86588,"Belgrano 219","","Abierta las 24 horas"],
+    ["p3","Comisaría de la Mujer y la Familia",-36.78027,-59.87095,"Bartolomé J. Ronco 952","02281423791","","Otra fuente la ubica en Olavarría 322: llama antes"],
+    ["p4","Jefatura Departamental",-36.78677,-59.84642,"Av. Piazza 1350","","Cerca, en Piazza 1250, está el Comando de Patrullas: 02281 43-1888"],
+    ["p5","Policía Federal",-36.77669,-59.86237,"Belgrano 433"],
+    ["p6","Destacamento Zona Balneario",-36.79526,-59.88508,"Av. Pellegrini, en el Balneario"],
+    ["p7","Policía de Seguridad Vial",-36.78289,-59.82879,"Ruta Nacional 3"],
+    ["p8","Puesto policial Chaves Norte",-36.76661,-59.87755,"Av. Manuel Chaves Norte","","","Puede no estar atendido"],
+    ["p9","Puesto policial Mitre Norte",-36.76880,-59.86994,"Av. Mitre Norte y Argentina","","","Puede no estar atendido"]
+  ], nota:"En una emergencia, primero el 911: manda un patrullero adonde estés."},
+  {id:"salud", t:"Hospitales y clínicas", ic:"heart", l:[
+    ["h1","Hospital Pintos",-36.76981,-59.85887,"Amado Diab 270","02281435200","Hospital municipal. Guardia las 24 horas"],
+    ["h2","Hospital Materno Infantil Argentina Diego",-36.77636,-59.85933,"Alfredo Prat 521","02281424150","Hospital provincial de niños y maternidad"],
+    ["h3","Sanatorio Azul",-36.78242,-59.85328,"Av. Mitre 943","","Privado"],
+    ["h4","Clínica San Martín",-36.78394,-59.85571,"San Martín 902","","Privada"],
+    ["h5","IMAC",-36.78348,-59.85349,"Belgrano 961","","Privada"]
+  ], nota:"Si alguien no puede caminar, no respira bien o sangra mucho, llama al 107 o al 911: no lo lleves caminando."}
+];
+function azLugar(id){
+  const k = String(id || "").replace(/^az:/, "");
+  for(const c of AZ_LUG){ const r = c.l.find(x => x[0] === k); if(r) return {id:"az:" + r[0], nombre:r[1], lat:r[2], lng:r[3], dir:r[4], tel:r[5] || "", det:r[6] || "", ojo:r[7] || "", cat:c.id}; }
+  return null;
+}
+const telFmt = t => t.replace(/^(\d{5})(\d{2})(\d{4})$/, "$1 $2-$3");
+function azCat(c, pos){
+  const cerca = pos && enAzul(pos);
+  let ls = c.l.map(r => azLugar(r[0]));
+  const d = new Map(); if(cerca) ls.forEach(l => d.set(l.id, distLugar(pos, l)));
+  if(cerca) ls.sort((a, b) => d.get(a.id).m - d.get(b.id).m);
+  const prim = cerca ? ls[0] : null, dp = prim ? d.get(prim.id) : null;
+  const sub = prim ? `La más cerca: ${esc(prim.nombre.replace(/^Farmacia /, ""))}, ${dp.m < 30 ? "acá" : cuadrasTxt(dp.m)}` : `${ls.length} en Azul`;
+  const rows = ls.map(l => {
+    const dd = d.get(l.id);
+    const dist = dd ? (dd.m < 30 ? " · Estás acá" : ` · ${cuadrasTxt(dd.m)}`) : "";
+    return `<li class="az-it"><button class="nr-item" data-action="nav-go" data-id="${esc(l.id)}"><span class="nr-t"><strong>${esc(l.nombre)}</strong><span>${esc(l.dir)}${dist}</span>${l.det ? `<span class="az-det">${esc(l.det)}</span>` : ""}${l.ojo ? `<span class="az-ojo">Confirmar: ${esc(l.ojo)}</span>` : ""}</span><span class="nr-go">${icon("compass")}Ir</span></button>${l.tel ? `<a class="az-tel" href="tel:${l.tel}" aria-label="Llamar a ${esc(l.nombre)}, ${telFmt(l.tel)}">${icon("phone")}</a>` : ""}</li>`;
+  }).join("");
+  return `<details class="hsec az-cat" data-azcat="${c.id}"${ui.azOpen === c.id ? " open" : ""}><summary><span class="g-ic">${icon(c.ic)}</span><span class="hs-t"><strong>${c.t}</strong><span>${sub}</span></span><span class="hs-chev" aria-hidden="true"></span></summary>
+    <div class="hs-body"><ul class="nr-list az-list">${rows}</ul><p class="fine">${c.nota}</p></div></details>`;
+}
+function azLugaresHTML(){
+  const pos = state.ultimaPos, lejos = pos && !enAzul(pos);
+  return `<div class="az-lug"><h2 class="az-h">Lugares de Azul</h2>
+    <p class="fine">${pos && !lejos ? "Ordenados del más cerca al más lejos, por las calles." : lejos ? "Estás fuera de Azul: estos lugares son de la ciudad." : "Cuando te ubique, se ordenan del más cerca al más lejos."}</p>
+    <div class="hsecs">${AZ_LUG.map(c => azCat(c, pos)).join("")}</div>
+    ${srcBox(["osm","azRefes","azHosp","azGuia"], "Ubicaciones de OpenStreetMap, cruzadas en octubre de 2026 con el registro oficial de farmacias, la lista de hospitales de la Provincia y la guía judicial de Azul. Lo que dice «Confirmar» tiene una sola fuente o fuentes que no coinciden.")}</div>`;
 }
 
 /* ---------- Plan 30 días sin luz ---------- */
@@ -8453,6 +8541,12 @@ document.addEventListener("toggle", e => {
     if(d.open){ ui.pbOpen = d.dataset.pbcat; document.querySelectorAll("details.pb-cat[open]").forEach(o => { if(o !== d) o.open = false; });
       if(Date.now() - (window.__sumTap || 0) < 1500) requestAnimationFrame(() => { const hdr = document.querySelector(".topbar"), off = (hdr ? hdr.getBoundingClientRect().bottom : 0) + 8, top = d.getBoundingClientRect().top; if(top < off || top > window.innerHeight * 0.55) window.scrollTo({top:window.scrollY + top - off}); }); }
     else if(ui.pbOpen === d.dataset.pbcat) ui.pbOpen = "";
+    return;
+  }
+  if(d.matches && d.matches("details.az-cat")){
+    if(d.open){ ui.azOpen = d.dataset.azcat; document.querySelectorAll("details.az-cat[open]").forEach(o => { if(o !== d) o.open = false; });
+      if(Date.now() - (window.__sumTap || 0) < 1500) requestAnimationFrame(() => { const hdr = document.querySelector(".topbar"), off = (hdr ? hdr.getBoundingClientRect().bottom : 0) + 8, top = d.getBoundingClientRect().top; if(top < off || top > window.innerHeight * 0.55) window.scrollTo({top:window.scrollY + top - off, behavior:matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"}); }); }
+    else if(ui.azOpen === d.dataset.azcat) ui.azOpen = "";
     return;
   }
   if(!d.matches || !d.matches("details.hsec")) return;
