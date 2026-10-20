@@ -714,7 +714,9 @@ body.navegando .view{padding-bottom:calc(28px + env(safe-area-inset-bottom,0px))
 .vd-fam{display:flex;flex-direction:column;gap:6px}.vd-fi{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;background:var(--surface-2)}
 .vd-fi>div{display:flex;flex-direction:column;min-width:0}.vd-fi span{font-size:14px;color:var(--ink-2)}
 .vd-form{display:flex;flex-direction:column;gap:10px;margin-top:6px}
-.mf-btn.pb-home{border-left:6px solid var(--signal)}.pb-home>.ic:first-child{color:var(--signal-ink)}
+.mf-btn.pb-home{border-left:6px solid var(--signal)}.mf-btn.az-home{border-left:6px solid var(--blue);margin-bottom:10px}.mf-btn.az-home>.ic:first-child{color:var(--blue)}
+.az-ul{margin:4px 0 8px;padding-left:20px}.az-ul li{margin:4px 0}.azul h3{margin:12px 0 4px;font-size:17px}
+.az-ars{list-style:none;margin:6px 0;padding:0;display:flex;flex-direction:column;gap:6px}.az-ar{display:flex;flex-direction:column;padding:8px 12px;border-radius:10px;background:var(--surface-2)}.az-ar span{font-size:15px;color:var(--ink-2)}.az-ar.cerca{border-left:5px solid var(--warn)}.az-ar.cerca span{color:var(--ink);font-weight:700}.pb-home>.ic:first-child{color:var(--signal-ink)}
 .pb .quick{grid-template-columns:1fr}
 .pb-urgbox{display:flex;flex-direction:column;gap:6px}.pb-urg .g-ic{background:var(--crit);color:var(--on-crit)}
 .pb-row .g-txt strong{font-size:17px;line-height:1.3}
@@ -947,6 +949,20 @@ const SRC = {
   meshtastic:["Meshtastic","https://meshtastic.org/"],
   meshRegion:["Meshtastic: región LoRa por país (Argentina: ANZ)","https://meshtastic.org/docs/configuration/region-by-country/"],
   osm:["OpenStreetMap: datos del mapa de Azul (ODbL)","https://www.openstreetmap.org/copyright"],
+  azNoaa:["NOAA: El Niño, discusión del 8/10/2026","https://www.cpc.ncep.noaa.gov/products/analysis_monitoring/enso_advisory/ensodisc.shtml"],
+  azSmn:["SMN: pronóstico trimestral de octubre de 2026","https://bichosdecampo.com/wp-content/uploads/2026/10/pronostico_climatico_trimestral_102026.pdf"],
+  azPlan:["Azul activa un plan de prevención por el Súper Niño (agosto de 2026)","https://agroempresario.com/publicacion/120767/ante-la-amenaza-del-super-nino-el-municipio-de-azul-pone-en-marcha-un-operativo-de-prevencion-urbana-y-rural/"],
+  az2002:["Infobae: inundación en Azul, agosto de 2002","https://www.infobae.com/2002/08/18/16503-cientos-evacuados-la-inundacion-azul/"],
+  az2012:["Infocielo: el arroyo desbordó e inundó el casco urbano, mayo de 2012","https://www.infocielo.com/politica-y-economia/azul-intensas-lluvias-desbordaron-el-arroyo-e-inundo-el-casco-urbano-n36805"],
+  az2012b:["Télam: el arroyo llegó a 5,5 m, agosto de 2012","https://www.todojujuy.com/pais/comienzan-bajar-las-aguas-azul-n1304"],
+  azIsidora:["La Nación: terminó la presa La Isidora (2017)","https://www.lanacion.com.ar/comunidad/concluyo-la-obra-para-evitar-el-desborde-del-arroyo-azul-nid2021528/"],
+  azManantiales:["Infocielo: las obras hídricas que pidió Azul (2022)","https://infocielo.com/municipios/las-tres-obras-hidricas-clave-que-azul-le-pidio-la-provincia-n747869"],
+  azIhlla:["IHLLA: modelo de la inundación urbana de Azul","https://ihlla.conicet.gov.ar/se-genero-un-mapa-de-inundaciones-urbana-para-la-ciudad-de-azul/"],
+  dcAzul:["Defensa Civil Azul (cuenta oficial): emergencias al 103","https://www.instagram.com/defensacivilazul/"],
+  azAnmat:["ANMAT: alimentos y agua en emergencias climáticas","https://www.argentina.gob.ar/anmat/comunidad/seguridad-de-los-alimentos-y-del-agua-en-caso-de-emergencias-climaticas-y-cortes-de-luz"],
+  azLepto:["Ministerio de Salud: leptospirosis","https://www.argentina.gob.ar/salud/glosario/leptospirosis"],
+  azDt:["Ciudad de Buenos Aires: doble bacteriana cada 10 años","https://buenosaires.gob.ar/salud/vacunas/jovenes-y-adultos-mayores"],
+  azColfarma:["Colegio de Farmacéuticos: higiene frente a inundaciones","https://colfarma.org.ar/el-cimf-recomienda-recomendacion-de-higiene-y-control-de-enfermedades-frente-a-las-inundaciones/"],
   azRefes:["Guiafarma: farmacias de Azul (registro REFES)","https://guiafarma.com.ar/farmacias-de-turno/buenos-aires/azul"],
   azHosp:["Ministerio de Salud PBA: hospitales provinciales","https://www.gba.gob.ar/saludprovincia/hospitales"],
   azGuia:["Guía judicial de Azul: comisarías","https://stabogados.com.ar/defensa/zonas/azul/guia-judicial"],
@@ -961,10 +977,11 @@ const CIUDADES = {
     {n:"02281 43-1400",tel:"02281431400",label:"CEAL: urgencias de luz",desc:"Cortes, cables caídos o chispas. Si no atiende: 02281 50-3485 o 50-5914.",ic:"bolt",top:1,sh:"Luz (CEAL)"},
     {n:"02281 53-3611",tel:"02281533611",label:"CEAL: urgencias de agua",desc:"Pérdidas en la calle o falta de agua.",ic:"drop",top:1,sh:"Agua (CEAL)"},
     {n:"0810 666 0810",tel:"08106660810",label:"Camuzzi: emergencias de gas",desc:"Olor a gas o escapes, las 24 horas.",ic:"flame",top:1,sh:"Gas (Camuzzi)"},
+    {n:"103",tel:"103",label:"Defensa Civil Azul",desc:"Inundaciones, árboles o cables caídos y otras emergencias. Cuenta oficial: @defensacivilazul.",ic:"waves",top:1,sh:"Defensa Civil"},
     {n:"02281 43-3033",tel:"02281433033",label:"Bomberos Voluntarios de Azul",desc:"Colón 1020. También puedes llamar al 100."},
     {n:"02281 43-1743",tel:"02281431743",label:"Comisaría Azul Primera",desc:"Las Flores y Belgrano. Para una emergencia, el 911."},
     {n:"02281 43-1888",tel:"02281431888",label:"Comando de Patrullas Azul",desc:"Piazza 1250."}
-  ], src:["ceal","pintos","pintosTel","pintosTurnos","bomberosAzul","comisariasAzul","camuzzi"]}
+  ], src:["ceal","pintos","pintosTel","pintosTurnos","bomberosAzul","comisariasAzul","camuzzi","dcAzul"]}
 };
 const PROVINCIAS = ["Buenos Aires","Catamarca","Chaco","Chubut","Ciudad de Buenos Aires","Córdoba","Corrientes","Entre Ríos","Formosa","Jujuy","La Pampa","La Rioja","Mendoza","Misiones","Neuquén","Río Negro","Salta","San Juan","San Luis","Santa Cruz","Santa Fe","Santiago del Estero","Tierra del Fuego","Tucumán"];
 const ZONAS = {
@@ -2019,8 +2036,8 @@ const GUIDES = [
     {ph:"Durante",t:"Si te piden evacuar, sal",d:"Si no puedes salir, sube al lugar más alto y pide ayuda a Defensa Civil o al 911.",a:{type:"call",tel:"103",num:"103"}},
     {ph:"Después",t:"Vuelve cuando lo autoricen",d:"No toques aparatos ni enchufes mojados."},
     {ph:"Después",t:"Toma agua envasada o potabilizada",d:"El agua de la red puede contaminarse. Sigue los avisos oficiales.",a:{type:"guide",id:"agua-segura",label:"Cómo potabilizar"}},
-    {ph:"Después",t:"Limpia y desinfecta",d:"Una cucharada sopera de lavandina por litro de agua para las superficies. Nunca la mezcles con otros productos de limpieza."}
-   ],src:["sinagir","readyFloods","lavandinaDil","emergencias"]},
+    {ph:"Después",t:"Limpia y desinfecta",d:"Con botas y guantes. Para pisos y paredes, 1 taza de lavandina (250 ml) cada 10 litros de agua. Nunca la mezcles con otros productos de limpieza."}
+   ],src:["sinagir","readyFloods","lavandinaDil","azColfarma","emergencias"]},
 
   {id:"tormenta",group:"emergencia",icon:"storm",title:"Tormenta fuerte",summary:"Con alerta, durante el temporal y después.",
    imgs:["tor-asegurar","tor-basura","tor-cargar","tor-adentro","tor-afuera","tor-manejo","tor-cables","tor-danos"],
@@ -2720,7 +2737,8 @@ function renderHome(){
     ? `<button class="tile signal" data-action="go-corte" aria-label="${t.label}: ${t.hint}">${icon(t.icon)}<span class="t-label">${t.label}</span></button>`
     : `<button class="tile" data-action="guide" data-id="${t.guide}" aria-label="${t.label}: ${t.hint}">${icon(t.icon)}<span class="t-label">${t.label}</span></button>`).join("");
   const zona = state.provincia ? zonaSug(state.provincia).map(id => GUIDES.find(x => x.id === id)).filter(Boolean) : [];
-  const pasa = `<div class="tiles">${tiles}</div>
+  const azBtn = state.ciudad === "Azul" ? `<button class="mf-btn az-home" data-action="go-azul">${icon("waves")}<span><strong>Azul y el Súper Niño</strong><span>El arroyo, qué hacer con cada alerta y el 103</span></span>${icon("chev")}</button>` : "";
+  const pasa = `${azBtn}<div class="tiles">${tiles}</div>
     ${zona.length ? `<span class="lbl">En ${esc(state.provincia)}, también</span><div class="chips">${zona.map(g => `<button class="chip" data-action="guide" data-id="${g.id}">${g.title}</button>`).join("")}</div>` : `<button class="btn btn-ghost btn-sm" data-action="go-zona">Guías para tu provincia</button>`}
     <button class="btn btn-ghost btn-sm" data-action="tab" data-tab="guias">Ver todas las guías</button>`;
   const ext = GUIDES.filter(g => g.group === "extremo");
@@ -2791,6 +2809,7 @@ function renderGuides(){
   return `<section class="stack">
     <div class="intro"><h1>Guías</h1><p class="lede">Pasos cortos para seguir en el momento, sin señal.</p></div>
     <button class="mf-btn pb-home" data-action="go-prob">${icon("help")}<span><strong>Tengo un problema</strong><span>Busca lo que pasa: «fiebre», «sin agua», «frío»</span></span>${icon("chev")}</button>
+    ${state.ciudad === "Azul" ? `<button class="mf-btn az-home" data-action="go-azul">${icon("waves")}<span><strong>Azul y el Súper Niño</strong><span>El arroyo, qué hacer con cada alerta y el 103</span></span>${icon("chev")}</button>` : ""}
     <h2 class="sec">En la emergencia</h2>
     <ul class="glist">${GUIDES.filter(g => g.group === "emergencia").map(row).join("")}</ul>
     <button class="mf-btn" data-action="go-vade">${icon("heart")}<span><strong>Vademécum</strong><span>Para qué sirve cada remedio y cuándo no tomarlo</span></span>${icon("chev")}</button>
@@ -4384,6 +4403,7 @@ function renderAhorro(){
 const MANUAL_SEC = [
   ["datos","Datos de la familia","Plan, teléfonos, lugares, inventario y fichas médicas.",true],
   ["mapa","Mapa del barrio y de Azul","Con tus lugares guardados, hospitales, bomberos y policía.",true],
+  ["azul","Azul y el Súper Niño","El arroyo, qué hacer con cada alerta, después del agua y la antitetánica.",true],
   ["lugares","Farmacias, policía y hospitales","Las direcciones de Azul y a cuántas cuadras de casa está cada uno.",true],
   ["radio","Radios y cómo comunicarse","Frecuencias y qué hacer sin internet.",true],
   ["hoy","Qué hacer cada día","Las tareas de cada encargo, día por día, para un corte largo.",true],
@@ -4423,6 +4443,7 @@ function manualHTML(){
       <p class="pm-leg">Verde: tus lugares · Rojo: hospitales y clínicas · Naranja: bomberos · Azul: policía · Barra de escala abajo a la izquierda. El norte está arriba.</p>${leg ? `<ul>${leg}</ul>` : ""}</section>
       <section class="ps pm-map"><h2>Azul</h2>${ciudad ? `<img src="${ciudad}" alt="Mapa de Azul">` : ""}<p class="pm-leg">Calles y lugares: © colaboradores de OpenStreetMap.</p></section>`);
   }
+  if(sel.azul && state.ciudad === "Azul") parts.push(`<section class="ps pm-g">${renderAzul().replace(/<button[\s\S]*?<\/button>/g, "").replace(/<a class="btn[^>]*>[\s\S]*?<\/a>/g, "").replace(/<details class="sources">[\s\S]*?<\/details>/g, "").replace(/<div class="inline">\s*<\/div>/g, "").replace(/<section class="stack azul">|<\/section>\s*$/g, "").replace(/<h1>/, "<h2>").replace(/<\/h1>/, "</h2>")}<p>Teléfonos: Defensa Civil Azul 103 · Emergencias 911 · Bomberos 100 · SAME 107.</p><h3>Si el agua tocó la comida</h3><ul>${pbFind("comida-mojada").p.map(x => `<li>${esc(x)}</li>`).join("")}</ul><h3>Limpiar la casa</h3><ul>${pbFind("limpiar-inundacion").p.map(x => `<li>${esc(x)}</li>`).join("")}</ul><h3>Fiebre después del agua</h3><ul>${pbFind("fiebre-agua").p.map(x => `<li>${esc(x)}</li>`).join("")}</ul></section>`);
   if(sel.lugares && (!state.ciudad || state.ciudad === "Azul")) parts.push(`<section class="ps pm-g"><h2>Farmacias, policía y hospitales de Azul</h2>${azManual()}</section>`);
   if(sel.radio){
     parts.push(`<section class="ps"><h2>Radios</h2>${printTable(["Banda","Frecuencia","Radio"], RADIOS.flatMap(g => g.l).map(([, b, f, n]) => [b, f, n]))}
@@ -5158,7 +5179,7 @@ document.addEventListener("keydown", e => { if(e.key === "Escape"){ const ov = d
 const scrKey = () => [ui.tab, ui.sub || "", ui.guide || "", ui.tab === "numeros" ? ui.planSeg || "" : "", ui.tab === "preparar" ? ui.prep || "" : "", ui.ayuda && ui.ayuda.mostrar && ui.sub === "ayuda" ? "m" : "", ui.sub === "prob" ? ui.pbId || "" : ""].join("|");
 let histPop = false;
 /* La dirección de cada pantalla: si Android recarga la app, vuelve a la misma pantalla */
-const SUB_HASH = {pedido:"pedido-ficha", vade:"vademecum", queda:"cuanto-queda", hoy:"hoy", prob:"problema", config:"configuracion", recs:"recordatorios", corte:"corte", aviso:"aviso", mapa:"mapa", ayuda:"ayuda", llevar:"llevar", ir:"llevar", mificha:"mificha", mes:"30dias", radio:"radio", manual:"manual"};
+const SUB_HASH = {azul:"azul", pedido:"pedido-ficha", vade:"vademecum", queda:"cuanto-queda", hoy:"hoy", prob:"problema", config:"configuracion", recs:"recordatorios", corte:"corte", aviso:"aviso", mapa:"mapa", ayuda:"ayuda", llevar:"llevar", ir:"llevar", mificha:"mificha", mes:"30dias", radio:"radio", manual:"manual"};
 function screenHash(){
   if(ui.tab === "inicio") return ui.sub === "prob" && ui.pbId ? "problema-" + ui.pbId : SUB_HASH[ui.sub] || "";
   if(ui.tab === "guias") return ui.guide ? "guia-" + ui.guide : "guias";
@@ -5168,7 +5189,7 @@ function screenHash(){
 }
 const histUrl = () => location.pathname + location.search + (screenHash() ? "#" + screenHash() : "");
 const NAVS = [];   /* pantallas anteriores dentro de la app, para el botón «volver» */
-const SUB_LBL = {pedido:"Tu ficha", vade:"Vademécum", prob:"Tengo un problema", hoy:"¿Qué hago hoy?", queda:"¿Cuánto nos queda?", config:"Configuración", recs:"Recordatorios", corte:"Contador de corte", aviso:"Estoy bien", mapa:"Mapa", ayuda:"Necesito ayuda", llevar:"Llevarme", ir:"Llevarme", mificha:"Mi ficha", mes:"Plan de corte largo", radio:"Radio", manual:"Manual en papel"};
+const SUB_LBL = {azul:"Azul y el Súper Niño", pedido:"Tu ficha", vade:"Vademécum", prob:"Tengo un problema", hoy:"¿Qué hago hoy?", queda:"¿Cuánto nos queda?", config:"Configuración", recs:"Recordatorios", corte:"Contador de corte", aviso:"Estoy bien", mapa:"Mapa", ayuda:"Necesito ayuda", llevar:"Llevarme", ir:"Llevarme", mificha:"Mi ficha", mes:"Plan de corte largo", radio:"Radio", manual:"Manual en papel"};
 const TAB_LBL = {inicio:"Inicio", guias:"Guías", preparar:"Preparar", aprender:"Aprender", numeros:"Familia", linterna:"Herramientas"};
 function scrLabel(st){
   if(!st) return "Inicio";
@@ -5288,7 +5309,7 @@ async function recNotif(){
 
 /* ---------- Configuración: todos los ajustes en un lugar (engranaje arriba a la derecha) ----------
    En un celular con control parental se ve todo; para cambiar algo, salvo voz y vibración, pide el PIN. */
-const APP_VER = 42;
+const APP_VER = 43;
 const GEAR_SVG = `<svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>`;
 function renderConfig(){
   const lc = lockCfg(), lockOn = !!(lc && lc.on), f = miFicha(), fp = fpCfg(), aqui = recsAqui(), nRec = REMINDERS.filter(recOn).length;
@@ -5451,6 +5472,16 @@ const PROBLEMAS = [
       "Lava bien el abrelatas, la tabla y los platos."],
    ayuda:"Si alguien comió algo en mal estado y vomita mucho, tiene diarrea fuerte, ve borroso o le cuesta tragar, llama al 107 o al Centro de Intoxicaciones.",
    tel:["107", "intox"], ir:[["g","comida-corte"], ["l","conservar"]]},
+  {id:"comida-mojada", c:"comida", t:"El agua de la inundación tocó la comida", kw:"inundacion agua comida mojada latas alimentos tirar desinfectar inundo",
+   p:["Tira toda la comida que tocó el agua de la inundación: frescos, paquetes de papel o cartón, bolsas, frascos y todo lo casero.",
+      "Las latas y los envases tipo tetra sanos y cerrados se salvan: saca la etiqueta, lávalos con agua y jabón, y sumérgelos en 1 taza de lavandina (250 ml) en 20 litros de agua segura. Escríbeles con marcador qué son y cuándo vencen.",
+      "Tira las latas abiertas, golpeadas o hinchadas.",
+      "Ollas, platos y cubiertos de metal o cerámica: lávalos con agua caliente y jabón, y después hiérvelos en agua segura. Que se sequen antes de usarlos.",
+      "Tira las mamaderas, los chupetes y los tápers de plástico que tocó el agua.",
+      "De la heladera, lo que estuvo más de 2 horas sin frío (carne, pollo, pescado, huevos y sobras) se tira. Si dudas, tíralo."],
+   casa:["Lavandina", "Un balde de 20 litros", "Marcador"],
+   ayuda:"Si alguien comió algo que tocó el agua y tiene vómitos, diarrea o fiebre, que consulte en el hospital.",
+   tel:["hosp"], ir:[["p","limpiar-inundacion"], ["g","agua-segura"], ["h","azul"]]},
   {id:"cocina", c:"comida", t:"La cocina no prende", kw:"hornalla encendido chispa fosforo gas no sale anafe",
    kid:true, pri:"Si huele a gas, no prendas nada: mira «Huele a gas».",
    p:["Sin luz, el encendido eléctrico no hace chispa. Prende primero un fósforo o un encendedor largo, acércalo a la hornalla y recién ahí abre la perilla.",
@@ -5601,8 +5632,15 @@ const PROBLEMAS = [
       "Tápala con una gasa o una curita. Cámbiala todos los días o si se moja.",
       "Mírala los días siguientes: si se pone roja, hinchada, caliente, con pus o hay fiebre, se infectó."],
    casa:["Gasas o trapo limpio", "Curitas", "Jabón"],
-   ayuda:"Llama al 107 si sangra mucho y no para después de 10 minutos apretando, si es profunda o muy abierta, o si es una mordedura. Si la hizo algo oxidado o sucio, consulta por la vacuna antitetánica.",
+   ayuda:"Llama al 107 si sangra mucho y no para después de 10 minutos apretando, si es profunda o muy abierta, o si es una mordedura. Si la hizo algo oxidado o sucio, o pasó en agua de inundación o barro, consulta por la antitetánica: en adultos va una dosis cada 10 años, y la fecha de la última está en la ficha.",
    tel:["107", "hosp"], ir:[["l","auxilios"], ["l","sa-botiquin"]]},
+  {id:"fiebre-agua", c:"salud", t:"Fiebre o dolores en los días después de una inundación", kw:"fiebre dolor muscular cabeza leptospirosis inundacion barro agua dias despues gripe",
+   p:["Si alguien estuvo en agua de inundación o en el barro y tiene fiebre, dolor de cabeza, dolores musculares y malestar, como una gripe: que consulte enseguida y cuente que estuvo en el agua. Puede ser leptospirosis, que es grave.",
+      "Para la fiebre, paracetamol. No des ibuprofeno ni aspirina hasta que el médico descarte dengue.",
+      "Con diarrea o vómitos: suero de rehidratación de a sorbos y solo agua segura.",
+      "Para prevenir: botas y guantes en el agua y el barro, los chicos fuera de los charcos, y nada de basura ni escombros donde vivan ratas."],
+   ayuda:"La leptospirosis se contagia por la orina de animales, como las ratas, que queda en el agua y el barro. Con síntomas, la consulta es en el día.",
+   tel:["hosp", "107"], ir:[["p","diarrea"], ["h","vademecum"], ["h","azul"]]},
   {id:"quemadura", c:"salud", t:"Una quemadura", kw:"quemadura quemo quemé agua caliente fuego ampolla",
    p:["Pon la quemadura bajo agua fresca, no helada, durante 20 minutos.",
       "Saca anillos, pulseras o ropa de esa zona antes de que se hinche, si no están pegados a la piel.",
@@ -5660,6 +5698,16 @@ const PROBLEMAS = [
       "Desde afuera, llamen a la emergencia de gas o al 911.",
       "No vuelvan a entrar hasta que lo digan los técnicos o los bomberos."],
    tel:["gas", "911", "100"], ir:[["l","ca-llaves"]]},
+  {id:"limpiar-inundacion", c:"casa", t:"Entró agua en la casa y hay que limpiar", kw:"limpiar inundacion barro desinfectar lavandina volver entro agua",
+   p:["Vuelvan cuando lo autoricen, con la luz cortada en el tablero. No toquen aparatos ni enchufes mojados.",
+      "Usen botas de goma, guantes y, si tienen, anteojos. Las chicas y el gato, lejos hasta terminar.",
+      "Pisos y paredes: agua y detergente, y después 1 taza de lavandina (250 ml) cada 10 litros de agua. Nunca mezclen la lavandina con otros productos.",
+      "La ropa que tocó el agua se lava aparte, con agua caliente y jabón.",
+      "Si alguien se lastima, laven la herida con agua segura y jabón, y consulten por la antitetánica.",
+      "Lávense las manos con jabón y agua segura después de limpiar y antes de comer."],
+   casa:["Botas de goma", "Guantes", "Lavandina", "Detergente"],
+   ayuda:"Antes de volver a dar la luz, si el agua llegó a los enchufes, que revise la instalación un electricista.",
+   tel:["luz", "911"], ir:[["p","comida-mojada"], ["p","herida"], ["p","fiebre-agua"]]},
   {id:"fuego", c:"casa", t:"Se prendió fuego algo en casa", kw:"fuego incendio llamas aceite sarten olla humo matafuegos",
    urg:true, kid:true, pri:"Si el fuego es más grande que un tacho de basura o el humo llena la habitación: salgan todos ya, cierren la puerta al salir y llamen al 100 o al 911 desde afuera.",
    p:["Aceite que se prende en una olla: apaga la hornalla y tapa la olla con una tapa o una tabla. Nunca agua.",
@@ -5740,7 +5788,7 @@ const PB_TEL = {
   apoyo:{n:"0800 345 1435", tel:"08003451435", sh:"Prevención del suicidio", ic:"phone"},
   hosp:{city:"heart"}, luz:{city:"bolt"}, agua:{city:"drop"}, gas:{city:"flame"}
 };
-const PB_IR_H = {vademecum:"Vademécum", "cuanto-queda":"¿Cuánto nos queda?", inventario:"Inventario", radio:"Radio y comunicación", aviso:"Estoy bien", plan:"Plan familiar", corte:"Contador de corte", "30dias":"Plan de corte largo", ficha:"Fichas médicas", mificha:"Mi ficha", ayuda:"Necesito ayuda"};
+const PB_IR_H = {azul:"Azul y el Súper Niño", vademecum:"Vademécum", "cuanto-queda":"¿Cuánto nos queda?", inventario:"Inventario", radio:"Radio y comunicación", aviso:"Estoy bien", plan:"Plan familiar", corte:"Contador de corte", "30dias":"Plan de corte largo", ficha:"Fichas médicas", mificha:"Mi ficha", ayuda:"Necesito ayuda"};
 const PB_IR_A = {"ahorro-on":"Modo ahorro de batería", linterna:"Linterna", silbato:"Silbato"};
 const PB_STOP = ["que","los","las","del","una","uno","hay","nos","con","por","para","tengo","tiene","tenemos","esta","estan","esta","anda","andan","funciona","mucho","muy","algo","como","hago","hacer","pasa","casa"];
 const pbFind = id => PROBLEMAS.find(x => x.id === id);
@@ -6650,6 +6698,82 @@ function pedTarjeta(){
     <div class="field"><label class="lbl" for="ped-n">¿A quién se la pides?</label><input id="ped-n" maxlength="40" autocomplete="off" placeholder="Ej.: Sofía"></div>
     <button class="btn btn-primary" data-action="ped-mandar">${icon("phone")}Mandar el pedido</button><p class="st" id="ped-st" role="status"></p>
     <p class="fine">El link no lleva datos de salud: solo su nombre y el tuyo. Cuando te llegue el archivo, ábrelo desde Familia → Compartir → Recibir → «Abrir archivo».</p></div>`;
+}
+
+/* ---------- Azul y el Súper Niño: el arroyo, qué hacer y adónde llamar ----------
+   Revisado el 20/10/2026. Fuentes: NOAA (8/10/2026), SMN (pronóstico trimestral de octubre), Municipio de Azul (plan del 4/8/2026),
+   inundaciones de 2002 y 2012 (Infobae, Infocielo, Télam), presa La Isidora (La Nación, 2017), IHLLA/UNICEN (red de alerta y modelo de 2012),
+   ANMAT y Ministerio de Salud (alimentos, agua, leptospirosis, antitetánica). */
+const AZ_ARROYO = new Set(["Arroyo Azul", "Rectificación Arroyo Azul", "Aliviador Arroyo Azul"]);
+let AZ_ARR_PTS = null;
+function arroyoDist(ll){
+  if(!ll || !enAzul(ll)) return null;
+  if(!AZ_ARR_PTS){ const d = azData(); AZ_ARR_PTS = AZUL.wt.map((w, i) => [w[0] >= 0 ? AZUL.n[w[0]] : "", d.water[i]]).filter(([n]) => AZ_ARROYO.has(n)).map(x => x[1]); }
+  const [px, py] = toXY(ll); let best = Infinity;
+  AZ_ARR_PTS.forEach(pts => { for(let i = 0; i < pts.length - 1; i++){
+    const ax = pts[i][0] * KX, ay = pts[i][1] * KY, bx = pts[i + 1][0] * KX, by = pts[i + 1][1] * KY, x = px * KX, y = py * KY;
+    const dx = bx - ax, dy = by - ay, L = dx * dx + dy * dy, t = L ? Math.max(0, Math.min(1, ((x - ax) * dx + (y - ay) * dy) / L)) : 0;
+    best = Math.min(best, Math.hypot(x - ax - t * dx, y - ay - t * dy)); } });
+  return isFinite(best) ? best : null;
+}
+/* Antitetánica: una dosis cada 10 años en adultos (calendario nacional) */
+function tetanoEstado(f){
+  const d = parseISO(f.vacuna || ""), edad = (() => { const n = parseISO(f.nac || ""); return n ? (today0() - n) / 3.156e10 : null; })();
+  if(!d) return {k:"sin", t:edad !== null && edad < 16 ? "No está cargada: revisen el carnet de vacunas." : "No está cargada: revisen el carnet o pregunten en el vacunatorio."};
+  const a = (today0() - d) / 3.156e10;
+  if(a >= 10) return {k:"vence", t:`La última fue hace ${Math.floor(a)} años: corresponde un refuerzo. Consulten en el vacunatorio.`};
+  return {k:"ok", t:`Al día: la última fue en ${d.getFullYear()}. La próxima, en ${d.getFullYear() + 10}.`};
+}
+function renderAzul(){
+  const pos = state.ultimaPos && Date.now() - (state.ultimaPos.at || 0) < 30 * 60000 ? state.ultimaPos : null;
+  const lugs = state.lugares.filter(enAzul).map(l => [l.nombre, arroyoDist(l)]).concat(pos && enAzul(pos) ? [["Donde estás ahora", arroyoDist(pos)]] : []).filter(x => x[1] !== null);
+  const fila = ([n, m]) => `<li class="az-ar${m < 400 ? " cerca" : ""}"><strong>${esc(n)}</strong><span>${m < 400 ? `Cerca del arroyo: a ${cuadrasTxt(m)}` : `A ${cuadrasTxt(m)} del arroyo`}</span></li>`;
+  const tet = state.fichas.map(f => [f, tetanoEstado(f)]);
+  const c = CIUDADES.Azul, num = k => c.nums.find(x => x.label === k);
+  const luz = num("CEAL: urgencias de luz");
+  return `<section class="stack azul">${backBtn()}
+    <div class="intro"><p class="phase">Revisado el 20/10/2026</p><h1>Azul y el Súper Niño</h1><p class="lede">Qué se espera este verano, cómo se inunda Azul y qué hacer en cada momento.</p></div>
+    <div class="inline"><a class="btn btn-primary" href="tel:103">${icon("phone")}Defensa Civil: 103</a><a class="btn btn-ghost" href="tel:911">911</a><a class="btn btn-ghost" href="tel:100">Bomberos: 100</a></div>
+    <div class="card"><h2>Qué se espera</h2><ul class="az-ul">
+      <li>Un <strong>El Niño fuerte o muy fuerte</strong>, que puede ser el más intenso desde 1950. Sigue por lo menos hasta marzo de 2027.</li>
+      <li>Para el centro-este de la provincia, el SMN espera de octubre a diciembre <strong>lluvias normales o más de lo normal</strong>, y temperaturas normales o más bajas.</li>
+      <li>El municipio activó en agosto un plan con Defensa Civil: limpieza del arroyo, de los canales y de los desagües.</li>
+      <li>Nadie puede saber con meses de anticipación qué día va a llover fuerte. Por eso hay que seguir las alertas.</li></ul></div>
+    <div class="card"><h2>Cómo se inunda Azul</h2>
+      <h3>Lluvia muy fuerte en la ciudad</h3><p>En mayo de 2012 cayeron unos 250 mm en menos de una hora en el sur de la ciudad, y se anegaron los barrios cercanos al balneario y al arroyo. Pasa rápido: en poco tiempo las calles se llenan de agua.</p>
+      <h3>Crecida que baja del campo</h3><p>El arroyo Azul cruza la ciudad de norte a sur. Cuando llueve mucho aguas arriba, el agua llega horas después: en agosto de 2002, después de 140 mm, el pico se esperaba a la tarde. En agosto de 2012 el arroyo llegó a 5,5 metros y entró al centro.</p>
+      <h3>Lo que cambió</h3><p>Desde 2017, la presa La Isidora, 35 km aguas arriba, regula las crecidas. Ayuda, pero no elimina el riesgo: la presa Manantiales, que se pidió en 2022 para completar la protección, no encontré que esté terminada.</p></div>
+    <div class="card"><h2>Tus lugares y el arroyo</h2>
+      ${lugs.length ? `<ul class="az-ars">${lugs.map(fila).join("")}</ul>` : `<p class="fine">Guarda la casa y los lugares de la familia en «Llevarme» y acá aparece a cuántas cuadras del arroyo está cada uno.</p>`}
+      <p class="fine">Es la distancia en línea recta al arroyo o a su canal aliviador. No es un mapa oficial de riesgo: en 2012 el agua cubrió una franja a los dos lados del arroyo, y cuanto más cerca, más cuidado.</p>
+      <div class="inline"><button class="btn btn-ghost btn-sm" data-action="go-llevar">Mis lugares</button><button class="btn btn-ghost btn-sm" data-action="go-mapa">Ver el arroyo en el mapa</button></div></div>
+    <div class="card"><h2>Qué hacer</h2>
+      <h3>Ahora, antes de la temporada</h3><ul class="az-ul">
+        <li>Limpien canaletas, rejillas y la vereda, para que el agua de lluvia corra.</li>
+        <li>Documentos en bolsas herméticas y la mochila lista.</li>
+        <li>Revisen la antitetánica de todos (abajo).</li>
+        <li>Elijan, desde la escuela y el trabajo, un camino a casa que no cruce el arroyo ni pase por el balneario.</li>
+        <li>Agenden el 103 de Defensa Civil.</li></ul>
+      <h3>Con alerta naranja o roja para Azul</h3><ul class="az-ul">
+        <li>Carguen celulares y powerbanks, y llenen bidones: después de una inundación, el agua de la canilla puede no ser apta.</li>
+        <li>Suban a una altura lo que se arruina con agua: documentos, remedios, comida y aparatos.</li>
+        <li>Entren lo que vuela y no saquen la basura: las bolsas tapan los desagües.</li>
+        <li>Acuerden quién busca a las chicas: con lluvia fuerte, que no vuelvan solas.</li></ul>
+      <h3>Si llueve muy fuerte o sube el arroyo</h3><ul class="az-ul">
+        <li>Si la casa no está cerca del arroyo, lo más seguro suele ser quedarse adentro. No salgan a mirar el arroyo.</li>
+        <li>No crucen agua que corre ni puentes tapados: 15 cm voltean a una persona y 30 cm arrastran un auto.</li>
+        <li>Si entra agua: corten la luz y el gas solo si no tienen que pisar agua, y suban al lugar más alto. Llamen al 103 o al 911.</li>
+        <li>Si Defensa Civil pide evacuar, salgan con la mochila y avisen con «Estoy bien».</li></ul>
+      <h3>Después</h3><div class="inline">${pbIr(["p","comida-mojada"])}${pbIr(["p","limpiar-inundacion"])}${pbIr(["p","fiebre-agua"])}${pbIr(["g","agua-segura"])}</div></div>
+    <div class="card"><h2>La antitetánica de la familia</h2><p class="fine">Con heridas en agua de inundación o limpiando, importa tenerla al día. En adultos, una dosis cada 10 años.</p>
+      ${tet.length ? `<ul class="az-ars">${tet.map(([f, e]) => `<li class="az-ar${e.k === "ok" ? "" : " cerca"}"><strong>${esc(f.nombre)}</strong><span>${e.t}</span></li>`).join("")}</ul>` : `<p class="fine">Carguen las fichas de la familia con la fecha de la última antitetánica.</p>`}
+      <button class="btn btn-ghost btn-sm" data-action="act" data-type="ficha">Abrir las fichas</button></div>
+    <div class="card"><h2>Dónde informarse</h2><ul class="az-ul">
+      <li><strong>Sin internet:</strong> la radio. En una emergencia, los avisos suelen salir por las emisoras locales.</li>
+      <li><strong>Con internet:</strong> las <a href="https://www.smn.gob.ar/alertas" target="_blank" rel="noopener">alertas del SMN</a> y las cuentas de Defensa Civil Azul (<a href="https://www.instagram.com/defensacivilazul/" target="_blank" rel="noopener">@defensacivilazul</a>).</li></ul>
+      <div class="inline"><button class="btn btn-ghost btn-sm" data-action="go-radio">Radio y comunicación</button>${luz ? `<a class="btn btn-ghost btn-sm" href="tel:${luz.tel}">Cortes de luz: ${luz.n}</a>` : ""}</div></div>
+    ${srcBox(["azNoaa","azSmn","azPlan","az2002","az2012","az2012b","azIsidora","azManantiales","azIhlla","dcAzul","azAnmat","azLepto","azDt"])}
+  </section>`;
 }
 
 /* ---------- Plan 30 días sin luz ---------- */
@@ -8100,7 +8224,7 @@ function render(top){
   if(!(ui.tab === "inicio" && ui.sub === "ir")) navStop();
   applyAhorro();
   if(ui.tab === "inicio" && !ui.sub && state.ahorro) html = renderAhorro();
-  else if(ui.tab === "inicio") html = ui.sub === "corte" ? renderCorte() : ui.sub === "aviso" ? renderAviso() : ui.sub === "mapa" ? renderMapa() : ui.sub === "ayuda" ? renderAyuda() : ui.sub === "mes" ? renderMes() : ui.sub === "radio" ? renderRadio() : ui.sub === "manual" ? renderManual() : ui.sub === "ir" ? renderNav() : ui.sub === "llevar" ? renderLlevar() : ui.sub === "mificha" ? renderMiFicha() : ui.sub === "recs" ? renderRecs() : ui.sub === "config" ? renderConfig() : ui.sub === "prob" ? renderProb() : ui.sub === "hoy" ? renderHoy() : ui.sub === "queda" ? renderQueda() : ui.sub === "vade" ? renderVade() : ui.sub === "pedido" ? renderPedido() : renderHome();
+  else if(ui.tab === "inicio") html = ui.sub === "corte" ? renderCorte() : ui.sub === "aviso" ? renderAviso() : ui.sub === "mapa" ? renderMapa() : ui.sub === "ayuda" ? renderAyuda() : ui.sub === "mes" ? renderMes() : ui.sub === "radio" ? renderRadio() : ui.sub === "manual" ? renderManual() : ui.sub === "ir" ? renderNav() : ui.sub === "llevar" ? renderLlevar() : ui.sub === "mificha" ? renderMiFicha() : ui.sub === "recs" ? renderRecs() : ui.sub === "config" ? renderConfig() : ui.sub === "prob" ? renderProb() : ui.sub === "hoy" ? renderHoy() : ui.sub === "queda" ? renderQueda() : ui.sub === "vade" ? renderVade() : ui.sub === "pedido" ? renderPedido() : ui.sub === "azul" ? renderAzul() : renderHome();
   else if(ui.tab === "guias") html = ui.guide ? renderGuide() : renderGuides();
   else if(ui.tab === "preparar") html = renderPrep();
   else if(ui.tab === "linterna") html = renderTools();
@@ -8687,6 +8811,7 @@ document.addEventListener("click", e => {
     case "aviso-copy": copyAviso(); break;
     case "ficha-from": { const m = state.plan.miembros.find(x => x.id === el.dataset.id); if(m) newFicha(m.nombre); break; }
     case "ficha-edit": ui.fichaEdit = el.dataset.id; ui.fichaDel = null; render(false); window.scrollTo(0, 0); break;
+    case "go-azul": go("inicio", {sub:"azul"}); break;
     case "ped-mandar": pedMandar(); break;
     case "ped-editar": ui.pedVolver = true; ui.planSeg = "ficha"; ui.fichaEdit = el.dataset.id; ui.fichaBig = null; go("numeros"); break;
     case "ped-enviar": pedEnviar(el.dataset.id); break;
@@ -8946,6 +9071,7 @@ function routeHash(hash){
   else if(hash === "vademecum") ui.sub = "vade";
   else if(hash === "hoy"){ ui.sub = "hoy"; ui.hoyVer = 0; }
   else if(hash === "problema"){ ui.sub = "prob"; ui.pbId = null; }
+  else if(hash === "azul") ui.sub = "azul";
   else if(hash.indexOf("pedido-ficha") === 0){ const q = new URLSearchParams(hash.split("?")[1] || ""); if(q.get("n") || q.get("de")) pedGuardar({n:(q.get("n") || "").slice(0, 40), de:(q.get("de") || "").slice(0, 40), at:Date.now()}); ui.sub = "pedido"; }
   else if(hash.indexOf("problema-") === 0 && PROBLEMAS.some(x => x.id === hash.slice(9))){ ui.sub = "prob"; ui.pbId = hash.slice(9); }
   else if(hash.indexOf("guia-") === 0 && GUIDES.some(g => g.id === hash.slice(5))){ ui.tab = "guias"; ui.guide = hash.slice(5); }
