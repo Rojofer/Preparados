@@ -695,6 +695,19 @@ body.navegando .view{padding-bottom:calc(28px + env(safe-area-inset-bottom,0px))
 .cc-r.crit>span span{color:var(--crit);font-weight:700}.cc-r>.ic:first-child{color:var(--ink-2)}
 .tools4.t3 .tool4{min-height:92px}
 .jump{flex-wrap:wrap;gap:6px}.jump .chip{min-height:40px;padding:6px 14px;font-size:15px}.add-c>summary{cursor:pointer;min-height:44px;display:flex;align-items:center}.add-c[open]>summary{margin-bottom:10px}.add-c form{display:flex;flex-direction:column;gap:12px}
+.vd-warn{display:flex;gap:10px;align-items:flex-start;margin:0;padding:12px 14px;border-radius:12px;background:var(--warn-soft);border:1px solid var(--warn-fill);line-height:1.4}.vd-warn .ic{flex:none;margin-top:2px;color:var(--warn)}
+.vd-cat{display:flex;gap:8px;align-items:center;margin:14px 0 6px;font-size:19px}.vd-cat .ic{color:var(--signal-ink)}
+.vd-it{background:var(--surface);border:1px solid var(--line);border-radius:12px;margin-bottom:6px;overflow:hidden}
+.vd-it>summary{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;list-style:none;min-height:56px}
+.vd-it>summary::-webkit-details-marker{display:none}
+.vd-n{display:flex;flex-direction:column;min-width:0}.vd-n strong{line-height:1.3}.vd-n span{font-size:14px;color:var(--ink-2)}
+.vd-t{flex:none;font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap}
+.vd-t.ok{background:var(--ok-soft);color:var(--ok)}.vd-t.rx{background:var(--crit-soft);color:var(--crit)}.vd-t.caja{background:var(--surface-2);color:var(--ink-2)}
+.vd-b{padding:0 14px 14px;border-top:1px solid var(--line);line-height:1.45}.vd-b h4{margin:12px 0 4px;font-size:15px}.vd-b p,.vd-b ul{margin:0}.vd-b ul{padding-left:20px}
+.vd-dosis{margin-top:12px!important;font-size:14px;color:var(--ink-2);font-weight:700}
+.vd-fam{display:flex;flex-direction:column;gap:6px}.vd-fi{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;background:var(--surface-2)}
+.vd-fi>div{display:flex;flex-direction:column;min-width:0}.vd-fi span{font-size:14px;color:var(--ink-2)}
+.vd-form{display:flex;flex-direction:column;gap:10px;margin-top:6px}
 .mf-btn.pb-home{border-left:6px solid var(--signal)}.pb-home>.ic:first-child{color:var(--signal-ink)}
 .pb .quick{grid-template-columns:1fr}
 .pb-urgbox{display:flex;flex-direction:column;gap:6px}.pb-urg .g-ic{background:var(--crit);color:var(--on-crit)}
@@ -853,6 +866,11 @@ const SRC = {
   legitima:["Qué dice la ley sobre la legítima defensa, Diario de Cuyo","https://www.diariodecuyo.com.ar/noticias/conoce-que-dice-la-ley-sobre-la-legitima-defensa-562083.html"],
   taser:["Pistolas Taser: proyecto para habilitar su uso civil (2023), iProfesional","https://www.iprofesional.com/politica/379645-pistolas-taser-presentan-proyecto-para-habilitar-su-uso-civil"],
   pimienta:["El gas pimienta es un arma impropia (RENAR, Disposición 44/2000), Diario Judicial","https://www.diariojudicial.com/news-62198-el-gas-pimienta-es-un-arma-impropia"],
+  vdAnmatPrazoles:["ANMAT, Disposición 4171/2024: prazoles de venta libre (Boletín Oficial)","https://www.boletinoficial.gob.ar/detalleAviso/primera/307425/1"],
+  vdAnmat2026:["ANMAT, Disposición 4714/2026: nuevos remedios de venta libre, vía El Cronista","https://www.cronista.com/economia-politica/la-anmat-habilito-la-venta-libre-de-10-grupos-de-medicamentos-y-ya-no-se-necesitara-receta-cuales-son/"],
+  vdDengue:["Dengue: qué remedios no tomar, Chequeado","https://chequeado.com/el-explicador/que-tenes-que-hacer-y-que-no-si-tenes-dengue/"],
+  vdMucoliticos:["Carbocisteína: contraindicada en menores de 2 años, ficha técnica AEMPS","https://cima.aemps.es/cima/dochtml/ft/69749/FT_69749.html"],
+  vdMedline:["Medicamentos de la A a la Z, MedlinePlus en español","https://medlineplus.gov/spanish/druginformation.html"],
   ponzonosos:["Animales ponzoñosos: qué hacer, vía Unidiversidad (UNCuyo)","https://www.unidiversidad.com.ar/como-prevenir-y-actuar-frente-a-picaduras-de-aranas-escorpiones-y-viboras"],
   sodis:["Desinfección solar del agua (SODIS), SSWM","https://sswm.info/es/gass-perspective-es/tecnologias-de/tecnologias-de-abastecimiento-de-agua/manejo-seguro-en-el-hogar/desinfecci%C3%B3n-solar-%28m%C3%A9todo-sodis%29"],
   sinagir:["SINAGIR, vía Crónica","https://www.cronica.com.ar/fmq/noticias-locales/alerta-por-crecida-del-rio-en-quilmes-cuando-y-que-precauciones-tener-20240819-0009.html"],
@@ -2585,7 +2603,7 @@ const icon = (name, cls) => `<svg class="ic ${cls || ""}" viewBox="0 0 24 24" ar
 
 /* ---------- Estado: solo en este navegador ---------- */
 const KEY = "preparados.v1";
-const state = {checks:{}, corte:null, contacts:[], punto:"", inv:[], recs:{}, plan:{miembros:[], mascotas:"", tareas:{}, lugares:{}, contacto:{}, sim:null}, fichas:[], provincia:"", ciudad:"Azul", yo:"", trash:[], lastBackup:0, invConteo:"", lugares:[], ultimaPos:null, mes:{checks:{}}, radioOk:{}, navVoz:true, navVib:true, ahorro:false, manual:{}, miAviso:null, avisos:[]};
+const state = {checks:{}, corte:null, contacts:[], punto:"", inv:[], recs:{}, plan:{miembros:[], mascotas:"", tareas:{}, lugares:{}, contacto:{}, sim:null}, fichas:[], provincia:"", ciudad:"Azul", yo:"", trash:[], lastBackup:0, invConteo:"", vdFam:[], lugares:[], ultimaPos:null, mes:{checks:{}}, radioOk:{}, navVoz:true, navVib:true, ahorro:false, manual:{}, miAviso:null, avisos:[]};
 function load(){
   try{
     const raw = localStorage.getItem(KEY);
@@ -2611,6 +2629,7 @@ function load(){
     if(Array.isArray(s.trash)) state.trash = s.trash.filter(t => t && t.item && t.tipo && Date.now() - t.at < 30 * 864e5).slice(0, 60);
     if(typeof s.lastBackup === "number") state.lastBackup = s.lastBackup;
     if(typeof s.invConteo === "string") state.invConteo = s.invConteo;
+    if(Array.isArray(s.vdFam)) state.vdFam = s.vdFam.filter(f => f && f.id && f.nombre).slice(0, 60);
     if(Array.isArray(s.lugares)) state.lugares = s.lugares.filter(l => l && l.id && l.nombre && isFinite(l.lat) && isFinite(l.lng)).slice(0, 40);
     if(s.miAviso && s.miAviso.at && s.miAviso.estado) state.miAviso = s.miAviso;
     if(s.radioOk && typeof s.radioOk === "object") state.radioOk = s.radioOk;
@@ -2722,7 +2741,7 @@ function renderHome(){
       ${bar("Mochila: lo mínimo", pm, "mochila")}
       ${bar("Botiquín: lo mínimo", pb, "botiquin")}
       ${bar("Kit del hogar", pk, "kit")}
-      <div class="inline"><button class="btn btn-ghost btn-sm" data-action="tab" data-tab="preparar">Seguir preparando</button><button class="btn btn-ghost btn-sm" data-action="go-inv">Inventario</button><button class="btn btn-ghost btn-sm" data-action="go-recs">Recordatorios</button><button class="btn btn-ghost btn-sm" data-action="act" data-type="ficha">Fichas</button><button class="btn btn-ghost btn-sm" data-action="go-manual">Manual en papel</button></div>`;
+      <div class="inline"><button class="btn btn-ghost btn-sm" data-action="tab" data-tab="preparar">Seguir preparando</button><button class="btn btn-ghost btn-sm" data-action="go-inv">Inventario</button><button class="btn btn-ghost btn-sm" data-action="go-recs">Recordatorios</button><button class="btn btn-ghost btn-sm" data-action="act" data-type="ficha">Fichas</button><button class="btn btn-ghost btn-sm" data-action="go-vade">Vademécum</button><button class="btn btn-ghost btn-sm" data-action="go-manual">Manual en papel</button></div>`;
   return `<section class="stack home">
     <div class="sos-bar" role="group" aria-label="Acciones urgentes">
       <a class="sb sb-911" href="tel:911">${icon("phone")}<span>911</span></a>
@@ -2763,6 +2782,7 @@ function renderGuides(){
     <button class="mf-btn pb-home" data-action="go-prob">${icon("help")}<span><strong>Tengo un problema</strong><span>Busca lo que pasa: «fiebre», «sin agua», «frío»</span></span>${icon("chev")}</button>
     <h2 class="sec">En la emergencia</h2>
     <ul class="glist">${GUIDES.filter(g => g.group === "emergencia").map(row).join("")}</ul>
+    <button class="mf-btn" data-action="go-vade">${icon("heart")}<span><strong>Vademécum</strong><span>Para qué sirve cada remedio y cuándo no tomarlo</span></span>${icon("chev")}</button>
     <h2 class="sec">Saber hacer</h2>
     <ul class="glist">${GUIDES.filter(g => g.group === "saber").map(row).join("")}</ul>
     <details class="ext-g" id="extremo"${ui.extOpen ? " open" : ""}><summary><h2 class="sec">Caso extremo</h2><span class="fine">Varios días en casa sin luz, gas ni agua · ${GUIDES.filter(g => g.group === "extremo").length + 1} guías</span></summary>
@@ -4343,6 +4363,7 @@ const MANUAL_SEC = [
   ["mapa","Mapa del barrio y de Azul","Con tus lugares guardados, hospitales, bomberos y policía.",true],
   ["radio","Radios y cómo comunicarse","Frecuencias y qué hacer sin internet.",true],
   ["hoy","Qué hacer cada día","Las tareas de cada encargo, día por día, para un corte largo.",true],
+  ["vademecum","Vademécum","Para qué sirve cada remedio, cuándo no tomarlo y con qué no mezclarlo.",false],
   ["problemas","Tengo un problema","Qué hacer si falta agua, hace frío, alguien se enferma y más.",true],
   ["emergencia","Guías: en la emergencia","Corte de luz, inundación, tormenta, calor, monóxido, RCP, evacuar.",true],
   ["extremo","Guías: caso extremo","Fuego, agua, energía, cocina, abrigo, baño y señales.",true],
@@ -4383,6 +4404,7 @@ function manualHTML(){
       <h3>Comunicarse fuera de la zona</h3><ol>${COMS.map(([t, d]) => `<li><strong>${esc(t)}.</strong> ${esc(d)}</li>`).join("")}</ol></section>`);
   }
   if(sel.hoy) parts.push(`<section class="ps pm-g"><h2>Qué hacer cada día</h2>${hoyManual()}</section>`);
+  if(sel.vademecum) parts.push(`<section class="ps pm-g"><h2>Vademécum</h2>${vdManual()}</section>`);
   if(sel.problemas) parts.push(`<section class="ps pm-g"><h2>Tengo un problema</h2>${pbManual()}</section>`);
   const gsec = (k, t) => { if(sel[k]) parts.push(`<section class="ps pm-g"><h2>${t}</h2>${GUIDES.filter(g => g.group === k).map(guidePrint).join("")}</section>`); };
   gsec("emergencia", "En la emergencia"); gsec("extremo", "Caso extremo"); gsec("saber", "Saber hacer"); gsec("zona", "Según la zona");
@@ -4911,7 +4933,7 @@ const LOCK_ACTIONS = new Set([
   "recv-apply","undo-recv","trash-empty","trash-restore","reset-ask","reset-do","fam-del","fam-load","avisos-del-do"
 ]);
 const LOCK_FORMS = new Set(["form-contacto","form-dir","form-ficha","form-inv","form-lugar","form-mem"]);
-const LOCK_INPUTS = "[data-pf],[data-tarea],#punto,[data-ff],[data-foto],[data-dni],.ren-form input,#recv-file,#cfg-yo,#cfg-prov,#cfg-ciudad,[data-recs-aqui],[data-rec-on],select[data-rec]";
+const LOCK_INPUTS = "[data-pf],[data-tarea],#punto,[data-ff],[data-foto],[data-dni],.ren-form input,#recv-file,#cfg-yo,#cfg-prov,#cfg-ciudad,#vd-nombre,#vd-para,#vd-notas,[data-recs-aqui],[data-rec-on],select[data-rec]";
 function lockCfg(){ try{ const c = JSON.parse(localStorage.getItem(LOCK_KEY) || "null"); return c && c.hash ? c : null; }catch(e){ return null; } }
 function lockSave(c){ try{ if(c) localStorage.setItem(LOCK_KEY, JSON.stringify(c)); else localStorage.removeItem(LOCK_KEY); return true; }catch(e){ return false; } }
 const isLocked = () => { const c = lockCfg(); return !!(c && c.on) && Date.now() > (ui.unlockUntil || 0); };
@@ -5106,7 +5128,7 @@ document.addEventListener("keydown", e => { if(e.key === "Escape"){ const ov = d
 const scrKey = () => [ui.tab, ui.sub || "", ui.guide || "", ui.tab === "numeros" ? ui.planSeg || "" : "", ui.tab === "preparar" ? ui.prep || "" : "", ui.ayuda && ui.ayuda.mostrar && ui.sub === "ayuda" ? "m" : "", ui.sub === "prob" ? ui.pbId || "" : ""].join("|");
 let histPop = false;
 /* La dirección de cada pantalla: si Android recarga la app, vuelve a la misma pantalla */
-const SUB_HASH = {queda:"cuanto-queda", hoy:"hoy", prob:"problema", config:"configuracion", recs:"recordatorios", corte:"corte", aviso:"aviso", mapa:"mapa", ayuda:"ayuda", llevar:"llevar", ir:"llevar", mificha:"mificha", mes:"30dias", radio:"radio", manual:"manual"};
+const SUB_HASH = {vade:"vademecum", queda:"cuanto-queda", hoy:"hoy", prob:"problema", config:"configuracion", recs:"recordatorios", corte:"corte", aviso:"aviso", mapa:"mapa", ayuda:"ayuda", llevar:"llevar", ir:"llevar", mificha:"mificha", mes:"30dias", radio:"radio", manual:"manual"};
 function screenHash(){
   if(ui.tab === "inicio") return ui.sub === "prob" && ui.pbId ? "problema-" + ui.pbId : SUB_HASH[ui.sub] || "";
   if(ui.tab === "guias") return ui.guide ? "guia-" + ui.guide : "guias";
@@ -5116,7 +5138,7 @@ function screenHash(){
 }
 const histUrl = () => location.pathname + location.search + (screenHash() ? "#" + screenHash() : "");
 const NAVS = [];   /* pantallas anteriores dentro de la app, para el botón «volver» */
-const SUB_LBL = {prob:"Tengo un problema", hoy:"¿Qué hago hoy?", queda:"¿Cuánto nos queda?", config:"Configuración", recs:"Recordatorios", corte:"Contador de corte", aviso:"Estoy bien", mapa:"Mapa", ayuda:"Necesito ayuda", llevar:"Llevarme", ir:"Llevarme", mificha:"Mi ficha", mes:"Plan de corte largo", radio:"Radio", manual:"Manual en papel"};
+const SUB_LBL = {vade:"Vademécum", prob:"Tengo un problema", hoy:"¿Qué hago hoy?", queda:"¿Cuánto nos queda?", config:"Configuración", recs:"Recordatorios", corte:"Contador de corte", aviso:"Estoy bien", mapa:"Mapa", ayuda:"Necesito ayuda", llevar:"Llevarme", ir:"Llevarme", mificha:"Mi ficha", mes:"Plan de corte largo", radio:"Radio", manual:"Manual en papel"};
 const TAB_LBL = {inicio:"Inicio", guias:"Guías", preparar:"Preparar", aprender:"Aprender", numeros:"Plan", linterna:"Herramientas"};
 function scrLabel(st){
   if(!st) return "Inicio";
@@ -5236,7 +5258,7 @@ async function recNotif(){
 
 /* ---------- Configuración: todos los ajustes en un lugar (engranaje arriba a la derecha) ----------
    En un celular con control parental se ve todo; para cambiar algo, salvo voz y vibración, pide el PIN. */
-const APP_VER = 30;
+const APP_VER = 31;
 const GEAR_SVG = `<svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>`;
 function renderConfig(){
   const lc = lockCfg(), lockOn = !!(lc && lc.on), f = miFicha(), fp = fpCfg(), aqui = recsAqui(), nRec = REMINDERS.filter(recOn).length;
@@ -5533,7 +5555,7 @@ const PROBLEMAS = [
       "Si hay paracetamol o ibuprofeno, la dosis es la que dice el prospecto para su edad y peso, o la que indicó el médico. A las chicas, nunca aspirina.",
       "Revisa su ficha médica: alergias y remedios que toma."],
    ayuda:"Ve a la guardia o llama al 107 si la fiebre pasa de 39 °C y no baja, dura más de 2 días, le cuesta respirar, tiene el cuello duro, manchas rojas o violetas que no se borran al apretar, o está muy dormido o confundido.",
-   tel:["107", "hosp"], ir:[["h","ficha"], ["l","sa-enfermo"], ["l","auxilios"]]},
+   tel:["107", "hosp"], ir:[["h","ficha"], ["h","vademecum"], ["l","sa-enfermo"], ["l","auxilios"]]},
   {id:"diarrea", c:"salud", t:"Diarrea o vómitos", kw:"diarrea vomitos vomito panza estomago deshidratacion suero",
    kid:"Si eres una de las chicas y te sientes mal, avísale a mamá o a papá.",
    p:["Lo más importante es no secarse por dentro: líquido de a sorbos chicos, seguido.",
@@ -5542,7 +5564,7 @@ const PROBLEMAS = [
       "Todos se lavan bien las manos: se contagia fácil.",
       "Piensen de dónde vino: el agua o alguna comida. Eso no se toma ni se come más."],
    ayuda:"Ve a la guardia si hay sangre, no hace pis en 8 horas, tiene la boca muy seca, vomita todo lo que toma, está muy decaído o dura más de 2 días. Con las chicas, consulten antes.",
-   tel:["107", "hosp"], ir:[["p","agua-turbia"], ["l","higiene"]]},
+   tel:["107", "hosp"], ir:[["h","vademecum"], ["p","agua-turbia"], ["l","higiene"]]},
   {id:"herida", c:"salud", t:"Un corte o una herida", kw:"corte herida sangre sangra lastimadura",
    p:["Aprieta fuerte con un trapo o una gasa limpia durante 10 minutos, sin levantar para mirar.",
       "Cuando deja de sangrar, lávala con mucha agua segura y jabón.",
@@ -5566,14 +5588,14 @@ const PROBLEMAS = [
       "Si fue una araña violinista o un alacrán, vayan a la guardia ya, mejor en las primeras 2 horas. Con las chicas, siempre urgente.",
       "Nada de cortar, chupar el veneno, torniquetes ni remedios caseros."],
    ayuda:"Llama al 911 ya si se le hincha la cara o la boca, le salen ronchas en todo el cuerpo o le cuesta respirar.",
-   tel:["911", "107", "hosp"], ir:[["l","sa-picaduras"]]},
+   tel:["911", "107", "hosp"], ir:[["l","sa-picaduras"], ["h","vademecum"]]},
   {id:"remedio", c:"salud", t:"Se termina un remedio que alguien toma siempre", kw:"remedio medicamento receta farmacia pastillas se termina",
    p:["Cuenta para cuántos días queda y avisa ya, sin esperar al último día.",
       "Lleva la caja o la receta a la farmacia: muchas atienden con generador.",
       "Si no hay receta, en la guardia del hospital la pueden hacer.",
       "No cortes ni cambies la dosis para que dure más, salvo que lo diga un médico.",
       "Que la ficha médica tenga el nombre y la dosis de cada remedio."],
-   tel:["hosp"], ir:[["h","ficha"], ["l","sa-remedios"]]},
+   tel:["hosp"], ir:[["h","vademecum"], ["h","ficha"], ["l","sa-remedios"]]},
   {id:"se-siente-mal", c:"salud", t:"Alguien se siente mal y no sé qué tiene", kw:"se siente mal dolor desmayo no se que tiene enfermo",
    kid:"Si eres una de las chicas y te sientes mal, avísale a mamá o a papá.",
    p:["Que se siente o se acueste en un lugar tranquilo, y que alguien se quede con él.",
@@ -5688,7 +5710,7 @@ const PB_TEL = {
   apoyo:{n:"0800 345 1435", tel:"08003451435", sh:"Prevención del suicidio", ic:"phone"},
   hosp:{city:"heart"}, luz:{city:"bolt"}, agua:{city:"drop"}, gas:{city:"flame"}
 };
-const PB_IR_H = {"cuanto-queda":"¿Cuánto nos queda?", inventario:"Inventario", radio:"Radio y comunicación", aviso:"Estoy bien", plan:"Plan familiar", corte:"Contador de corte", "30dias":"Plan de corte largo", ficha:"Fichas médicas", mificha:"Mi ficha", ayuda:"Necesito ayuda"};
+const PB_IR_H = {vademecum:"Vademécum", "cuanto-queda":"¿Cuánto nos queda?", inventario:"Inventario", radio:"Radio y comunicación", aviso:"Estoy bien", plan:"Plan familiar", corte:"Contador de corte", "30dias":"Plan de corte largo", ficha:"Fichas médicas", mificha:"Mi ficha", ayuda:"Necesito ayuda"};
 const PB_IR_A = {"ahorro-on":"Modo ahorro de batería", linterna:"Linterna", silbato:"Silbato"};
 const PB_STOP = ["que","los","las","del","una","uno","hay","nos","con","por","para","tengo","tiene","tenemos","esta","estan","esta","anda","andan","funciona","mucho","muy","algo","como","hago","hacer","pasa","casa"];
 const pbFind = id => PROBLEMAS.find(x => x.id === id);
@@ -6067,12 +6089,285 @@ function renderQueda(){
     <p class="fine">Es una estimación para ${t.a.P} ${t.a.P === 1 ? "persona" : "personas"}${t.a.G ? ` y ${t.a.G === 1 ? "el gato" : `${t.a.G} gatos`}` : ""}: 4 litros de agua y 2.000 calorías por persona por día; un cartucho de gas da unas ${fmtNum(QD_GAS_H)} horas de fuego. Si el gas de red funciona, el anafe no hace falta. La cantidad de personas se cambia en el plan de corte largo.</p>
   </section>`;
 }
+document.addEventListener("submit", e => { if(e.target && e.target.id === "vd-form"){ e.preventDefault(); vdAdd(); } });
 document.addEventListener("change", e => {
   const el = e.target; if(!el.matches || !el.matches("[data-qd]")) return;
   const it = state.inv.find(i => i.id === el.dataset.qd); if(!it) return;
   it.cant = el.value.slice(0, 40).trim(); state.invConteo = isoOf(today0()); save();
   const y = window.scrollY; render(false); window.scrollTo(0, y);
 });
+
+/* ---------- Vademécum: para qué sirve cada remedio, cuándo no tomarlo y con qué no mezclarlo ----------
+   Sin dosis: la dosis es siempre la del prospecto o la que indicó el médico. */
+const VD_CATS = [
+  {id:"dolor", t:"Dolor y fiebre", ic:"heat"},
+  {id:"alergia", t:"Alergias y picaduras", ic:"heart"},
+  {id:"panza", t:"Estómago e intestino", ic:"food"},
+  {id:"piel", t:"Heridas, quemaduras y piel", ic:"pack"},
+  {id:"resp", t:"Nariz, ojos y respiración", ic:"wind"},
+  {id:"agua", t:"Agua y mosquitos", ic:"drop"},
+  {id:"receta", t:"Imprescindibles con receta", ic:"id"}
+];
+/* tipo: "libre" venta libre · "receta" bajo receta · "caja" depende de la presentación: mira la caja */
+const VADE = [
+  /* Dolor y fiebre */
+  {id:"paracetamol", c:"dolor", n:"Paracetamol", m:"Tafirol, entre otras", tipo:"libre",
+   sirve:"Fiebre y dolores comunes: cabeza, muelas, cuerpo, golpes. Es el de elección si se sospecha dengue.",
+   no:["Si tomas alcohol seguido o tienes una enfermedad del hígado.","Si ya tomaste otro remedio que también tenga paracetamol, como muchos antigripales: lee la composición."],
+   mezcla:["Alcohol.","Antigripales y otros remedios que ya traen paracetamol."],
+   alarma:"Si la fiebre dura más de 3 días o el dolor más de 5, consulta. Si alguien tomó mucho de más, llama al Centro de Intoxicaciones aunque se sienta bien.",
+   chicas:"Existe en gotas y jarabe para chicos: la dosis va según el peso, la del prospecto o la pediatra."},
+  {id:"ibuprofeno", c:"dolor", n:"Ibuprofeno", m:"Ibupirac, Actron, entre otras", tipo:"caja",
+   sirve:"Dolor con inflamación (golpes, torceduras, muelas, dolores menstruales) y fiebre.",
+   no:["Si se sospecha dengue: aumenta el riesgo de sangrado.","Si tienes úlcera, gastritis fuerte o sangrado del estómago.","Si tienes problemas de riñón o estás deshidratado (diarrea, vómitos, mucho calor).","En el embarazo, salvo indicación médica.","Si eres alérgico a la aspirina o a otros antiinflamatorios, o tienes asma que empeora con ellos."],
+   mezcla:["Aspirina, diclofenac, dipirona u otros antiinflamatorios.","Anticoagulantes.","Alcohol."],
+   alarma:"Si aparecen heces negras, vómito con sangre o dolor fuerte de estómago, déjalo y consulta enseguida.",
+   chicas:"Hay jarabe para chicos: dosis según el peso. Nunca con sospecha de dengue."},
+  {id:"aspirina", c:"dolor", n:"Aspirina (ácido acetilsalicílico)", m:"Bayaspirina, entre otras", tipo:"libre",
+   sirve:"Dolor y fiebre en adultos. En dosis bajas, algunos la toman a diario por indicación del cardiólogo.",
+   no:["Nunca a chicos ni adolescentes con fiebre: puede causar una enfermedad grave del hígado y el cerebro.","Si se sospecha dengue.","Si tienes úlcera, sangrados o tomas anticoagulantes.","En el embarazo, salvo indicación médica."],
+   mezcla:["Ibuprofeno, diclofenac u otros antiinflamatorios.","Anticoagulantes.","Alcohol."],
+   alarma:"Heces negras, sangrado que no para o moretones sin golpe: consulta enseguida.",
+   chicas:"No se usa en las chicas."},
+  {id:"dipirona", c:"dolor", n:"Dipirona (metamizol)", m:"Novalgina, entre otras", tipo:"caja",
+   sirve:"Fiebre alta y dolores fuertes que no ceden con paracetamol.",
+   no:["Si alguna vez te dio alergia o problemas en la sangre.","Si tienes la presión baja o estás deshidratado: la baja más."],
+   mezcla:["Otros antiinflamatorios.","Alcohol."],
+   alarma:"Es raro, pero puede bajar mucho las defensas: si aparecen fiebre con dolor de garganta o llagas en la boca mientras la tomas, déjala y consulta.",
+   chicas:"Solo si la indica la pediatra."},
+  {id:"diclofenac", c:"dolor", n:"Diclofenac (comprimidos y gel)", m:"Voltaren, entre otras", tipo:"caja",
+   sirve:"Dolor con inflamación: golpes, torceduras, espalda. El gel se pone en la zona y no pasa casi a la sangre.",
+   no:["Lo mismo que el ibuprofeno: dengue, úlcera, riñón, deshidratación, embarazo.","El gel, nunca en heridas, ojos ni piel lastimada."],
+   mezcla:["Ibuprofeno, aspirina u otros antiinflamatorios.","Anticoagulantes."],
+   alarma:"Heces negras, vómito con sangre o hinchazón de piernas: consulta.",
+   chicas:"Solo si lo indica la pediatra."},
+
+  /* Alergias */
+  {id:"loratadina", c:"alergia", n:"Loratadina, cetirizina, levocetirizina, fexofenadina", m:"Clarityne (loratadina), entre otras", tipo:"caja",
+   sirve:"Alergias: estornudos, picazón, ronchas, ojos llorosos, picaduras de insectos. Casi no dan sueño (la cetirizina, un poco). La loratadina, la levocetirizina y la fexofenadina son de venta libre.",
+   no:["Si tienes una enfermedad del hígado o del riñón, consulta antes."],
+   mezcla:["Alcohol y otros remedios que dan sueño."],
+   alarma:"No sirven para una alergia grave: si se hincha la cara o la boca, o cuesta respirar, llama al 911 ya.",
+   chicas:"Hay jarabes para chicos: según la edad y el peso."},
+  {id:"difenhidramina", c:"alergia", n:"Difenhidramina, dexclorfeniramina", m:"Polaramine, entre otras", tipo:"caja",
+   sirve:"Alergias y picazón fuerte. Dan mucho sueño, por eso se usan de noche.",
+   no:["Si tienes glaucoma o problemas de próstata.","Si tienes que manejar o cuidar a otros: dan mucho sueño."],
+   mezcla:["Alcohol, tranquilizantes y otros remedios para dormir."],
+   alarma:"Lo mismo: con la cara hinchada o dificultad para respirar, 911.",
+   chicas:"En chicos pueden dar excitación en vez de sueño: solo si lo indica la pediatra."},
+
+  /* Estómago */
+  {id:"sro", c:"panza", n:"Sales de rehidratación oral", m:"Sobres de la farmacia", tipo:"libre",
+   sirve:"Reponer agua y sales en diarrea, vómitos o mucho calor. Es lo más importante para no deshidratarse.",
+   no:["No le agregues azúcar, jugo ni sal: se prepara solo con la cantidad de agua segura que dice el sobre."],
+   mezcla:["Nada: se toma solo, de a sorbos chicos y seguidos."],
+   alarma:"Si no hace pis en 8 horas, tiene la boca muy seca, está muy decaído o vomita todo: guardia.",
+   chicas:"Es lo primero para las chicas con diarrea. Lo preparado se tira a las 24 horas."},
+  {id:"loperamida", c:"panza", n:"Loperamida", m:"", tipo:"caja",
+   sirve:"Frenar una diarrea común en adultos, por ejemplo para un viaje.",
+   no:["Si la diarrea tiene sangre o hay fiebre alta: puede ser una infección que hay que dejar salir.","Si hay dolor de panza fuerte o la panza muy hinchada."],
+   mezcla:["Otros remedios para la diarrea."],
+   alarma:"Si dura más de 2 días, hay sangre o fiebre, consulta.",
+   chicas:"En chicos, solo si lo indica la pediatra."},
+  {id:"antiacido", c:"panza", n:"Antiácidos (hidróxido de aluminio y magnesio, carbonato de calcio)", m:"", tipo:"libre",
+   sirve:"Acidez y ardor de estómago, de vez en cuando.",
+   no:["Si tienes problemas de riñón, consulta antes."],
+   mezcla:["Otros remedios: tómalos con 2 horas de diferencia, porque los antiácidos impiden que se absorban bien."],
+   alarma:"Ardor que no se va, vómito con sangre, heces negras o dificultad para tragar: consulta.",
+   chicas:""},
+  {id:"omeprazol", c:"panza", n:"Omeprazol y otros «prazoles»", m:"Omeprazol, esomeprazol, lansoprazol, pantoprazol", tipo:"libre",
+   sirve:"Acidez y reflujo en adultos, por pocos días. Son de venta libre desde 2024 (ANMAT).",
+   no:["Más de 14 días seguidos sin consultar al médico.","En chicos: la venta libre es solo para mayores de 18."],
+   mezcla:["Algunos remedios para el corazón o anticoagulantes: pregunta en la farmacia."],
+   alarma:"Dificultad para tragar, vómito con sangre, heces negras o pérdida de peso: consulta.",
+   chicas:"No, salvo que lo indique la pediatra."},
+  {id:"antiespasmodico", c:"panza", n:"Para los cólicos: butilhioscina, propinox", m:"Buscapina, Sertal, entre otras", tipo:"caja",
+   sirve:"Cólicos y retorcijones de estómago, intestino o menstruales.",
+   no:["Si tienes glaucoma, problemas de próstata o el corazón acelerado."],
+   mezcla:["Otros remedios que secan la boca o dan sueño."],
+   alarma:"Un dolor de panza fuerte que no cede, sobre todo abajo a la derecha, con fiebre o vómitos, puede ser apendicitis: guardia.",
+   chicas:"Solo si lo indica la pediatra."},
+  {id:"dimenhidrinato", c:"panza", n:"Dimenhidrinato", m:"Dramamine, entre otras", tipo:"libre",
+   sirve:"Mareo de viaje, náuseas y vómitos leves.",
+   no:["Si tienes que manejar: da sueño.","Si tienes glaucoma o problemas de próstata."],
+   mezcla:["Alcohol y otros remedios que dan sueño."],
+   alarma:"Vómitos que no paran o con sangre: guardia.",
+   chicas:"Hay presentaciones para chicos: según la edad y el peso."},
+
+  /* Piel */
+  {id:"povidona", c:"piel", n:"Iodopovidona (antiséptico)", m:"Pervinox, entre otras", tipo:"libre",
+   sirve:"Desinfectar heridas y raspones, después de lavarlos con agua y jabón.",
+   no:["Si eres alérgico al yodo o tienes problemas de tiroides.","En quemaduras grandes, en recién nacidos o en el embarazo, por mucho tiempo."],
+   mezcla:["Agua oxigenada u otros antisépticos al mismo tiempo."],
+   alarma:"Si la herida se pone roja, hinchada, caliente o con pus, se infectó: consulta.",
+   chicas:""},
+  {id:"clorhexidina", c:"piel", n:"Clorhexidina (antiséptico)", m:"", tipo:"libre",
+   sirve:"Desinfectar heridas, raspones y la piel. No arde y no mancha.",
+   no:["En ojos, oídos o boca (salvo la que es para buches)."],
+   mezcla:["Jabón justo después: lava, enjuaga bien y recién ahí ponla."],
+   alarma:"Lo mismo: herida roja, caliente o con pus, consulta.",
+   chicas:"Es la más cómoda para las chicas porque no arde."},
+  {id:"alcohol", c:"piel", n:"Alcohol al 70 %", m:"", tipo:"libre",
+   sirve:"Manos, termómetro, pinzas y superficies.",
+   no:["En heridas abiertas: arde y daña la piel. Para la herida, agua segura, jabón y un antiséptico.","Cerca del fuego o de velas: es inflamable."],
+   mezcla:["Lavandina: largan gases tóxicos."],
+   alarma:"",
+   chicas:"Guárdalo alto, fuera del alcance."},
+  {id:"sulfadiazina", c:"piel", n:"Crema para quemaduras (sulfadiazina de plata)", m:"", tipo:"caja",
+   sirve:"Quemaduras, después de enfriarlas 20 minutos con agua.",
+   no:["Si eres alérgico a las sulfas.","En recién nacidos o al final del embarazo."],
+   mezcla:["Otras cremas en la misma zona."],
+   alarma:"Quemadura más grande que la palma, en cara, manos, pies o genitales, o con la piel blanca o negra: guardia.",
+   chicas:"Consulta con la pediatra."},
+  {id:"hidrocortisona", c:"piel", n:"Crema con corticoide suave (hidrocortisona)", m:"", tipo:"caja",
+   sirve:"Picaduras, ronchas y eccemas que pican.",
+   no:["En heridas, granos infectados o con hongos.","En la cara o por muchos días sin consultar."],
+   mezcla:["Otras cremas en la misma zona."],
+   alarma:"Si la zona empeora, supura o se extiende, consulta.",
+   chicas:"Pocos días y en zonas chicas."},
+  {id:"clotrimazol", c:"piel", n:"Crema para hongos (clotrimazol)", m:"", tipo:"caja",
+   sirve:"Hongos de la piel: entre los dedos de los pies, ingle, paspaduras con hongos.",
+   no:["En ojos o boca."],
+   mezcla:["Cremas con corticoide en la misma zona, salvo indicación."],
+   alarma:"Si en 2 semanas no mejora, consulta.",
+   chicas:""},
+  {id:"permetrina", c:"piel", n:"Permetrina (para piojos y sarna)", m:"", tipo:"caja",
+   sirve:"Piojos (loción o champú) y sarna (crema). En lugares con mucha gente y poca agua, aparecen seguido.",
+   no:["En heridas o piel muy irritada.","En bebés, salvo indicación médica."],
+   mezcla:["Otros productos para piojos al mismo tiempo."],
+   alarma:"Si la picazón sigue después de repetir el tratamiento como dice el envase, consulta.",
+   chicas:"Revisa el pelo de las chicas una vez por semana durante un corte largo."},
+  {id:"fisiologica", c:"piel", n:"Solución fisiológica", m:"", tipo:"libre",
+   sirve:"Lavar heridas, la nariz y los ojos. Es agua con sal, estéril.",
+   no:["Una vez abierta, no la guardes muchos días: se contamina."],
+   mezcla:[],
+   alarma:"",
+   chicas:"Para destapar la nariz de las chicas."},
+
+  /* Nariz, ojos y respiración */
+  {id:"lagrimas", c:"resp", n:"Lágrimas artificiales (colirio)", m:"", tipo:"libre",
+   sirve:"Ojos secos, irritados por el humo o el polvo.",
+   no:["Si el ojo duele mucho, ves mal o se metió algo: no tapes el problema, consulta."],
+   mezcla:["Otros colirios: deja unos minutos entre uno y otro."],
+   alarma:"Golpe en el ojo, químico en el ojo (lava 15 minutos con agua) o pérdida de visión: guardia.",
+   chicas:""},
+  {id:"nafazolina", c:"resp", n:"Colirio para ojo rojo alérgico (nafazolina + feniramina)", m:"", tipo:"libre",
+   sirve:"Ojos rojos y con picazón por alergia. Es de venta libre desde 2026 (ANMAT).",
+   no:["Por más de unos pocos días seguidos.","Si tienes glaucoma o problemas de presión."],
+   mezcla:["Otros colirios al mismo tiempo."],
+   alarma:"Dolor fuerte, pus o visión borrosa: consulta.",
+   chicas:"En chicos chicos, solo si lo indica la pediatra."},
+  {id:"mucolitico", c:"resp", n:"Mucolíticos (carbocisteína, acetilcisteína)", m:"", tipo:"caja",
+   sirve:"Aflojar la flema espesa.",
+   no:["Nunca en menores de 2 años.","Si tienes úlcera de estómago."],
+   mezcla:["Remedios para cortar la tos: uno afloja la flema y el otro impide sacarla."],
+   alarma:"Fiebre alta, falta de aire o flema con sangre: consulta.",
+   chicas:"Solo si lo indica la pediatra."},
+
+  /* Agua y mosquitos */
+  {id:"potabilizadoras", c:"agua", n:"Pastillas potabilizadoras", m:"", tipo:"libre",
+   sirve:"Desinfectar agua para tomar cuando no hay lavandina apta ni gas para hervir. Ocupan poco: van en la mochila.",
+   no:["En agua turbia sin filtrarla antes.","En agua que puede tener nafta, químicos o agua de inundación."],
+   mezcla:["Lavandina en la misma agua."],
+   alarma:"",
+   chicas:""},
+  {id:"repelente", c:"agua", n:"Repelente de mosquitos (DEET, icaridina o IR3535)", m:"", tipo:"libre",
+   sirve:"Evitar picaduras del mosquito del dengue, sobre todo con agua juntada en baldes y tachos.",
+   no:["En manos de chicos chicos (se lo llevan a la boca y a los ojos) ni en heridas."],
+   mezcla:["Protector solar: primero el protector y después el repelente."],
+   alarma:"Fiebre con dolor de cuerpo, detrás de los ojos o manchas en la piel: puede ser dengue. Paracetamol, nada de ibuprofeno ni aspirina, y consulta.",
+   chicas:"Para chicos, el que diga en la etiqueta que es apto para su edad."},
+
+  /* Con receta */
+  {id:"salbutamol", c:"receta", n:"Salbutamol en aerosol (broncodilatador)", m:"", tipo:"receta",
+   sirve:"Crisis de asma o broncoespasmo: abre los bronquios. Solo para quien el médico se lo indicó.",
+   no:["Por cuenta propia, sin diagnóstico."],
+   mezcla:["Pregunta al médico si toma remedios para el corazón."],
+   alarma:"Si después de usarlo sigue con falta de aire, labios morados o no puede hablar: 107 o 911.",
+   chicas:"Con aerocámara. Que en la mochila haya uno si alguna lo usa."},
+  {id:"adrenalina", c:"receta", n:"Adrenalina autoinyectable", m:"", tipo:"receta",
+   sirve:"Alergia grave (anafilaxia) en quien tiene diagnóstico: se usa en el muslo y salva la vida.",
+   no:["Sin indicación médica."],
+   mezcla:[],
+   alarma:"Después de usarla, siempre al 911 o a la guardia, aunque mejore.",
+   chicas:"Si alguna la necesita, que los adultos sepan usarla y que esté en la mochila. Revisa el vencimiento."},
+  {id:"antibioticos", c:"receta", n:"Antibióticos", m:"Amoxicilina, cefalexina, entre otros", tipo:"receta",
+   sirve:"Infecciones por bacterias, solo con indicación médica. No sirven para gripes ni resfríos.",
+   no:["Por cuenta propia o con restos de otro tratamiento.","Cortarlos antes de tiempo porque la persona mejoró."],
+   mezcla:["Alcohol, con algunos, como el metronidazol."],
+   alarma:"Ronchas, hinchazón o falta de aire al tomarlo: déjalo y consulta ya.",
+   chicas:"Siempre con la indicación de la pediatra."},
+  {id:"cronicos", c:"receta", n:"Los remedios de todos los días", m:"Presión, tiroides, diabetes, convulsiones, ansiedad…", tipo:"receta",
+   sirve:"Lo que alguien de la casa toma siempre. En una crisis, es lo primero que no puede faltar.",
+   no:["Cortarlos de golpe o cambiar la dosis para que duren más, salvo que lo diga el médico."],
+   mezcla:["Cualquier remedio nuevo: pregunta en la farmacia si se puede combinar."],
+   alarma:"Si se termina, ve a la farmacia o a la guardia con la caja o la receta.",
+   chicas:"Cárgalos abajo en «Remedios de la familia», y en las fichas médicas."}
+];
+const VD_TIPO = {libre:["Venta libre","ok"], receta:["Con receta","rx"], caja:["Mira la caja","caja"]};
+const vdFind = id => VADE.find(x => x.id === id);
+function vdRow(v){
+  const [tt, cls] = VD_TIPO[v.tipo];
+  const li = a => a && a.length ? `<ul>${a.map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : "";
+  return `<details class="vd-it" id="vd-${v.id}"${ui.vdOpen === v.id ? " open" : ""}><summary><span class="vd-n"><strong>${esc(v.n)}</strong>${v.m ? `<span>${esc(v.m)}</span>` : ""}</span><span class="vd-t ${cls}">${tt}</span></summary>
+    <div class="vd-b">
+      <h4>Para qué sirve</h4><p>${esc(v.sirve)}</p>
+      ${v.no.length ? `<h4>No lo tomes / no lo uses</h4>${li(v.no)}` : ""}
+      ${v.mezcla.length ? `<h4>No lo mezcles con</h4>${li(v.mezcla)}` : ""}
+      ${v.alarma ? `<h4>Consulta o ve a la guardia si</h4><p>${esc(v.alarma)}</p>` : ""}
+      ${v.chicas ? `<h4>Las chicas</h4><p>${esc(v.chicas)}</p>` : ""}
+      <p class="vd-dosis">La dosis: la del prospecto o la que indicó el médico.</p>
+    </div></details>`;
+}
+function vdListHTML(){
+  const q = norm(ui.vdQ || "");
+  if(q.length > 1){
+    const w = q.split(" ").filter(x => x.length > 2);
+    const hits = VADE.filter(v => { const h = norm([v.n, v.m, v.sirve, v.no.join(" "), v.alarma].join(" ")); return w.every(x => h.includes(x) || (x.length > 4 && h.includes(x.slice(0, -1)))); });
+    const fam = (state.vdFam || []).filter(f => w.every(x => norm(f.nombre + " " + f.para + " " + f.notas).includes(x)));
+    if(!hits.length && !fam.length) return `<p class="fine">No encontré «${esc(ui.vdQ)}». Prueba con el nombre del remedio sin la marca, o con para qué lo necesitas: «fiebre», «diarrea», «picazón».</p>`;
+    return (fam.length ? `<div class="vd-fam">${fam.map(vdFamRow).join("")}</div>` : "") + hits.map(vdRow).join("");
+  }
+  return VD_CATS.map(c => `<h3 class="vd-cat">${icon(c.ic)}${c.t}</h3>${VADE.filter(v => v.c === c.id).map(vdRow).join("")}`).join("");
+}
+function vdFamRow(f){
+  const del = ui.vdDel === f.id;
+  return `<div class="vd-fi"><div><strong>${esc(f.nombre)}</strong><span>${[f.para, f.notas].filter(Boolean).map(esc).join(" · ")}</span></div>${del
+    ? `<span class="inline"><button class="btn btn-danger btn-sm" data-action="vd-del-do" data-id="${esc(f.id)}">Borrar</button><button class="btn btn-ghost btn-sm" data-action="vd-del-no">No</button></span>`
+    : `<button class="btn btn-ghost btn-sm" data-action="vd-del" data-id="${esc(f.id)}" aria-label="Borrar ${esc(f.nombre)}">Borrar</button>`}</div>`;
+}
+function renderVade(){
+  const fam = state.vdFam || [];
+  return `<section class="stack vd">
+    ${backBtn()}
+    <div class="intro"><h1>Vademécum</h1><p class="lede">Para qué sirve cada remedio del botiquín, cuándo no tomarlo y con qué no mezclarlo.</p></div>
+    <p class="vd-warn">${icon("heart")}<span><strong>Sin dosis a propósito.</strong> La dosis es siempre la del prospecto o la que indicó el médico; en las chicas, según su peso. Ante la duda, pregunta en la farmacia. Intoxicaciones: 0800-333-0160.</span></p>
+    <div class="card"><h2>Remedios de la familia</h2>
+      <p class="fine">Lo que alguien de la casa toma siempre o le recetaron. Se guarda en este celular y pasa a los otros con «Compartir».</p>
+      ${fam.length ? `<div class="vd-fam">${fam.map(vdFamRow).join("")}</div>` : `<p class="fine">Todavía no cargaste ninguno.</p>`}
+      <form id="vd-form" class="vd-form" novalidate>
+        <div class="field"><label class="lbl" for="vd-nombre">Remedio</label><input id="vd-nombre" maxlength="60" autocomplete="off" placeholder="Ej.: Enalapril 10 mg"></div>
+        <div class="field"><label class="lbl" for="vd-para">Para quién</label><input id="vd-para" maxlength="40" autocomplete="off" placeholder="Ej.: Papá"></div>
+        <div class="field"><label class="lbl" for="vd-notas">Para qué y cómo (lo que dijo el médico)</label><input id="vd-notas" maxlength="120" autocomplete="off" placeholder="Ej.: presión, 1 a la mañana"></div>
+        <button class="btn btn-primary" type="submit">Agregar</button>
+      </form>
+    </div>
+    <div class="field"><label class="lbl" for="vd-q">Buscar</label><input id="vd-q" type="search" autocomplete="off" value="${esc(ui.vdQ || "")}" placeholder="Ej.: fiebre, ibuprofeno, picazón, diarrea"></div>
+    <div id="vd-list">${vdListHTML()}</div>
+    ${srcBox(["vdAnmatPrazoles","vdAnmat2026","vdDengue","vdMucoliticos","vdMedline"], "Información general verificada en fuentes oficiales. No reemplaza al médico ni al prospecto.")}
+  </section>`;
+}
+function vdAdd(){
+  const g = id => (document.getElementById(id) || {}).value || "";
+  const nombre = g("vd-nombre").trim().slice(0, 60);
+  if(!nombre){ const i = document.getElementById("vd-nombre"); if(i) i.focus(); return; }
+  state.vdFam = (state.vdFam || []).concat({id:"f" + Date.now().toString(36), nombre, para:g("vd-para").trim().slice(0, 40), notas:g("vd-notas").trim().slice(0, 120)});
+  save(); render(false);
+}
+function vdManual(){
+  return VD_CATS.map(c => `<h3>${c.t}</h3>${VADE.filter(v => v.c === c.id).map(v => `<div class="pb-m"><p><strong>${esc(v.n)}</strong> (${VD_TIPO[v.tipo][0].toLowerCase()}). ${esc(v.sirve)}</p>${v.no.length ? `<p><em>No:</em> ${v.no.map(esc).join(" ")}</p>` : ""}${v.mezcla.length ? `<p><em>No mezclar con:</em> ${v.mezcla.map(esc).join(" ")}</p>` : ""}${v.alarma ? `<p><em>Consulta si:</em> ${esc(v.alarma)}</p>` : ""}</div>`).join("")}`).join("") +
+    `<p>Dosis: la del prospecto o la del médico. Intoxicaciones: 0800-333-0160.</p>`;
+}
 
 /* ---------- Plan 30 días sin luz ---------- */
 const MES_COMIDA = [
@@ -6577,10 +6872,10 @@ const SHARE = [
      if(n) res.push(plural(n, "cosa nueva en el inventario", "cosas nuevas en el inventario"));
      if(u) res.push(plural(u, "cosa actualizada", "cosas actualizadas"));
    }},
-  {id:"fichas", t:"Fichas médicas", d:"Datos de salud: compártelas solo con quien las necesita.",
-   has:() => state.fichas.length > 0,
-   sum:x => { const l = (Array.isArray(x.fichas) ? x.fichas : []).filter(f => f && f.nombre).map(f => String(f.nombre)); return l.length ? `${plural(l.length, "ficha", "fichas")}: ${l.slice(0, 4).join(", ")}${l.length > 4 ? "…" : ""}` : ""; },
-   get:() => ({fichas:state.fichas}),
+  {id:"fichas", t:"Fichas médicas", d:"Datos de salud y remedios de la familia: compártelas solo con quien las necesita.",
+   has:() => state.fichas.length > 0 || state.vdFam.length > 0,
+   sum:x => { const r = Array.isArray(x.vdFam) && x.vdFam.length ? ` y ${plural(x.vdFam.length, "remedio de la familia", "remedios de la familia")}` : ""; const l = (Array.isArray(x.fichas) ? x.fichas : []).filter(f => f && f.nombre).map(f => String(f.nombre)); return (l.length ? `${plural(l.length, "ficha", "fichas")}: ${l.slice(0, 4).join(", ")}${l.length > 4 ? "…" : ""}` : "") + r; },
+   get:() => ({fichas:state.fichas, vdFam:state.vdFam}),
    apply:(x, res) => {
      let n = 0, u = 0;
      (Array.isArray(x.fichas) ? x.fichas : []).slice(0, 30).forEach(f => {
@@ -6595,6 +6890,12 @@ const SHARE = [
      });
      if(n) res.push(plural(n, "ficha nueva", "fichas nuevas"));
      if(u) res.push(plural(u, "ficha actualizada", "fichas actualizadas"));
+     let m = 0;
+     (Array.isArray(x.vdFam) ? x.vdFam : []).slice(0, 60).forEach(f => {
+       if(!f || !f.nombre || state.vdFam.some(y => norm(y.nombre) === norm(f.nombre) && norm(y.para) === norm(f.para || ""))) return;
+       state.vdFam.push({id:newId("r"), nombre:String(f.nombre).slice(0, 60), para:String(f.para || "").slice(0, 40), notas:String(f.notas || "").slice(0, 120)}); m++;
+     });
+     if(m) res.push(plural(m, "remedio de la familia", "remedios de la familia"));
    }},
   {id:"docs", t:"Fotos del DNI", d:"Documentos personales: pásalas solo a tu familia directa. No van por QR.",
    has:() => state.fichas.some(f => { const d = docsOf(f.id); return dniOk(d.f) || dniOk(d.d); }),
@@ -7516,7 +7817,7 @@ function render(top){
   if(!(ui.tab === "inicio" && ui.sub === "ir")) navStop();
   applyAhorro();
   if(ui.tab === "inicio" && !ui.sub && state.ahorro) html = renderAhorro();
-  else if(ui.tab === "inicio") html = ui.sub === "corte" ? renderCorte() : ui.sub === "aviso" ? renderAviso() : ui.sub === "mapa" ? renderMapa() : ui.sub === "ayuda" ? renderAyuda() : ui.sub === "mes" ? renderMes() : ui.sub === "radio" ? renderRadio() : ui.sub === "manual" ? renderManual() : ui.sub === "ir" ? renderNav() : ui.sub === "llevar" ? renderLlevar() : ui.sub === "mificha" ? renderMiFicha() : ui.sub === "recs" ? renderRecs() : ui.sub === "config" ? renderConfig() : ui.sub === "prob" ? renderProb() : ui.sub === "hoy" ? renderHoy() : ui.sub === "queda" ? renderQueda() : renderHome();
+  else if(ui.tab === "inicio") html = ui.sub === "corte" ? renderCorte() : ui.sub === "aviso" ? renderAviso() : ui.sub === "mapa" ? renderMapa() : ui.sub === "ayuda" ? renderAyuda() : ui.sub === "mes" ? renderMes() : ui.sub === "radio" ? renderRadio() : ui.sub === "manual" ? renderManual() : ui.sub === "ir" ? renderNav() : ui.sub === "llevar" ? renderLlevar() : ui.sub === "mificha" ? renderMiFicha() : ui.sub === "recs" ? renderRecs() : ui.sub === "config" ? renderConfig() : ui.sub === "prob" ? renderProb() : ui.sub === "hoy" ? renderHoy() : ui.sub === "queda" ? renderQueda() : ui.sub === "vade" ? renderVade() : renderHome();
   else if(ui.tab === "guias") html = ui.guide ? renderGuide() : renderGuides();
   else if(ui.tab === "preparar") html = renderPrep();
   else if(ui.tab === "linterna") html = renderTools();
@@ -7970,6 +8271,10 @@ document.addEventListener("click", e => {
     case "pb-chk": pbChk(el); break;
     case "jump": { const t = document.getElementById(el.dataset.to); if(t) t.scrollIntoView({block:"start", behavior:"smooth"}); break; }
     case "volver": if(NAVS.length) history.back(); else go("inicio"); break;
+    case "go-vade": ui.vdQ = el.dataset.q || ""; ui.vdOpen = el.dataset.id || null; go("inicio", {sub:"vade"}); if(ui.vdOpen){ const d = document.getElementById("vd-" + ui.vdOpen); if(d) d.scrollIntoView({block:"start"}); } break;
+    case "vd-del": ui.vdDel = el.dataset.id; render(false); break;
+    case "vd-del-no": ui.vdDel = null; render(false); break;
+    case "vd-del-do": state.vdFam = state.vdFam.filter(f => f.id !== el.dataset.id); ui.vdDel = null; save(); render(false); break;
     case "go-queda": go("inicio", {sub:"queda"}); break;
     case "go-hoy": ui.hoyVer = 0; ui.hoyEdit = !(hoyLoad().enc || []).length; go("inicio", {sub:"hoy"}); break;
     case "hoy-chk": hoyChk(el); break;
@@ -8235,6 +8540,9 @@ document.addEventListener("input", e => {
   }else if(e.target.id === "aviso-extra"){
     ui.aviso.extra = e.target.value.slice(0, 140);
     updAviso();
+  }else if(e.target.id === "vd-q"){
+    ui.vdQ = e.target.value.slice(0, 40);
+    const l = document.getElementById("vd-list"); if(l) l.innerHTML = vdListHTML();
   }else if(e.target.id === "pb-q"){
     ui.pbQ = e.target.value.slice(0, 40);
     const l = document.getElementById("pb-list"), c = document.getElementById("pb-cats");
@@ -8339,6 +8647,7 @@ function routeHash(hash){
   else if(hash === "recordatorios") ui.sub = "recs";
   else if(hash === "configuracion") ui.sub = "config";
   else if(hash === "cuanto-queda") ui.sub = "queda";
+  else if(hash === "vademecum") ui.sub = "vade";
   else if(hash === "hoy"){ ui.sub = "hoy"; ui.hoyVer = 0; }
   else if(hash === "problema"){ ui.sub = "prob"; ui.pbId = null; }
   else if(hash.indexOf("problema-") === 0 && PROBLEMAS.some(x => x.id === hash.slice(9))){ ui.sub = "prob"; ui.pbId = hash.slice(9); }
