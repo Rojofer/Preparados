@@ -1806,7 +1806,7 @@ const ILL = {
   "sw-4":{alt:"Los celulares se encuentran solos y se conectan directo, con ondas que van de uno al otro.",
     draw:() => BG() + FLOOR(320) + PHONE(52,40,G(BTI(),"scale(0.9)")) + PHONE(204,40,G(BTI(),"scale(0.9)")) +
       G(P("il-o2","M132 82q10 16 0 32") + fade("1;0;0;1","1.5s")) + G(P("il-o2","M148 72q14 26 0 52") + fade("0;1;0;0","1.5s")) + G(P("il-o2","M164 72q14 26 0 52") + fade("0;0;1;0","1.5s")) + G(P("il-o2","M180 82q10 16 0 32") + fade("1;0;0;1","1.5s"))},
-  "sw-5":{alt:"En un celular se toca Enviar por Quick Share. El otro celular muestra Aceptar.",
+  "sw-5":{alt:"En un celular se toca Enviar y se elige Quick Share. El otro celular muestra Aceptar.",
     draw:() => BG() + FLOOR(320) + PHONE(40,40, R("il-a",-23,-11,46,22,6) + G(T(0,0,"Enviar",true,"middle"),"translate(0 4) scale(0.8)")) +
       G(G(HAND(0,0,-10), "translate(70 104) scale(1.6)") + mv("0 0;-4 -10;0 0","1.2s")) +
       PHONE(216,40, G(T(0,0,"¿Aceptar?",true,"middle"),"translate(0 -12) scale(0.72)") + R("il-ok",-18,2,36,18,6) + P("il-mark","M-6 11l4 4 8-8"))},
@@ -3505,8 +3505,10 @@ function renderFichas(){
     : `<div class="empty"><p><strong>Todavía no hay fichas.</strong> Crea una para ti y otra para cada persona de la casa.</p></div>`;
   const sinFicha = state.plan.miembros.filter(m => !state.fichas.some(f => f.nombre === m.nombre));
   const chips = sinFicha.length ? `<p class="fine">Del plan familiar:</p><div class="chips" role="group" aria-label="Crear desde el plan familiar">${sinFicha.map(m => `<button type="button" class="chip" data-action="ficha-from" data-id="${esc(m.id)}">${esc(m.nombre)}</button>`).join("")}</div>` : "";
+  const pedir = pedTarjeta();
   const todas = state.fichas.length ? `<div class="card"><h2>Imprimir las fichas</h2><p class="fine">Todas juntas, para tener una copia en papel en la mochila de cada uno.</p><div class="inline"><button class="btn btn-primary" data-action="fichas-print">Imprimir todas</button><button class="btn btn-outline" data-action="fichas-dl">Descargar para imprimir</button></div><p class="fine">O una tarjeta para la billetera de cada uno, con sus datos, lo de salud y a quién avisar:</p><div class="inline"><button class="btn btn-ghost" data-action="tarjetas-print">${icon("id")}Tarjetas para la billetera</button><button class="btn btn-ghost" data-action="tarjetas-dl">Descargarlas</button></div><p class="st" id="print-st" role="status"></p></div>` : "";
   return `${list}
+    ${pedir}
     ${todas}
     ${trashLink() ? `<div class="inline">${trashLink()}</div>` : ""}
     <form class="card" id="form-ficha" novalidate><h3>Nueva ficha</h3>${chips}<div class="field"><label class="lbl" for="f-nombre">Nombre</label><input id="f-nombre" maxlength="40" autocomplete="off" placeholder="Ej.: Yo"></div><p class="form-err" id="f-err" hidden>Escribe un nombre.</p><button class="btn btn-primary" type="submit">Crear ficha</button></form>
@@ -4960,7 +4962,7 @@ const LOCK_ACTIONS = new Set([
   "del-ask","del-do","mem-del-ask","mem-del-do","plan-step","punto-save","inv-edit","inv-del-ask","inv-del-do","inv-sugg","comida-inv",
   "recv-apply","undo-recv","trash-empty","trash-restore","reset-ask","reset-do","fam-del","fam-load","avisos-del-do"
 ]);
-const LOCK_FORMS = new Set(["form-contacto","form-dir","form-ficha","form-inv","form-lugar","form-mem"]);
+const LOCK_FORMS = new Set(["form-ped","form-contacto","form-dir","form-ficha","form-inv","form-lugar","form-mem"]);
 const LOCK_INPUTS = "[data-pf],[data-tarea],#punto,[data-ff],[data-foto],[data-dni],.ren-form input,#recv-file,#cfg-yo,#cfg-prov,#cfg-ciudad,#vd-nombre,#vd-para,#vd-notas,[data-recs-aqui],[data-rec-on],select[data-rec]";
 function lockCfg(){ try{ const c = JSON.parse(localStorage.getItem(LOCK_KEY) || "null"); return c && c.hash ? c : null; }catch(e){ return null; } }
 function lockSave(c){ try{ if(c) localStorage.setItem(LOCK_KEY, JSON.stringify(c)); else localStorage.removeItem(LOCK_KEY); return true; }catch(e){ return false; } }
@@ -5017,7 +5019,7 @@ async function tryPin(){
 const FP_KEY = "preparados.fpin", MIA_KEY = "preparados.mia";
 function fpCfg(){ try{ const c = JSON.parse(localStorage.getItem(FP_KEY) || "null"); return c && c.hash ? c : null; }catch(e){ return null; } }
 const fpLocked = () => !!fpCfg() && Date.now() > (ui.fpUntil || 0);
-const FP_ACTIONS = new Set(["ficha-edit","ficha-edit-mia","ficha-full","ficha-print","ficha-dl","fichas-print","fichas-dl","tarjeta-print","tarjeta-dl","tarjetas-print","tarjetas-dl","print-all","dl-all","manual-print","manual-dl","backup","share-file","share-qr","fp-off","fp-cambiar"]);
+const FP_ACTIONS = new Set(["ficha-edit","ficha-edit-mia","ficha-full","ficha-print","ficha-dl","fichas-print","fichas-dl","tarjeta-print","tarjeta-dl","ped-enviar","tarjetas-print","tarjetas-dl","print-all","dl-all","manual-print","manual-dl","backup","share-file","share-qr","fp-off","fp-cambiar"]);
 document.addEventListener("click", e => {
   if(!fpLocked()) return;
   const a = e.target.closest && e.target.closest("[data-action]");
@@ -5156,7 +5158,7 @@ document.addEventListener("keydown", e => { if(e.key === "Escape"){ const ov = d
 const scrKey = () => [ui.tab, ui.sub || "", ui.guide || "", ui.tab === "numeros" ? ui.planSeg || "" : "", ui.tab === "preparar" ? ui.prep || "" : "", ui.ayuda && ui.ayuda.mostrar && ui.sub === "ayuda" ? "m" : "", ui.sub === "prob" ? ui.pbId || "" : ""].join("|");
 let histPop = false;
 /* La dirección de cada pantalla: si Android recarga la app, vuelve a la misma pantalla */
-const SUB_HASH = {vade:"vademecum", queda:"cuanto-queda", hoy:"hoy", prob:"problema", config:"configuracion", recs:"recordatorios", corte:"corte", aviso:"aviso", mapa:"mapa", ayuda:"ayuda", llevar:"llevar", ir:"llevar", mificha:"mificha", mes:"30dias", radio:"radio", manual:"manual"};
+const SUB_HASH = {pedido:"pedido-ficha", vade:"vademecum", queda:"cuanto-queda", hoy:"hoy", prob:"problema", config:"configuracion", recs:"recordatorios", corte:"corte", aviso:"aviso", mapa:"mapa", ayuda:"ayuda", llevar:"llevar", ir:"llevar", mificha:"mificha", mes:"30dias", radio:"radio", manual:"manual"};
 function screenHash(){
   if(ui.tab === "inicio") return ui.sub === "prob" && ui.pbId ? "problema-" + ui.pbId : SUB_HASH[ui.sub] || "";
   if(ui.tab === "guias") return ui.guide ? "guia-" + ui.guide : "guias";
@@ -5166,7 +5168,7 @@ function screenHash(){
 }
 const histUrl = () => location.pathname + location.search + (screenHash() ? "#" + screenHash() : "");
 const NAVS = [];   /* pantallas anteriores dentro de la app, para el botón «volver» */
-const SUB_LBL = {vade:"Vademécum", prob:"Tengo un problema", hoy:"¿Qué hago hoy?", queda:"¿Cuánto nos queda?", config:"Configuración", recs:"Recordatorios", corte:"Contador de corte", aviso:"Estoy bien", mapa:"Mapa", ayuda:"Necesito ayuda", llevar:"Llevarme", ir:"Llevarme", mificha:"Mi ficha", mes:"Plan de corte largo", radio:"Radio", manual:"Manual en papel"};
+const SUB_LBL = {pedido:"Tu ficha", vade:"Vademécum", prob:"Tengo un problema", hoy:"¿Qué hago hoy?", queda:"¿Cuánto nos queda?", config:"Configuración", recs:"Recordatorios", corte:"Contador de corte", aviso:"Estoy bien", mapa:"Mapa", ayuda:"Necesito ayuda", llevar:"Llevarme", ir:"Llevarme", mificha:"Mi ficha", mes:"Plan de corte largo", radio:"Radio", manual:"Manual en papel"};
 const TAB_LBL = {inicio:"Inicio", guias:"Guías", preparar:"Preparar", aprender:"Aprender", numeros:"Familia", linterna:"Herramientas"};
 function scrLabel(st){
   if(!st) return "Inicio";
@@ -5286,7 +5288,7 @@ async function recNotif(){
 
 /* ---------- Configuración: todos los ajustes en un lugar (engranaje arriba a la derecha) ----------
    En un celular con control parental se ve todo; para cambiar algo, salvo voz y vibración, pide el PIN. */
-const APP_VER = 41;
+const APP_VER = 42;
 const GEAR_SVG = `<svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>`;
 function renderConfig(){
   const lc = lockCfg(), lockOn = !!(lc && lc.on), f = miFicha(), fp = fpCfg(), aqui = recsAqui(), nRec = REMINDERS.filter(recOn).length;
@@ -6576,6 +6578,80 @@ function tarjetaCard(f){
     <p class="fine">Lleva tu DNI y tu domicilio: si pierdes la billetera, quien la encuentre los ve. Imprime al 100 %, sin «ajustar a la página».</p><p class="st" id="wc-st" role="status"></p></div>`;
 }
 
+/* ---------- Pedir la ficha por WhatsApp ----------
+   Quien pide manda un link (solo lleva dos nombres, nada de salud). Quien lo abre completa su ficha en su celular
+   y la devuelve como archivo por WhatsApp. Nada pasa por un servidor. */
+const PED_KEY = "preparados.pedido";
+const APP_URL = "https://rojofer.github.io/Preparados/";
+function pedLeer(){ try{ const p = JSON.parse(localStorage.getItem(PED_KEY) || "null"); return p && Date.now() - (p.at || 0) < 30 * 864e5 ? p : null; }catch(e){ return null; } }
+function pedGuardar(p){ try{ localStorage.setItem(PED_KEY, JSON.stringify(p)); }catch(e){} }
+const yoNombre = () => (state.yo || (miFicha() ? miFicha().nombre : "") || "").trim();
+function pedLink(n){
+  const q = new URLSearchParams(); if(n) q.set("n", n.slice(0, 40)); if(yoNombre()) q.set("de", yoNombre().slice(0, 40));
+  return `${APP_URL}#pedido-ficha?${q.toString()}`;
+}
+async function pedMandar(){
+  const inp = document.getElementById("ped-n"), st = document.getElementById("ped-st");
+  const n = inp ? inp.value.trim() : "";
+  if(!yoNombre()){ if(st) st.textContent = "Primero escribe tu nombre en Configuración → «Quién usa este celular», así saben quién la pide."; return; }
+  const txt = `${n ? `Hola, ${n}: ` : "Hola: "}te paso el link para que cargues tu ficha médica en Preparados, la app de emergencias de la familia. Se completa en tu celular y al final tocas «Mandársela a ${yoNombre()}». Tus datos no se suben a internet.\n${pedLink(n)}`;
+  try{ if(navigator.share){ await navigator.share({text:txt}); if(st) st.textContent = "Listo. Cuando te llegue el archivo, ábrelo desde Familia → Compartir → Recibir → «Abrir archivo»."; return; } }
+  catch(e){ if(e && e.name === "AbortError") return; }
+  location.href = "https://wa.me/?text=" + encodeURIComponent(txt);
+}
+function pedFicha(p){
+  const m = miFicha(); if(m) return m;
+  const k = norm(p && p.n).split(" ")[0];
+  return k ? state.fichas.find(f => norm(f.nombre).split(" ")[0] === k) || null : null;
+}
+function pedFalta(f){ return [["grupo","grupo sanguíneo"],["alergias","alergias (si no tienes, escribe «ninguna»)"],["contactoTel","teléfono de un contacto de emergencia"]].filter(([k]) => !f[k] || f[k] === "No sé").map(([, t]) => t); }
+function renderPedido(){
+  const p = pedLeer() || {}, de = p.de || "tu familia", f = pedFicha(p);
+  const intro = `<div class="intro"><p class="phase">Te piden tu ficha</p><h1>Tu ficha para ${esc(de)}</h1><p class="lede">${esc(de)} quiere tener tu ficha médica en su celular, por si hay una emergencia. La completas acá y se la mandas tú por WhatsApp: no se sube a internet.</p></div>`;
+  if(!f) return `<section class="stack">${backBtn()}${intro}
+    <form class="card" id="form-ped" novalidate><h2>1. Tu nombre</h2><div class="field"><label class="lbl" for="ped-nom">Nombre y apellido</label><input id="ped-nom" maxlength="40" autocomplete="name" value="${esc(p.n || "")}" placeholder="Ej.: Sofía Pérez"></div>
+      <p class="fine">Después vas a cargar el grupo sanguíneo, alergias, remedios, obra social y a quién avisar. Lo que no sepas, déjalo vacío.</p>
+      <button class="btn btn-primary btn-big" type="submit">Empezar mi ficha</button><p class="st" id="ped-err" role="status"></p></form></section>`;
+  const falta = pedFalta(f);
+  return `<section class="stack">${backBtn()}${intro}
+    <div class="card"><h2>1. Tu ficha: ${esc(f.nombre)}</h2>
+      ${falta.length ? `<p>Antes de mandarla, conviene completar: <strong>${falta.join(", ")}</strong>.</p>` : `<p>Tu ficha está lista para mandar.</p>`}
+      <div class="inline"><button class="btn ${falta.length ? "btn-primary" : "btn-ghost"}" data-action="ped-editar" data-id="${esc(f.id)}">${falta.length ? "Completar mi ficha" : "Revisarla"}</button></div></div>
+    <div class="card"><h2>2. Mándasela a ${esc(de)}</h2><p class="fine">Se abre el menú de compartir: elige WhatsApp y el chat de ${esc(de)}. Va solo tu ficha, nada más de la app.</p>
+      <button class="btn ${falta.length ? "btn-outline" : "btn-primary"} btn-big" data-action="ped-enviar" data-id="${esc(f.id)}">${icon("phone")}Mandársela a ${esc(de)}</button><p class="st" id="ped-st" role="status"></p>
+      <p class="fine">Después de que ${esc(de)} la abra, borren el archivo del chat: tiene datos de salud.</p></div></section>`;
+}
+async function pedEnviar(id){
+  const f = state.fichas.find(x => x.id === id), st = document.getElementById("ped-st"); if(!f) return;
+  const p = pedLeer() || {};
+  const text = JSON.stringify({app:"preparados", v:1, at:Date.now(), from:f.nombre, sec:{fichas:{fichas:[f], vdFam:[]}}});
+  const name = `ficha-${f.nombre.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^\w]+/g, "-").replace(/^-+|-+$/g, "").toLowerCase().slice(0, 24) || "nueva"}.txt`;
+  try{
+    const file = new File([text], name, {type:"text/plain"});
+    if(navigator.canShare && navigator.canShare({files:[file]})){
+      await navigator.share({files:[file], title:`Ficha de ${f.nombre}`, text:`Mi ficha para Preparados. Ábrela desde Familia → Compartir → Recibir → «Abrir archivo».`});
+      if(st) st.textContent = `Listo. ${p.de || "Quien la pidió"} la abre desde Familia → Compartir → Recibir.`; return;
+    }
+  }catch(e){ if(e && e.name === "AbortError") return; }
+  const r = await saveFile(name, text);
+  if(st) st.textContent = r === "saved" ? "El archivo quedó en Descargas: mándalo por WhatsApp como documento." : "No se pudo crear el archivo.";
+}
+document.addEventListener("submit", e => {
+  if(e.target.id !== "form-ped") return;
+  e.preventDefault(); e.stopImmediatePropagation();
+  const n = e.target.querySelector("#ped-nom").value.trim();
+  if(!n){ e.target.querySelector("#ped-err").textContent = "Escribe tu nombre."; e.target.querySelector("#ped-nom").focus(); return; }
+  ui.pedVolver = true; ui.planSeg = "ficha"; go("numeros");
+  if(!miFicha()) ui.miaNueva = true;
+  newFicha(n);
+}, true);
+function pedTarjeta(){
+  return `<div class="card"><h2>Pedir una ficha por WhatsApp</h2><p class="fine">Le mandas un link: lo abre en su celular, completa su ficha y te la devuelve con un botón. Sirve para las chicas, los abuelos o cualquiera de la familia.</p>
+    <div class="field"><label class="lbl" for="ped-n">¿A quién se la pides?</label><input id="ped-n" maxlength="40" autocomplete="off" placeholder="Ej.: Sofía"></div>
+    <button class="btn btn-primary" data-action="ped-mandar">${icon("phone")}Mandar el pedido</button><p class="st" id="ped-st" role="status"></p>
+    <p class="fine">El link no lleva datos de salud: solo su nombre y el tuyo. Cuando te llegue el archivo, ábrelo desde Familia → Compartir → Recibir → «Abrir archivo».</p></div>`;
+}
+
 /* ---------- Plan 30 días sin luz ---------- */
 const MES_COMIDA = [
   /* [id, nombre, cantidad por persona para 30 días, unidad, nota] */
@@ -7382,7 +7458,7 @@ const STORY = [
   ["sw-2","En los dos celulares, prendan Bluetooth, Ubicación y Wi-Fi. No hace falta tener internet."],
   ["sw-3","Acerquen los celulares: a unos 30 cm, más o menos el largo de una regla."],
   ["sw-4","Los celulares se buscan solos, como dos walkie-talkies, y se conectan directo entre ellos."],
-  ["sw-5","En la app, uno toca «Enviar por Quick Share» y elige el otro celular. El otro toca «Aceptar»."],
+  ["sw-5","En la app, uno toca «Enviar», elige Quick Share y el otro celular. El otro toca «Aceptar»."],
   ["sw-6","El archivo viaja por el aire: el plan, los contactos y los avisos de la familia."],
   ["sw-7","En el otro celular: Familia → Compartir → «Abrir archivo» → «Guardar». ¡Listo!"]
 ];
@@ -7440,7 +7516,7 @@ function renderCompartir(){
       <div class="field"><label class="lbl" for="yo">Tu nombre, para que sepan de quién es</label><input id="yo" data-yo="1" maxlength="40" autocomplete="off" value="${esc(state.yo)}" placeholder="Ej.: Fernando"></div>
       <span class="lbl">Qué mandar</span>
       <div class="checks">${sel}</div>
-      <div class="inline"><button class="btn btn-primary" data-action="share-file">Enviar por Quick Share</button><button class="btn btn-outline" data-action="share-qr">Mostrar código QR</button></div>
+      <div class="inline"><button class="btn btn-primary" data-action="share-file">Enviar (WhatsApp, Quick Share…)</button><button class="btn btn-outline" data-action="share-qr">Mostrar código QR</button></div>
       <p class="st" id="share-st" role="status">${esc(sh.msg)}</p></div>
     ${qr}
     ${nada ? "" : recibir}
@@ -8024,7 +8100,7 @@ function render(top){
   if(!(ui.tab === "inicio" && ui.sub === "ir")) navStop();
   applyAhorro();
   if(ui.tab === "inicio" && !ui.sub && state.ahorro) html = renderAhorro();
-  else if(ui.tab === "inicio") html = ui.sub === "corte" ? renderCorte() : ui.sub === "aviso" ? renderAviso() : ui.sub === "mapa" ? renderMapa() : ui.sub === "ayuda" ? renderAyuda() : ui.sub === "mes" ? renderMes() : ui.sub === "radio" ? renderRadio() : ui.sub === "manual" ? renderManual() : ui.sub === "ir" ? renderNav() : ui.sub === "llevar" ? renderLlevar() : ui.sub === "mificha" ? renderMiFicha() : ui.sub === "recs" ? renderRecs() : ui.sub === "config" ? renderConfig() : ui.sub === "prob" ? renderProb() : ui.sub === "hoy" ? renderHoy() : ui.sub === "queda" ? renderQueda() : ui.sub === "vade" ? renderVade() : renderHome();
+  else if(ui.tab === "inicio") html = ui.sub === "corte" ? renderCorte() : ui.sub === "aviso" ? renderAviso() : ui.sub === "mapa" ? renderMapa() : ui.sub === "ayuda" ? renderAyuda() : ui.sub === "mes" ? renderMes() : ui.sub === "radio" ? renderRadio() : ui.sub === "manual" ? renderManual() : ui.sub === "ir" ? renderNav() : ui.sub === "llevar" ? renderLlevar() : ui.sub === "mificha" ? renderMiFicha() : ui.sub === "recs" ? renderRecs() : ui.sub === "config" ? renderConfig() : ui.sub === "prob" ? renderProb() : ui.sub === "hoy" ? renderHoy() : ui.sub === "queda" ? renderQueda() : ui.sub === "vade" ? renderVade() : ui.sub === "pedido" ? renderPedido() : renderHome();
   else if(ui.tab === "guias") html = ui.guide ? renderGuide() : renderGuides();
   else if(ui.tab === "preparar") html = renderPrep();
   else if(ui.tab === "linterna") html = renderTools();
@@ -8611,7 +8687,10 @@ document.addEventListener("click", e => {
     case "aviso-copy": copyAviso(); break;
     case "ficha-from": { const m = state.plan.miembros.find(x => x.id === el.dataset.id); if(m) newFicha(m.nombre); break; }
     case "ficha-edit": ui.fichaEdit = el.dataset.id; ui.fichaDel = null; render(false); window.scrollTo(0, 0); break;
-    case "ficha-done": ui.fichaEdit = null; if(ui.miaVolver){ ui.miaVolver = false; go("inicio", {sub:"mificha"}); } else { render(false); window.scrollTo(0, 0); } break;
+    case "ped-mandar": pedMandar(); break;
+    case "ped-editar": ui.pedVolver = true; ui.planSeg = "ficha"; ui.fichaEdit = el.dataset.id; ui.fichaBig = null; go("numeros"); break;
+    case "ped-enviar": pedEnviar(el.dataset.id); break;
+    case "ficha-done": ui.fichaEdit = null; if(ui.pedVolver){ ui.pedVolver = false; ui.miaVolver = false; go("inicio", {sub:"pedido"}); } else if(ui.miaVolver){ ui.miaVolver = false; go("inicio", {sub:"mificha"}); } else { render(false); window.scrollTo(0, 0); } break;
     case "mia-crear": ui.planSeg = "ficha"; go("numeros"); ui.miaNueva = true; ui.miaVolver = true;
       { const i = document.getElementById("f-nombre"); if(i){ i.placeholder = "Tu nombre, ej.: Sofía"; i.scrollIntoView({block:"center"}); } } break;
     case "ficha-print": printFichas([el.dataset.id]); break;
@@ -8867,6 +8946,7 @@ function routeHash(hash){
   else if(hash === "vademecum") ui.sub = "vade";
   else if(hash === "hoy"){ ui.sub = "hoy"; ui.hoyVer = 0; }
   else if(hash === "problema"){ ui.sub = "prob"; ui.pbId = null; }
+  else if(hash.indexOf("pedido-ficha") === 0){ const q = new URLSearchParams(hash.split("?")[1] || ""); if(q.get("n") || q.get("de")) pedGuardar({n:(q.get("n") || "").slice(0, 40), de:(q.get("de") || "").slice(0, 40), at:Date.now()}); ui.sub = "pedido"; }
   else if(hash.indexOf("problema-") === 0 && PROBLEMAS.some(x => x.id === hash.slice(9))){ ui.sub = "prob"; ui.pbId = hash.slice(9); }
   else if(hash.indexOf("guia-") === 0 && GUIDES.some(g => g.id === hash.slice(5))){ ui.tab = "guias"; ui.guide = hash.slice(5); }
 }
