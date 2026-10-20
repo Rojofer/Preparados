@@ -363,6 +363,15 @@ textarea{min-height:76px;resize:vertical}
 .card[id],.sec[id]{scroll-margin-top:72px}
 .mapwrap{border-radius:12px;background:var(--il-bg);border:1px solid var(--line);overflow:hidden}
 .azwrap{position:relative;border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+#rgmap{display:block;width:100%;height:min(66vh,520px);touch-action:none;cursor:grab;background:var(--map-bg)}
+.rg-kv{list-style:none;margin:6px 0;padding:0;display:flex;flex-direction:column;gap:6px}.rg-kv li{display:flex;flex-direction:column;padding:6px 10px;border-radius:10px;background:var(--surface-2)}.rg-kv li>span:first-child{font-size:13px;color:var(--ink-2)}.rg-kv .mono{font-size:13px;color:var(--ink-2)}
+.rg-poi{list-style:none;margin:4px 0 8px;padding:0;display:flex;flex-direction:column;gap:6px}.rg-poi li{display:flex;gap:8px;align-items:flex-start;font-size:15px}
+.rg-ic{flex:none;display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;border:2px solid currentColor;font:800 11px/1 var(--font-body);background:var(--surface)}
+.rg-h,.rg-c{color:var(--crit)}.rg-p{color:var(--map-police)}.rg-b{color:var(--signal-ink)}.rg-f{color:var(--ok)}.rg-g,.rg-s{color:var(--ink)}
+.rg-ley{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:14px;margin:4px 0}.rg-ley span{display:inline-flex;align-items:center;gap:6px}.rg-ley i{display:inline-block;width:22px;height:10px;border-radius:3px}
+.rg-alt{background:#B48E6E}.rg-baj{background:#74AA8E}.rg-ruta{background:var(--map-main);border:1px solid var(--map-edge)}.rg-via{background:repeating-linear-gradient(90deg,var(--map-rail) 0 5px,transparent 5px 9px);height:3px!important}.rg-agua{background:var(--map-water)}
+.rg-l{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}.rg-l .mono{font-size:12px;color:var(--ink-2)}
+.rg-more{margin:6px 0}.rg-more>summary{cursor:pointer;font-weight:700;padding:8px 0;min-height:40px}.rg-sel h2{margin:0 0 4px}.rg-sel h3{margin:10px 0 4px;font-size:16px}
 #azmap{display:block;width:100%;height:min(62vh,460px);touch-action:none;cursor:grab;background:var(--map-bg)}
 #azmap:active{cursor:grabbing}
 .mapbtns{position:absolute;right:8px;top:8px;display:flex;flex-direction:column;gap:6px}
@@ -966,6 +975,7 @@ const SRC = {
   azRefes:["Guiafarma: farmacias de Azul (registro REFES)","https://guiafarma.com.ar/farmacias-de-turno/buenos-aires/azul"],
   azHosp:["Ministerio de Salud PBA: hospitales provinciales","https://www.gba.gob.ar/saludprovincia/hospitales"],
   azGuia:["Guía judicial de Azul: comisarías","https://stabogados.com.ar/defensa/zonas/azul/guia-judicial"],
+  rgSrtm:["Relieve: SRTM de la NASA, vía los mosaicos Terrarium de Mapzen en AWS","https://registry.opendata.aws/terrain-tiles/"],
   gmapsOff:["Google Maps: mapas sin conexión en Android","https://support.google.com/maps/answer/6291838?hl=es-419&co=GENIE.Platform%3DAndroid"],
   ign:["IGN: límites provinciales (vía argentina-map-react, MIT)","https://www.ign.gob.ar/NuestrasActividades/InformacionGeoespacial/CapasSIG"]
 };
@@ -2756,6 +2766,7 @@ function renderHome(){
       <button class="tool4" data-action="ahorro-on">${icon("bolt")}<span>Modo ahorro de batería</span></button>
       <button class="tool4" data-action="go-radio">${icon("radio")}<span>Radio y comunicación</span></button>
       <button class="tool4" data-action="go-mapa">${icon("compass")}<span>Mapa y brújula</span></button>
+      <button class="tool4" data-action="go-region">${icon("compass")}<span>Mapa de la región</span></button>
       <button class="tool4" data-action="linterna">${icon("torch")}<span>Linterna</span></button>
       <button class="tool4" data-action="sos-start">${icon("sos")}<span>Luz SOS</span></button>
       <button class="tool4" data-action="silbato">${icon("whistle")}<span>Silbato</span></button>
@@ -3208,6 +3219,7 @@ function renderTools(){
     <h2 class="sec">Para orientarse y aguantar</h2>
     <div class="tools">
       <button class="tool" data-action="go-llevar">${icon("compass")}<span class="t-label">Llevarme</span><small>Te guía a casa o a una farmacia, calle por calle.</small></button>
+      <button class="tool" data-action="go-region">${icon("compass")}<span class="t-label">Mapa de la región</span><small>Azul y 100 km alrededor: pueblos, rutas, alturas y servicios.</small></button>
       <button class="tool" data-action="go-mapa">${icon("compass")}<span class="t-label">Mapa y brújula</span><small>El plano de Azul y para dónde queda cada lugar.</small></button>
       <button class="tool" data-action="go-radio">${icon("radio")}<span class="t-label">Radio</span><small>Qué emisoras sintonizar y cómo avisar sin internet.</small></button>
       <button class="tool" data-action="ahorro-on">${icon("bolt")}<span class="t-label">Ahorro de batería</span><small>Pantalla negra y solo lo esencial.</small></button>
@@ -4403,6 +4415,8 @@ function renderAhorro(){
 const MANUAL_SEC = [
   ["datos","Datos de la familia","Plan, teléfonos, lugares, inventario y fichas médicas.",true],
   ["mapa","Mapa del barrio y de Azul","Con tus lugares guardados, hospitales, bomberos y policía.",true],
+  ["region","Mapa de la región","Azul y 100 km: mapa con coordenadas, alturas, pueblos, hospitales, policía y bomberos.",true],
+  ["regionServ","Servicios de la región","Farmacias, estaciones de servicio y supermercados de cada pueblo.",false],
   ["azul","Azul y el Súper Niño","El arroyo, qué hacer con cada alerta, después del agua y la antitetánica.",true],
   ["lugares","Farmacias, policía y hospitales","Las direcciones de Azul y a cuántas cuadras de casa está cada uno.",true],
   ["radio","Radios y cómo comunicarse","Frecuencias y qué hacer sin internet.",true],
@@ -4443,6 +4457,7 @@ function manualHTML(){
       <p class="pm-leg">Verde: tus lugares · Rojo: hospitales y clínicas · Naranja: bomberos · Azul: policía · Barra de escala abajo a la izquierda. El norte está arriba.</p>${leg ? `<ul>${leg}</ul>` : ""}</section>
       <section class="ps pm-map"><h2>Azul</h2>${ciudad ? `<img src="${ciudad}" alt="Mapa de Azul">` : ""}<p class="pm-leg">Calles y lugares: © colaboradores de OpenStreetMap.</p></section>`);
   }
+  if(sel.region || sel.regionServ) parts.push(rgManual(sel));
   if(sel.azul && state.ciudad === "Azul") parts.push(`<section class="ps pm-g">${renderAzul().replace(/<button[\s\S]*?<\/button>/g, "").replace(/<a class="btn[^>]*>[\s\S]*?<\/a>/g, "").replace(/<details class="sources">[\s\S]*?<\/details>/g, "").replace(/<div class="inline">\s*<\/div>/g, "").replace(/<section class="stack azul">|<\/section>\s*$/g, "").replace(/<h1>/, "<h2>").replace(/<\/h1>/, "</h2>")}<p>Teléfonos: Defensa Civil Azul 103 · Emergencias 911 · Bomberos 100 · SAME 107.</p><h3>Si el agua tocó la comida</h3><ul>${pbFind("comida-mojada").p.map(x => `<li>${esc(x)}</li>`).join("")}</ul><h3>Limpiar la casa</h3><ul>${pbFind("limpiar-inundacion").p.map(x => `<li>${esc(x)}</li>`).join("")}</ul><h3>Fiebre después del agua</h3><ul>${pbFind("fiebre-agua").p.map(x => `<li>${esc(x)}</li>`).join("")}</ul></section>`);
   if(sel.lugares && (!state.ciudad || state.ciudad === "Azul")) parts.push(`<section class="ps pm-g"><h2>Farmacias, policía y hospitales de Azul</h2>${azManual()}</section>`);
   if(sel.radio){
@@ -4538,7 +4553,7 @@ function navHeading(){
   return {h:null, src:"none"};
 }
 function goNav(id){
-  const l = state.lugares.find(x => x.id === id) || azLugar(id);
+  const l = state.lugares.find(x => x.id === id) || azLugar(id) || rgLugar(id);
   if(!l) return;
   NAV.dest = l; NAV.route = null; NAV.arrived = false; NAV.course = null; NAV.dicho = {}; NAV.desvio = 0;
   if(state.navVoz === undefined) state.navVoz = true;
@@ -4704,7 +4719,7 @@ function navUpdate(){
   NAV.info = navInfo();
   const m = ui.mapa;
   if(NAV.fix){ m.yo = {lat:NAV.fix.lat, lng:NAV.fix.lng, acc:NAV.fix.acc, gps:true}; }
-  if(NAV.dest && enAzul(NAV.dest)){ const [x, y] = toXY(NAV.dest); m.sel = {tipo:NAV.dest.cat ? ({farm:"Farmacia", pol:"Policía", salud:"Salud"})[NAV.dest.cat] : "Mi lugar", n:NAV.dest.nombre, x, y, lid:NAV.dest.id}; }
+  if(NAV.dest && enAzul(NAV.dest)){ const [x, y] = toXY(NAV.dest); m.sel = {tipo:NAV.dest.cat ? ({farm:"Farmacia", pol:"Policía", salud:"Salud"})[NAV.dest.cat] || "Lugar" : "Mi lugar", n:NAV.dest.nombre, x, y, lid:NAV.dest.id}; }
   m.ruta = NAV.route; m.calle = null;
   if(NAV.info && NAV.info.km < 0.025 && !NAV.arrived) NAV.arrived = true;
   navAnunciar();
@@ -4737,7 +4752,7 @@ function navBoxHTML(){
   return `<p class="nav-instr">${instr}</p>
     <div class="nav-main">
       <svg viewBox="-60 -60 120 120" class="nav-dial" aria-hidden="true"><circle r="56" class="ring"/><g id="nav-arrow" transform="rotate(${navArrowRot(info).toFixed(0)})"><path class="needle" d="M0 -48l20 44-20-12-20 12z"/></g></svg>
-      <div class="nav-txt"><p class="nav-big">${fmtKm(info.km)}</p><p>unas ${cuadras === 1 ? "1 cuadra" : `${cuadras} cuadras`} · ${min} min a pie</p></div>
+      <div class="nav-txt"><p class="nav-big">${fmtKm(info.km)}</p><p>${info.km > 5 ? `en línea recta · en auto, por ruta, suele ser un poco más` : `unas ${cuadras === 1 ? "1 cuadra" : `${cuadras} cuadras`} · ${min} min a pie`}</p></div>
     </div>
     <p class="nav-acc ${ac}">Precisión del GPS: ${Math.round(f.acc)} m, ${at}${f.old ? " (última posición guardada)" : ""}.</p>
     <p class="fine" id="nav-src">${navSrcTxt()}</p>`;
@@ -5179,7 +5194,7 @@ document.addEventListener("keydown", e => { if(e.key === "Escape"){ const ov = d
 const scrKey = () => [ui.tab, ui.sub || "", ui.guide || "", ui.tab === "numeros" ? ui.planSeg || "" : "", ui.tab === "preparar" ? ui.prep || "" : "", ui.ayuda && ui.ayuda.mostrar && ui.sub === "ayuda" ? "m" : "", ui.sub === "prob" ? ui.pbId || "" : ""].join("|");
 let histPop = false;
 /* La dirección de cada pantalla: si Android recarga la app, vuelve a la misma pantalla */
-const SUB_HASH = {azul:"azul", pedido:"pedido-ficha", vade:"vademecum", queda:"cuanto-queda", hoy:"hoy", prob:"problema", config:"configuracion", recs:"recordatorios", corte:"corte", aviso:"aviso", mapa:"mapa", ayuda:"ayuda", llevar:"llevar", ir:"llevar", mificha:"mificha", mes:"30dias", radio:"radio", manual:"manual"};
+const SUB_HASH = {region:"region", azul:"azul", pedido:"pedido-ficha", vade:"vademecum", queda:"cuanto-queda", hoy:"hoy", prob:"problema", config:"configuracion", recs:"recordatorios", corte:"corte", aviso:"aviso", mapa:"mapa", ayuda:"ayuda", llevar:"llevar", ir:"llevar", mificha:"mificha", mes:"30dias", radio:"radio", manual:"manual"};
 function screenHash(){
   if(ui.tab === "inicio") return ui.sub === "prob" && ui.pbId ? "problema-" + ui.pbId : SUB_HASH[ui.sub] || "";
   if(ui.tab === "guias") return ui.guide ? "guia-" + ui.guide : "guias";
@@ -5189,7 +5204,7 @@ function screenHash(){
 }
 const histUrl = () => location.pathname + location.search + (screenHash() ? "#" + screenHash() : "");
 const NAVS = [];   /* pantallas anteriores dentro de la app, para el botón «volver» */
-const SUB_LBL = {azul:"Azul y el Súper Niño", pedido:"Tu ficha", vade:"Vademécum", prob:"Tengo un problema", hoy:"¿Qué hago hoy?", queda:"¿Cuánto nos queda?", config:"Configuración", recs:"Recordatorios", corte:"Contador de corte", aviso:"Estoy bien", mapa:"Mapa", ayuda:"Necesito ayuda", llevar:"Llevarme", ir:"Llevarme", mificha:"Mi ficha", mes:"Plan de corte largo", radio:"Radio", manual:"Manual en papel"};
+const SUB_LBL = {region:"Mapa de la región", azul:"Azul y el Súper Niño", pedido:"Tu ficha", vade:"Vademécum", prob:"Tengo un problema", hoy:"¿Qué hago hoy?", queda:"¿Cuánto nos queda?", config:"Configuración", recs:"Recordatorios", corte:"Contador de corte", aviso:"Estoy bien", mapa:"Mapa", ayuda:"Necesito ayuda", llevar:"Llevarme", ir:"Llevarme", mificha:"Mi ficha", mes:"Plan de corte largo", radio:"Radio", manual:"Manual en papel"};
 const TAB_LBL = {inicio:"Inicio", guias:"Guías", preparar:"Preparar", aprender:"Aprender", numeros:"Familia", linterna:"Herramientas"};
 function scrLabel(st){
   if(!st) return "Inicio";
@@ -5309,7 +5324,7 @@ async function recNotif(){
 
 /* ---------- Configuración: todos los ajustes en un lugar (engranaje arriba a la derecha) ----------
    En un celular con control parental se ve todo; para cambiar algo, salvo voz y vibración, pide el PIN. */
-const APP_VER = 43;
+const APP_VER = 44;
 const GEAR_SVG = `<svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>`;
 function renderConfig(){
   const lc = lockCfg(), lockOn = !!(lc && lc.on), f = miFicha(), fp = fpCfg(), aqui = recsAqui(), nRec = REMINDERS.filter(recOn).length;
@@ -6746,7 +6761,7 @@ function renderAzul(){
     <div class="card"><h2>Tus lugares y el arroyo</h2>
       ${lugs.length ? `<ul class="az-ars">${lugs.map(fila).join("")}</ul>` : `<p class="fine">Guarda la casa y los lugares de la familia en «Llevarme» y acá aparece a cuántas cuadras del arroyo está cada uno.</p>`}
       <p class="fine">Es la distancia en línea recta al arroyo o a su canal aliviador. No es un mapa oficial de riesgo: en 2012 el agua cubrió una franja a los dos lados del arroyo, y cuanto más cerca, más cuidado.</p>
-      <div class="inline"><button class="btn btn-ghost btn-sm" data-action="go-llevar">Mis lugares</button><button class="btn btn-ghost btn-sm" data-action="go-mapa">Ver el arroyo en el mapa</button></div></div>
+      <div class="inline"><button class="btn btn-ghost btn-sm" data-action="go-llevar">Mis lugares</button><button class="btn btn-ghost btn-sm" data-action="go-region">Zonas altas y el arroyo en el mapa</button></div></div>
     <div class="card"><h2>Qué hacer</h2>
       <h3>Ahora, antes de la temporada</h3><ul class="az-ul">
         <li>Limpien canaletas, rejillas y la vereda, para que el agua de lluvia corra.</li>
@@ -6775,6 +6790,289 @@ function renderAzul(){
     ${srcBox(["azNoaa","azSmn","azPlan","az2002","az2012","az2012b","azIsidora","azManantiales","azIhlla","dcAzul","azAnmat","azLepto","azDt"])}
   </section>`;
 }
+
+/* ---------- Mapa de la región: Azul y unos 100 km alrededor, sin internet ----------
+   Datos en region.json (se guarda con la app): rutas, vías, arroyos, lagunas, pueblos y servicios de OpenStreetMap (ODbL, copia de julio de 2026),
+   y el relieve del satélite SRTM (vía Terrarium/AWS), muestreado cada 0,025° en la región y cada 0,0015° en la ciudad de Azul. */
+let RG = null, RGL = null;
+const RG_MX = 111320 * Math.cos(36.8 * Math.PI / 180), RG_MY = 110950;
+const RG_V = {cx:0, cy:0, z:0, w:0, h:0, ptrs:new Map(), moved:false, start:null, raf:0, sel:null};
+const RG_T = {h:["H","Hospital"], c:["S","Salita o clínica"], f:["F","Farmacia"], g:["N","Estación de servicio"], p:["P","Policía"], b:["B","Bomberos"], s:["M","Supermercado"]};
+const RG_PL = {h:"Hospitales", c:"Salitas y clínicas", f:"Farmacias", g:"Estaciones de servicio", p:"Policía", b:"Bomberos", s:"Supermercados"};
+const RG_CLASE = {1:"Ciudad", 2:"Ciudad", 3:"Pueblo", 4:"Paraje"};
+const rgRef = r => String(r || "").split(";").filter(x => /^R[NP]\d+$/.test(x)).map(x => x.replace(/^(R[NP])(\d+)$/, "$1 $2"));
+async function rgCargar(){
+  if(RG) return RG;
+  if(RGL) return RGL;
+  RGL = fetch("region.json").then(r => { if(!r.ok) throw new Error("no"); return r.json(); }).then(d => { RG = rgPrep(d); return RG; }).catch(e => { RGL = null; throw e; });
+  return RGL;
+}
+function rgPrep(d){
+  const k = 1 / d.s, LON0 = d.lon0, LAT0 = d.lat0;
+  const dec = s => { const v = s.split(",").map(Number), o = new Float32Array(v.length); let x = 0, y = 0; for(let i = 0; i < v.length; i += 2){ x += v[i]; y += v[i + 1]; o[i] = x * k * RG_MX; o[i + 1] = y * k * RG_MY; } return o; };
+  const toW = (lat, lng) => [(lng - LON0) * RG_MX, (lat - LAT0) * RG_MY];
+  const toLLw = (x, y) => ({lat:LAT0 + y / RG_MY, lng:LON0 + x / RG_MX});
+  const R = {d, toW, toLLw,
+    roads:d.r.map(([c, ref, nm, g]) => ({c, ref:ref >= 0 ? rgRef(d.n[ref]) : [], n:nm >= 0 ? d.n[nm] : "", p:dec(g)})),
+    rail:d.rl.map(dec), ww:d.w.map(([c, nm, g]) => ({c, n:nm >= 0 ? d.n[nm] : "", p:dec(g)})), lakes:d.l.map(([nm, g]) => ({n:nm >= 0 ? d.n[nm] : "", p:dec(g)})),
+    pl:d.pl.map(([c, n, pop, x, y], i) => ({i, c, n, pop, x:x * k * RG_MX, y:y * k * RG_MY, lat:LAT0 + y * k, lng:LON0 + x * k})),
+    p:d.p.map(([t, n, x, y, a, tel, br], i) => ({i, t, n:n || RG_T[t][1], x:x * k * RG_MX, y:y * k * RG_MY, lat:LAT0 + y * k, lng:LON0 + x * k, a:a || "", tel:tel || "", br:br || ""}))};
+  /* cada servicio, al pueblo más cercano */
+  const towns = R.pl.filter(t => t.c <= 3);
+  R.p.forEach(p => { let b = null, bd = 1e12; towns.forEach(t => { const dd = (t.x - p.x) ** 2 + (t.y - p.y) ** 2; if(dd < bd){ bd = dd; b = t; } }); p.town = b && bd < 12000 ** 2 ? b.i : -1; });
+  /* rutas que pasan cerca de cada pueblo */
+  const refPts = {}; R.roads.forEach(r => { if(r.c > 3) return; r.ref.forEach(f => { (refPts[f] = refPts[f] || []).push(r.p); }); });
+  const md = (arrs, x, y) => { let b = 1e12; arrs.forEach(a => { for(let i = 0; i < a.length; i += 2){ const dd = (a[i] - x) ** 2 + (a[i + 1] - y) ** 2; if(dd < b) b = dd; } }); return Math.sqrt(b); };
+  R.pl.forEach(t => { const rad = t.pop > 50000 ? 9000 : t.pop > 5000 ? 5000 : 3000; t.rutas = Object.keys(refPts).map(f => [f, md(refPts[f], t.x, t.y)]).filter(x => x[1] < rad).sort((a, b) => a[1] - b[1]).map(x => x[0]); });
+  /* relieve: grillas y su imagen */
+  const grid = g => { const raw = atob(g.d), v = new Float32Array(raw.length); for(let i = 0; i < raw.length; i++) v[i] = g.b0 + raw.charCodeAt(i) * g.u; return Object.assign({}, g, {v}); };
+  R.er = grid(d.e.r); R.ea = grid(d.e.a);
+  { const g = R.ea, v = g.v, o = new Float32Array(v.length); for(let r = 0; r < g.rows; r++) for(let c = 0; c < g.cols; c++){ let s2 = 0, n = 0; for(let dr = -1; dr <= 1; dr++) for(let dc = -1; dc <= 1; dc++){ const rr = r + dr, cc = c + dc; if(rr < 0 || cc < 0 || rr >= g.rows || cc >= g.cols) continue; s2 += v[rr * g.cols + cc]; n++; } o[r * g.cols + c] = s2 / n; } g.v = o; }
+  R.azul = R.pl.find(t => t.n === "Azul");
+  /* calles y arroyo de Azul, del plano de la ciudad */
+  try{ const az = azData(); R.calles = az.ways.filter(w => w.c <= 5).map(w => ({c:w.c, n:w.n, p:Float32Array.from(w.pts.flatMap(([x, y]) => { const ll = toLL(x, y); return toW(ll.lat, ll.lng); }))}));
+    R.arroyo = AZUL.wt.map((w, i) => [w[0] >= 0 ? AZUL.n[w[0]] : "", az.water[i]]).filter(([n]) => /Arroyo Azul/.test(n)).map(([, pts]) => Float32Array.from(pts.flatMap(([x, y]) => { const ll = toLL(x, y); return toW(ll.lat, ll.lng); }))); }catch(e){ R.calles = []; R.arroyo = []; }
+  return R;
+}
+/* altura en un punto: la grilla fina de Azul si cae adentro, si no la de la región (interpolación bilineal) */
+function rgAlt(lat, lng){
+  if(!RG) return null;
+  const f = g => { const r = (lat - g.lat0) / g.st, c = (lng - g.lon0) / g.st; if(r < 0 || c < 0 || r > g.rows - 1 || c > g.cols - 1) return null;
+    const r0 = Math.floor(r), c0 = Math.floor(c), r1 = Math.min(g.rows - 1, r0 + 1), c1 = Math.min(g.cols - 1, c0 + 1), fr = r - r0, fc = c - c0, v = g.v, C = g.cols;
+    return (v[r0 * C + c0] * (1 - fc) + v[r0 * C + c1] * fc) * (1 - fr) + (v[r1 * C + c0] * (1 - fc) + v[r1 * C + c1] * fc) * fr; };
+  const a = f(RG.ea); return a !== null ? a : f(RG.er);
+}
+/* grados, minutos y segundos */
+function dms(v, pos, neg){ const a = Math.abs(v), d = Math.floor(a), m = Math.floor((a - d) * 60), s = Math.round(((a - d) * 60 - m) * 60); return `${d}°${String(m).padStart(2, "0")}′${String(s === 60 ? 59 : s).padStart(2, "0")}″${v < 0 ? neg : pos}`; }
+const coordTxt = (lat, lng) => `${dms(lat, "N", "S")} ${dms(lng, "E", "O")}`;
+const coordDec = (lat, lng) => `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+const dirTxt = (a, b) => { const k = distKm(a, b); return `${k < 1 ? fmtKm(k) : `${fmtNum(Math.round(k))} km`} hacia ${cardinal(rumbo(a, b))}`; };
+/* colores del relieve */
+const RAMP_R = [[30, [116, 170, 142]], [100, [168, 199, 143]], [140, [214, 214, 156]], [190, [222, 192, 135]], [280, [192, 152, 112]], [470, [150, 112, 92]]];
+const RAMP_A = [[124, [100, 150, 200]], [132, [150, 195, 190]], [138, [195, 215, 160]], [144, [228, 210, 140]], [150, [215, 170, 110]], [159, [180, 120, 85]]];
+function rampa(R, h){ if(h <= R[0][0]) return R[0][1]; for(let i = 1; i < R.length; i++) if(h <= R[i][0]){ const [h0, a] = R[i - 1], [h1, b] = R[i], t = (h - h0) / (h1 - h0); return a.map((x, j) => Math.round(x + (b[j] - x) * t)); } return R[R.length - 1][1]; }
+function rgImg(g, ramp){
+  const cv = document.createElement("canvas"); cv.width = g.cols; cv.height = g.rows;
+  const c = cv.getContext("2d"), im = c.createImageData(g.cols, g.rows);
+  for(let r = 0; r < g.rows; r++) for(let col = 0; col < g.cols; col++){ const h = g.v[r * g.cols + col], [R_, G, B] = rampa(ramp, h), o = ((g.rows - 1 - r) * g.cols + col) * 4; im.data[o] = R_; im.data[o + 1] = G; im.data[o + 2] = B; im.data[o + 3] = 255; }
+  c.putImageData(im, 0, 0); return cv;
+}
+let RG_IMG = null;
+function drawRegion(target){
+  if(!RG) return;
+  const cv = target ? target.cv : document.getElementById("rgmap"); if(!cv) return;
+  const r = target ? {width:target.w, height:target.h} : cv.getBoundingClientRect(), dpr = target ? 2 : Math.min(3, window.devicePixelRatio || 1);
+  if(!r.width) return;
+  if(cv.width !== Math.round(r.width * dpr) || cv.height !== Math.round(r.height * dpr)){ cv.width = Math.round(r.width * dpr); cv.height = Math.round(r.height * dpr); }
+  const V = target ? target.v : RG_V; V.w = r.width; V.h = r.height;
+  const c = cv.getContext("2d"), z = V.z, W = V.w, H = V.h, vk = W / z / 1000;
+  const sx = x => (x - V.cx) * z + W / 2, sy = y => H / 2 - (y - V.cy) * z;
+  c.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const dark = !MAP_PRINT && /^#[0-3]/.test(css("--map-bg"));
+  c.fillStyle = css("--map-bg"); c.fillRect(0, 0, W, H);
+  /* relieve */
+  if(!RG_IMG) RG_IMG = {r:rgImg(RG.er, RAMP_R), a:rgImg(RG.ea, RAMP_A)};
+  const img = (g, im, alpha) => { const [x0, y0] = RG.toW(g.lat0 - g.st / 2, g.lon0 - g.st / 2), [x1, y1] = RG.toW(g.lat0 + (g.rows - 0.5) * g.st, g.lon0 + (g.cols - 0.5) * g.st);
+    c.globalAlpha = alpha; c.imageSmoothingEnabled = true; c.drawImage(im, sx(x0), sy(y1), (x1 - x0) * z, (y1 - y0) * z); c.globalAlpha = 1; };
+  const verAzul = vk < 40;
+  img(RG.er, RG_IMG.r, dark ? 0.45 : 0.85);
+  if(verAzul) img(RG.ea, RG_IMG.a, dark ? 0.5 : 0.8);
+  const line = p => { c.beginPath(); for(let i = 0; i < p.length; i += 2){ const X = sx(p[i]), Y = sy(p[i + 1]); i ? c.lineTo(X, Y) : c.moveTo(X, Y); } };
+  c.lineCap = "round"; c.lineJoin = "round";
+  /* lagunas y arroyos */
+  c.fillStyle = css("--map-water"); RG.lakes.forEach(l => { line(l.p); c.closePath(); c.fill(); });
+  c.strokeStyle = css("--map-water");
+  RG.ww.forEach(w => { c.lineWidth = w.n === "Arroyo Azul" ? 3.2 : w.c === 1 ? 2.6 : vk < 120 ? 1.8 : 1.2; line(w.p); c.stroke(); });
+  if(verAzul){ c.lineWidth = vk < 14 ? 5 : 3.5; RG.arroyo.forEach(p => { line(p); c.stroke(); }); }
+  /* calles de Azul, de cerca */
+  if(vk < 14){ c.strokeStyle = css("--map-road"); RG.calles.forEach(w => { c.lineWidth = w.c <= 2 ? 3 : w.c <= 3 ? 2 : 1.2; line(w.p); c.stroke(); }); }
+  /* vías */
+  c.setLineDash([5, 4]); c.strokeStyle = css("--map-rail"); c.lineWidth = 1.4; RG.rail.forEach(p => { line(p); c.stroke(); }); c.setLineDash([]);
+  /* rutas */
+  const RW = {1:4.2, 2:3.2, 3:2.2, 4:1.2};
+  [4, 3, 2, 1].forEach(cl => { if(cl === 4 && vk > 130) return;
+    c.strokeStyle = css("--map-edge"); c.lineWidth = RW[cl] + 1.6; RG.roads.forEach(rd => { if(rd.c === cl){ line(rd.p); c.stroke(); } });
+    c.strokeStyle = cl <= 2 ? css("--map-main") : css("--map-road"); c.lineWidth = RW[cl]; RG.roads.forEach(rd => { if(rd.c === cl){ line(rd.p); c.stroke(); } }); });
+  /* grilla de coordenadas */
+  const ll0 = RG.toLLw(V.cx - W / 2 / z, V.cy - H / 2 / z), ll1 = RG.toLLw(V.cx + W / 2 / z, V.cy + H / 2 / z);
+  const span = ll1.lng - ll0.lng, step = [1, 0.5, 0.25, 0.1, 0.05, 0.025, 0.01, 0.005, 0.0025].find(s => span / s >= 2.2) || 0.0025;
+  c.strokeStyle = MAP_PRINT ? "rgba(0,0,0,.35)" : dark ? "rgba(255,255,255,.22)" : "rgba(20,40,75,.28)"; c.lineWidth = 1; c.setLineDash([2, 4]);
+  c.font = `600 10px ${css("--font-body")}`; c.fillStyle = css("--map-label"); c.textBaseline = "top";
+  const fmtG = v => { const a = Math.abs(v), d = Math.floor(a + 1e-9), m = (a - d) * 60; return `${d}°${m >= 0.05 ? `${fmtNum(Math.round(m * 10) / 10)}′` : ""}`; };
+  for(let lo = Math.ceil(ll0.lng / step) * step; lo <= ll1.lng; lo += step){ const X = sx((lo - RG.d.lon0) * RG_MX); c.beginPath(); c.moveTo(X, 0); c.lineTo(X, H); c.stroke(); c.textAlign = "left"; c.fillText(`${fmtG(lo)} O`, X + 3, 3); }
+  for(let la = Math.ceil(ll0.lat / step) * step; la <= ll1.lat; la += step){ const Y = sy((la - RG.d.lat0) * RG_MY); c.beginPath(); c.moveTo(0, Y); c.lineTo(W, Y); c.stroke(); c.textAlign = "left"; c.fillText(`${fmtG(la)} S`, 3, Y + 3); }
+  c.setLineDash([]);
+  const occ = [], libre = (x, y, w, h) => { if(occ.some(o => x < o[0] + o[2] && x + w > o[0] && y < o[1] + o[3] && y + h > o[1])) return false; occ.push([x, y, w, h]); return true; };
+  c.textAlign = "center"; c.textBaseline = "middle";
+  /* servicios, de cerca */
+  if(vk < 30){ RG.p.forEach(p => { const X = sx(p.x), Y = sy(p.y); if(X < -10 || Y < -10 || X > W + 10 || Y > H + 10) return; if(vk > 7 && !["h","c","p","b","g"].includes(p.t)) return;
+    const col = p.t === "h" || p.t === "c" ? css("--crit") : p.t === "p" ? css("--map-police") : p.t === "b" ? css("--signal") : p.t === "f" ? css("--ok") : css("--map-label");
+    c.beginPath(); c.arc(X, Y, 7, 0, 7); c.fillStyle = MAP_PRINT ? "#fff" : css("--map-bg"); c.fill(); c.lineWidth = 2; c.strokeStyle = col; c.stroke();
+    c.font = `800 9px ${css("--font-body")}`; c.fillStyle = col; c.fillText(RG_T[p.t][0], X, Y + 0.5); }); }
+  /* pueblos */
+  const vis = RG.pl.filter(t => t.c <= (vk < 45 ? 4 : vk < 130 ? 3 : 2) || (t.c === 3 && t.pop > 2500));
+  vis.sort((a, b) => a.c - b.c || b.pop - a.pop).forEach(t => {
+    const X = sx(t.x), Y = sy(t.y); if(X < -40 || Y < -20 || X > W + 40 || Y > H + 20) return;
+    const big = t.c <= 2, fs = big ? 14 : t.c === 3 ? 12 : 10.5;
+    c.font = `${big ? 800 : t.c === 3 ? 700 : 600} ${fs}px ${css("--font-body")}`; const tw = c.measureText(t.n).width;
+    c.beginPath(); c.arc(X, Y, big ? 5 : t.c === 3 ? 3.6 : 2.6, 0, 7); c.fillStyle = css("--map-label"); c.fill(); c.lineWidth = 1.5; c.strokeStyle = MAP_PRINT ? "#fff" : css("--map-bg"); c.stroke();
+    const izq = X + 7 + tw > W - 4, LX = izq ? X - 7 - tw : X + 7;
+    if(!libre(LX - 1, Y - fs / 2 - 2, tw + 4, fs + 4)) return;
+    c.textAlign = "left"; c.lineWidth = 3.5; c.strokeStyle = MAP_PRINT ? "#fff" : css("--map-bg"); c.strokeText(t.n, LX, Y); c.fillStyle = css("--map-label"); c.fillText(t.n, LX, Y);
+  });
+  /* números de ruta */
+  c.textAlign = "center"; c.textBaseline = "middle";
+  if(vk < 400){ const vistos = {}; RG.roads.forEach(rd => { if(rd.c > 2 || !rd.ref.length) return; const t = rd.ref[0], mi = Math.floor(rd.p.length / 4) * 2, X = sx(rd.p[mi]), Y = sy(rd.p[mi + 1]);
+    if(X < 20 || Y < 20 || X > W - 20 || Y > H - 20) return; const key = t + Math.round(X / 160) + "," + Math.round(Y / 160); if(vistos[key]) return; vistos[key] = 1;
+    c.font = `700 10px ${css("--font-body")}`; const tw = c.measureText(t).width + 8; if(!libre(X - tw / 2, Y - 8, tw, 16)) return;
+    c.fillStyle = MAP_PRINT ? "#fff" : css("--map-bg"); c.strokeStyle = css("--map-label"); c.lineWidth = 1; c.beginPath(); c.rect(X - tw / 2, Y - 8, tw, 16); c.fill(); c.stroke(); c.fillStyle = css("--map-label"); c.fillText(t, X, Y + 0.5); }); }
+  /* vos */
+  const pos = state.ultimaPos;
+  if(pos && !MAP_PRINT){ const [x, y] = RG.toW(pos.lat, pos.lng), X = sx(x), Y = sy(y); c.beginPath(); c.arc(X, Y, 8, 0, 7); c.fillStyle = css("--blue"); c.fill(); c.lineWidth = 3; c.strokeStyle = "#fff"; c.stroke(); }
+  /* lo elegido */
+  const S = target ? null : V.sel;
+  if(S){ const X = sx(S.x), Y = sy(S.y); c.beginPath(); c.arc(X, Y, 12, 0, 7); c.lineWidth = 3; c.strokeStyle = css("--signal"); c.stroke(); }
+  /* norte y escala */
+  const nx = W - 26, ny = 30; c.fillStyle = MAP_PRINT ? "#fff" : css("--map-bg"); c.beginPath(); c.arc(nx, ny, 17, 0, 7); c.fill(); c.lineWidth = 1.5; c.strokeStyle = css("--map-label"); c.stroke();
+  c.beginPath(); c.moveTo(nx, ny - 13); c.lineTo(nx + 6, ny + 4); c.lineTo(nx, ny); c.lineTo(nx - 6, ny + 4); c.closePath(); c.fillStyle = css("--crit"); c.fill();
+  c.font = `800 10px ${css("--font-body")}`; c.fillStyle = css("--map-label"); c.textAlign = "center"; c.fillText("N", nx, ny + 10);
+  const mPx = 1 / z, opts = [100, 200, 500, 1000, 2000, 5000, 10000, 20000, 50000], m = opts.find(o => o / mPx >= 70) || 50000, L = m / mPx;
+  c.fillStyle = MAP_PRINT ? "rgba(255,255,255,.9)" : css("--map-bg"); c.fillRect(8, H - 30, L + 16, 24); c.strokeStyle = css("--map-label"); c.lineWidth = 2; c.beginPath(); c.moveTo(16, H - 12); c.lineTo(16, H - 8); c.lineTo(16 + L, H - 8); c.lineTo(16 + L, H - 12); c.stroke();
+  c.font = `700 10px ${css("--font-body")}`; c.textAlign = "left"; c.fillStyle = css("--map-label"); c.fillText(m >= 1000 ? `${m / 1000} km` : `${m} m`, 18, H - 21);
+}
+function rgSchedule(){ if(RG_V.raf) return; RG_V.raf = requestAnimationFrame(() => { RG_V.raf = 0; drawRegion(); }); }
+function rgFit(lat0, lng0, lat1, lng1){ const [x0, y0] = RG.toW(lat0, lng0), [x1, y1] = RG.toW(lat1, lng1), cv = document.getElementById("rgmap"), r = cv ? cv.getBoundingClientRect() : {width:360, height:420};
+  RG_V.cx = (x0 + x1) / 2; RG_V.cy = (y0 + y1) / 2; RG_V.z = Math.min(r.width / Math.abs(x1 - x0), r.height / Math.abs(y1 - y0)) * 0.92; }
+function rgCentrar(lat, lng, z){ const [x, y] = RG.toW(lat, lng); RG_V.cx = x; RG_V.cy = y; if(z) RG_V.z = z; }
+function rgHit(X, Y){
+  const z = RG_V.z, wx = RG_V.cx + (X - RG_V.w / 2) / z, wy = RG_V.cy + (RG_V.h / 2 - Y) / z, d = (a, b) => Math.hypot((a - wx) * z, (b - wy) * z);
+  let best = null, bd = 18;
+  if(RG_V.w / z < 30000) RG.p.forEach(p => { const dd = d(p.x, p.y); if(dd < bd){ bd = dd; best = {k:"p", o:p}; } });
+  RG.pl.forEach(t => { const dd = d(t.x, t.y); if(dd < bd + (t.c <= 2 ? 6 : 0)){ bd = dd; best = {k:"t", o:t}; } });
+  if(best) return Object.assign(best, {x:best.o.x, y:best.o.y});
+  const ll = RG.toLLw(wx, wy); return {k:"pt", x:wx, y:wy, o:ll};
+}
+function rgBind(){
+  const cv = document.getElementById("rgmap"); if(!cv || cv.dataset.bound) return; cv.dataset.bound = "1";
+  const V = RG_V;
+  const zoomAt = (f, X, Y) => { const z0 = V.z, z1 = Math.max(V.w / 400000, Math.min(V.w / 1200, z0 * f)); const wx = V.cx + (X - V.w / 2) / z0, wy = V.cy + (V.h / 2 - Y) / z0; V.z = z1; V.cx = wx - (X - V.w / 2) / z1; V.cy = wy - (V.h / 2 - Y) / z1; rgSchedule(); };
+  cv.addEventListener("pointerdown", e => { cv.setPointerCapture(e.pointerId); V.ptrs.set(e.pointerId, [e.offsetX, e.offsetY]); V.moved = false; V.start = [e.offsetX, e.offsetY]; });
+  cv.addEventListener("pointermove", e => { if(!V.ptrs.has(e.pointerId)) return; const prev = V.ptrs.get(e.pointerId), cur = [e.offsetX, e.offsetY];
+    if(V.ptrs.size === 2){ const other = [...V.ptrs.entries()].find(([k]) => k !== e.pointerId)[1]; const d0 = Math.hypot(prev[0] - other[0], prev[1] - other[1]), d1 = Math.hypot(cur[0] - other[0], cur[1] - other[1]); if(d0 > 0) zoomAt(d1 / d0, (cur[0] + other[0]) / 2, (cur[1] + other[1]) / 2); V.moved = true; }
+    else{ if(Math.hypot(cur[0] - V.start[0], cur[1] - V.start[1]) > 6) V.moved = true; if(V.moved){ V.cx -= (cur[0] - prev[0]) / V.z; V.cy += (cur[1] - prev[1]) / V.z; rgSchedule(); } }
+    V.ptrs.set(e.pointerId, cur); });
+  const end = e => { const was = V.ptrs.has(e.pointerId); V.ptrs.delete(e.pointerId); if(was && !V.moved && V.ptrs.size === 0 && e.type === "pointerup"){ V.sel = rgHit(e.offsetX, e.offsetY); drawRegion(); rgPanel(); } };
+  cv.addEventListener("pointerup", end); cv.addEventListener("pointercancel", end);
+  cv.addEventListener("wheel", e => { e.preventDefault(); zoomAt(e.deltaY < 0 ? 1.25 : 0.8, e.offsetX, e.offsetY); }, {passive:false});
+  cv.addEventListener("dblclick", e => zoomAt(2, e.offsetX, e.offsetY));
+  V.zoomAt = zoomAt;
+}
+const rgTel = t => { const n = String(t).replace(/[^\d+]/g, "").replace(/^\+54/, "0").replace(/^09/, "0"); return n.length >= 6 ? n : ""; };
+function rgPoiLi(p){ const tel = rgTel(p.tel); return `<li><span class="rg-ic rg-${p.t}" aria-hidden="true">${RG_T[p.t][0]}</span><span><strong>${esc(p.n)}</strong>${p.a ? ` · ${esc(p.a)}` : ""}${tel ? ` · <a href="tel:${tel}">${esc(p.tel)}</a>` : ""}</span></li>`; }
+function rgTownHTML(t){
+  const ps = RG.p.filter(p => p.town === t.i), az = RG.azul, pos = state.ultimaPos, alt = rgAlt(t.lat, t.lng);
+  const grupos = ["h","c","p","b","g","f","s"].map(k => [k, ps.filter(p => p.t === k)]).filter(([, l]) => l.length);
+  return `<h2>${esc(t.n)}</h2><p class="fine">${RG_CLASE[t.c]}${t.pop ? ` · ${fmtNum(t.pop)} habitantes` : ""}${alt !== null ? ` · ${Math.round(alt)} m de altura` : ""}</p>
+    <ul class="rg-kv"><li><span>Coordenadas</span><strong>${coordTxt(t.lat, t.lng)}</strong><span class="mono">${coordDec(t.lat, t.lng)}</span></li>
+      ${az && t !== az ? `<li><span>Desde Azul</span><strong>${dirTxt(az, t)}</strong><span>en línea recta</span></li>` : ""}
+      ${pos ? `<li><span>Desde donde estás</span><strong>${dirTxt(pos, t)}</strong></li>` : ""}
+      ${t.rutas.length ? `<li><span>Rutas cerca</span><strong>${t.rutas.join(", ")}</strong></li>` : ""}</ul>
+    ${grupos.length ? grupos.map(([k, l]) => ["h","c","p","b"].includes(k) && l.length <= 8 ? `<h3>${RG_PL[k]}</h3><ul class="rg-poi">${l.map(rgPoiLi).join("")}</ul>` : `<details class="rg-more"><summary>${RG_PL[k]} (${l.length})</summary><ul class="rg-poi">${l.map(rgPoiLi).join("")}</ul></details>`).join("") : `<p class="fine">No hay servicios cargados en el mapa para este lugar.</p>`}
+    <div class="inline"><button class="btn btn-primary btn-sm" data-action="nav-go" data-id="rg:t:${t.i}">${icon("compass")}Brújula hacia ${esc(t.n)}</button></div>`;
+}
+function rgPanel(){
+  const el = document.getElementById("rg-sel"); if(!el || !RG) return;
+  const S = RG_V.sel; if(!S){ el.innerHTML = `<p class="fine">Toca una ciudad, un pueblo o un servicio para ver su información. Toca cualquier punto para saber sus coordenadas y su altura.</p>`; return; }
+  if(S.k === "t"){ el.innerHTML = rgTownHTML(S.o); return; }
+  const pos = state.ultimaPos, az = RG.azul;
+  if(S.k === "p"){ const p = S.o, t = RG.pl[p.town], tel = rgTel(p.tel);
+    el.innerHTML = `<p class="phase">${RG_T[p.t][1]}</p><h2>${esc(p.n)}</h2><ul class="rg-kv">${p.a ? `<li><span>Dirección</span><strong>${esc(p.a)}${t ? `, ${esc(t.n)}` : ""}</strong></li>` : t ? `<li><span>Lugar</span><strong>${esc(t.n)}</strong></li>` : ""}
+      ${tel ? `<li><span>Teléfono</span><strong><a href="tel:${tel}">${esc(p.tel)}</a></strong></li>` : ""}<li><span>Coordenadas</span><strong>${coordTxt(p.lat, p.lng)}</strong><span class="mono">${coordDec(p.lat, p.lng)}</span></li>
+      ${pos ? `<li><span>Desde donde estás</span><strong>${dirTxt(pos, p)}</strong></li>` : ""}</ul>
+      <div class="inline"><button class="btn btn-primary btn-sm" data-action="nav-go" data-id="rg:p:${p.i}">${icon("compass")}Brújula hacia acá</button>${t ? `<button class="btn btn-ghost btn-sm" data-action="rg-town" data-i="${t.i}">Ver ${esc(t.n)}</button>` : ""}</div>`; return; }
+  const ll = S.o, alt = rgAlt(ll.lat, ll.lng);
+  let nt = null, nd = 1e12; RG.pl.forEach(t => { const dd = (t.x - S.x) ** 2 + (t.y - S.y) ** 2; if(dd < nd){ nd = dd; nt = t; } });
+  el.innerHTML = `<p class="phase">Punto del mapa</p><ul class="rg-kv"><li><span>Coordenadas</span><strong>${coordTxt(ll.lat, ll.lng)}</strong><span class="mono">${coordDec(ll.lat, ll.lng)}</span></li>
+    ${alt !== null ? `<li><span>Altura aproximada</span><strong>${Math.round(alt)} m</strong></li>` : ""}
+    ${nt ? `<li><span>Lo más cerca</span><strong>${esc(nt.n)}: ${dirTxt(ll, nt)}</strong></li>` : ""}
+    ${az ? `<li><span>Desde Azul</span><strong>${dirTxt(az, ll)}</strong></li>` : ""}${pos ? `<li><span>Desde donde estás</span><strong>${dirTxt(pos, ll)}</strong></li>` : ""}</ul>`;
+}
+function rgLugar(id){
+  const m = /^rg:(t|p):(\d+)$/.exec(String(id || "")); if(!m || !RG) return null;
+  const o = m[1] === "t" ? RG.pl[+m[2]] : RG.p[+m[2]]; if(!o) return null;
+  const t = m[1] === "p" ? RG.pl[o.town] : null;
+  return {id, nombre:o.n, lat:o.lat, lng:o.lng, dir:m[1] === "p" ? [o.a, t && t.n].filter(Boolean).join(", ") : coordTxt(o.lat, o.lng), tel:m[1] === "p" ? rgTel(o.tel) : "", cat:"rg"};
+}
+/* Zonas altas cerca de un punto de Azul: el punto más alto a menos de 1,5 km */
+function zonaAlta(ll){
+  if(!RG || !ll) return null; const g = RG.ea, h0 = rgAlt(ll.lat, ll.lng); if(h0 === null) return null;
+  let best = null;
+  for(let r = 0; r < g.rows; r++) for(let c = 0; c < g.cols; c++){ const p = {lat:g.lat0 + r * g.st, lng:g.lon0 + c * g.st}, k = distKm(ll, p); if(k > 1.5) continue; const h = g.v[r * g.cols + c];
+    if(!best || h > best.h + 0.5 || (h > best.h - 0.5 && k < best.k)) best = {h, p, k}; }
+  return best && best.h - h0 >= 2 ? {h0, h:best.h, p:best.p, k:best.k} : {h0, h:null};
+}
+function rgMapImg(lat0, lng0, lat1, lng1, w, h){
+  const cv = document.createElement("canvas"), [x0, y0] = RG.toW(lat0, lng0), [x1, y1] = RG.toW(lat1, lng1);
+  const v = {cx:(x0 + x1) / 2, cy:(y0 + y1) / 2, z:Math.min(w / Math.abs(x1 - x0), h / Math.abs(y1 - y0)), w, h};
+  MAP_PRINT = true; try{ drawRegion({cv, w, h, v}); }catch(e){} finally{ MAP_PRINT = false; }
+  try{ return cv.toDataURL("image/jpeg", 0.85); }catch(e){ return ""; }
+}
+function rgManual(sel){
+  if(!RG) return `<section class="ps"><h2>Mapa de la región</h2><p>Para imprimirlo, abre una vez «Mapa de la región» en la app y vuelve a armar el manual.</p></section>`;
+  const az = RG.azul, ts = RG.pl.filter(t => t.c <= 3).map(t => [t, distKm(az, t)]).sort((a, b) => a[1] - b[1]).map(x => x[0]);
+  const fila = p => [RG_T[p.t][1], p.n, p.a, rgTel(p.tel) ? p.tel : ""];
+  const serv = tipos => ts.map(t => { const l = RG.p.filter(p => p.town === t.i && tipos.includes(p.t)); return l.length ? `<h3>${esc(t.n)}</h3>${printTable(["Qué","Nombre","Dirección","Teléfono"], l.map(fila))}` : ""; }).join("");
+  let h = "";
+  if(sel.region){
+    const reg = rgMapImg(-37.75, -60.95, -35.95, -58.95, 760, 860), ciu = rgMapImg(-36.83, -59.915, -36.735, -59.80, 760, 820);
+    h += `<section class="ps pm-map"><h2>Mapa de la región</h2>${reg ? `<img src="${reg}" alt="Mapa de Azul y la región">` : ""}<p class="pm-leg">El norte está arriba. Líneas punteadas: grilla de coordenadas (latitud sur y longitud oeste). Colores: alturas, de verde (bajo) a marrón (alto). Letras: H hospital, S salita o clínica, P policía, B bomberos, N estación de servicio, F farmacia, M supermercado. OpenStreetMap (ODbL), julio de 2026; relieve SRTM.</p></section>
+      <section class="ps pm-map"><h2>Azul: alturas y arroyo</h2>${ciu ? `<img src="${ciu}" alt="Alturas de Azul">` : ""}<p class="pm-leg">Azul (bajo) a marrón (alto). El terreno baja de sur a norte, hacia donde corre el arroyo. Si hay que alejarse del agua: hacia arriba y sin cruzar el arroyo.</p></section>
+      <section class="ps pm-g"><h2>Ciudades y pueblos</h2>${printTable(["Lugar","Coordenadas","Desde Azul","Altura","Rutas cerca"], ts.map(t => [t.n, coordTxt(t.lat, t.lng), t === az ? "—" : `${Math.round(distKm(az, t))} km al ${cardinal(rumbo(az, t)).replace(/^el /, "")}`, `${Math.round(rgAlt(t.lat, t.lng) || 0)} m`, t.rutas.join(", ")]))}
+      <h2>Hospitales, salitas, policía y bomberos</h2>${serv(["h","c","p","b"])}</section>`;
+  }
+  if(sel.regionServ) h += `<section class="ps pm-g"><h2>Farmacias, estaciones de servicio y supermercados</h2><p>Según OpenStreetMap: puede faltar alguno.</p>${serv(["f","g","s"])}</section>`;
+  return h;
+}
+function renderRegion(){
+  const sel = RG_V.sel;
+  const azul = state.ciudad === "Azul" || !state.ciudad;
+  return `<section class="stack rg">${backBtn()}
+    <div class="intro"><h1>Mapa de la región</h1><p class="lede">Azul y unos 100 km alrededor: rutas, arroyos, alturas, pueblos y sus servicios. Funciona sin internet.</p></div>
+    <div class="azwrap"><canvas id="rgmap" tabindex="0" aria-label="Mapa de Azul y la región. Arrastra para mover y pellizca para acercar."></canvas>
+      <div class="mapbtns"><button class="btn btn-ghost" data-action="rg-z" data-f="1.6" aria-label="Acercar">+</button><button class="btn btn-ghost" data-action="rg-z" data-f="0.62" aria-label="Alejar">−</button></div></div>
+    <div class="inline"><button class="btn btn-ghost btn-sm" data-action="rg-ver" data-v="region">Toda la región</button><button class="btn btn-ghost btn-sm" data-action="rg-ver" data-v="azul">Azul y sus alturas</button><button class="btn btn-ghost btn-sm" data-action="rg-ver" data-v="yo">Dónde estoy</button></div>
+    <div class="card rg-sel" id="rg-sel" aria-live="polite"></div>
+    <div class="card"><h2>Cómo leerlo</h2>
+      <p class="rg-ley"><span><i class="rg-alt"></i>Más alto</span><span><i class="rg-baj"></i>Más bajo</span><span><i class="rg-ruta"></i>Ruta</span><span><i class="rg-via"></i>Vía del tren</span><span><i class="rg-agua"></i>Arroyo o laguna</span></p>
+      <p class="rg-ley">${Object.entries(RG_T).map(([k, [l, t]]) => `<span><span class="rg-ic rg-${k}">${l}</span>${t}</span>`).join("")}</p>
+      <p class="fine">El norte siempre está arriba. Las líneas punteadas son la grilla de coordenadas: latitud sur (horizontales) y longitud oeste (verticales). De cerca, en Azul los colores muestran las alturas de la ciudad, de más bajo (azul) a más alto (marrón).</p></div>
+    ${azul ? `<div class="card" id="rg-altas"><h2>Zonas altas de Azul</h2><div id="rg-altas-b"><p class="fine">Cargando el relieve…</p></div></div>` : ""}
+    <details class="hsec rg-pueblos"><summary><span class="g-ic">${icon("compass")}</span><span class="hs-t"><strong>Ciudades y pueblos</strong><span>Distancia y dirección desde Azul, coordenadas y rutas</span></span><span class="hs-chev" aria-hidden="true"></span></summary><div class="hs-body" id="rg-lista"><p class="fine">Cargando…</p></div></details>
+    <p class="fine">Datos de OpenStreetMap (copia de julio de 2026): pueden faltar servicios, sobre todo farmacias en Olavarría y Tandil. Alturas del satélite SRTM, con un error de unos 5 metros: sirven para comparar zonas, no como medida exacta.</p>
+    ${srcBox(["osm","rgSrtm"])}
+  </section>`;
+}
+function rgListaHTML(){
+  const az = RG.azul, ts = RG.pl.filter(t => t.c <= 3).map(t => [t, az ? distKm(az, t) : 0]).sort((a, b) => a[1] - b[1]);
+  return `<ul class="rg-l">${ts.map(([t, k]) => `<li><button class="nr-item" data-action="rg-town" data-i="${t.i}"><span class="nr-t"><strong>${esc(t.n)}</strong><span>${t === az ? "Acá" : `${fmtNum(Math.round(k))} km hacia ${cardinal(rumbo(az, t))}`}${t.rutas.length ? ` · ${t.rutas.slice(0, 3).join(", ")}` : ""}</span><span class="mono">${coordTxt(t.lat, t.lng)}</span></span><span class="nr-go">Ver</span></button></li>`).join("")}</ul>`;
+}
+function rgAltasHTML(){
+  const items = state.lugares.filter(enAzul).map(l => [l.nombre, l]).concat(state.ultimaPos && enAzul(state.ultimaPos) ? [["Donde estás ahora", state.ultimaPos]] : []);
+  const g = RG.ea; let mn = 1e9, mx = -1e9; g.v.forEach(v => { mn = Math.min(mn, v); mx = Math.max(mx, v); });
+  const rows = items.map(([n, ll]) => { const z = zonaAlta(ll); if(!z) return ""; return `<li class="az-ar"><strong>${esc(n)}: ${Math.round(z.h0)} m</strong><span>${z.h ? `Lo más alto cerca: ${Math.round(z.h)} m, a ${cuadrasTxt(z.k * 1000)} hacia ${cardinal(rumbo(ll, z.p))}` : "Ya está entre lo más alto de la zona."}</span></li>`; }).join("");
+  return `<p>En Azul el terreno baja de sur a norte, hacia donde corre el arroyo: va de unos ${Math.round(mx)} m al sur de la ciudad a unos ${Math.round(mn)} m al norte y junto al arroyo. Son pocos metros, pero con agua alcanzan.</p>
+    ${rows ? `<ul class="az-ars">${rows}</ul>` : `<p class="fine">Guarda la casa y los lugares de la familia en «Llevarme» y acá aparece la altura de cada uno y la zona alta más cercana.</p>`}
+    <p class="fine">Si hay que salir por el agua, váyanse hacia arriba y lejos del arroyo, por calles que no crucen el arroyo, y sigan lo que diga Defensa Civil.</p>`;
+}
+async function rgAfter(){
+  rgBind();
+  try{ await rgCargar(); }catch(e){ const s = document.getElementById("rg-sel"); if(s) s.innerHTML = `<p>No pude abrir el mapa de la región. Abre la app una vez con internet para que se guarde.</p>`; return; }
+  if(!RG_V.z){ const cv = document.getElementById("rgmap"); const r = cv.getBoundingClientRect(); RG_V.w = r.width; RG_V.h = r.height; rgFit(-37.75, -60.95, -35.95, -58.95); }
+  drawRegion(); rgPanel();
+  const l = document.getElementById("rg-lista"); if(l) l.innerHTML = rgListaHTML();
+  const a = document.getElementById("rg-altas-b"); if(a) a.innerHTML = rgAltasHTML();
+}
+window.addEventListener("resize", () => { if(ui.sub === "region") rgSchedule(); });
 
 /* ---------- Plan 30 días sin luz ---------- */
 const MES_COMIDA = [
@@ -8178,6 +8476,7 @@ function renderMapa(){
   return `<section class="stack">
     ${backBtn()}
     <div class="intro"><h1>Mapa y brújula</h1><p class="lede">El plano de Azul está guardado en la app: funciona sin internet.</p></div>
+    <button class="mf-btn" data-action="go-region">${icon("compass")}<span><strong>Mapa de la región</strong><span>Pueblos a 100 km, rutas, alturas y coordenadas</span></span>${icon("chev")}</button>
     ${seg}
     ${m.tab === "arg" ? argHTML() : azul}
     ${descargar}
@@ -8186,6 +8485,8 @@ function renderMapa(){
 }
 function afterMapaRender(){
   if(ui.tab !== "inicio") return;
+  if(ui.sub === "region"){ rgAfter(); return; }
+  if(ui.sub === "manual"){ rgCargar().catch(() => {}); return; }
   if(ui.sub === "llevar" && document.getElementById("azmap")){
     const m = ui.mapa, pos = state.ultimaPos; m.sel = null; m.ruta = null; m.calle = null;
     if(pos) m.yo = {lat:pos.lat, lng:pos.lng, acc:pos.acc || 0, gps:true};
@@ -8224,7 +8525,7 @@ function render(top){
   if(!(ui.tab === "inicio" && ui.sub === "ir")) navStop();
   applyAhorro();
   if(ui.tab === "inicio" && !ui.sub && state.ahorro) html = renderAhorro();
-  else if(ui.tab === "inicio") html = ui.sub === "corte" ? renderCorte() : ui.sub === "aviso" ? renderAviso() : ui.sub === "mapa" ? renderMapa() : ui.sub === "ayuda" ? renderAyuda() : ui.sub === "mes" ? renderMes() : ui.sub === "radio" ? renderRadio() : ui.sub === "manual" ? renderManual() : ui.sub === "ir" ? renderNav() : ui.sub === "llevar" ? renderLlevar() : ui.sub === "mificha" ? renderMiFicha() : ui.sub === "recs" ? renderRecs() : ui.sub === "config" ? renderConfig() : ui.sub === "prob" ? renderProb() : ui.sub === "hoy" ? renderHoy() : ui.sub === "queda" ? renderQueda() : ui.sub === "vade" ? renderVade() : ui.sub === "pedido" ? renderPedido() : ui.sub === "azul" ? renderAzul() : renderHome();
+  else if(ui.tab === "inicio") html = ui.sub === "corte" ? renderCorte() : ui.sub === "aviso" ? renderAviso() : ui.sub === "mapa" ? renderMapa() : ui.sub === "ayuda" ? renderAyuda() : ui.sub === "mes" ? renderMes() : ui.sub === "radio" ? renderRadio() : ui.sub === "manual" ? renderManual() : ui.sub === "ir" ? renderNav() : ui.sub === "llevar" ? renderLlevar() : ui.sub === "mificha" ? renderMiFicha() : ui.sub === "recs" ? renderRecs() : ui.sub === "config" ? renderConfig() : ui.sub === "prob" ? renderProb() : ui.sub === "hoy" ? renderHoy() : ui.sub === "queda" ? renderQueda() : ui.sub === "vade" ? renderVade() : ui.sub === "pedido" ? renderPedido() : ui.sub === "azul" ? renderAzul() : ui.sub === "region" ? renderRegion() : renderHome();
   else if(ui.tab === "guias") html = ui.guide ? renderGuide() : renderGuides();
   else if(ui.tab === "preparar") html = renderPrep();
   else if(ui.tab === "linterna") html = renderTools();
@@ -8812,6 +9113,15 @@ document.addEventListener("click", e => {
     case "ficha-from": { const m = state.plan.miembros.find(x => x.id === el.dataset.id); if(m) newFicha(m.nombre); break; }
     case "ficha-edit": ui.fichaEdit = el.dataset.id; ui.fichaDel = null; render(false); window.scrollTo(0, 0); break;
     case "go-azul": go("inicio", {sub:"azul"}); break;
+    case "go-region": go("inicio", {sub:"region"}); break;
+    case "rg-z": if(RG_V.zoomAt) RG_V.zoomAt(+el.dataset.f, RG_V.w / 2, RG_V.h / 2); break;
+    case "rg-ver": if(RG){ const v = el.dataset.v, pos = state.ultimaPos;
+        if(v === "region") rgFit(-37.75, -60.95, -35.95, -58.95);
+        else if(v === "azul") rgFit(-36.815, -59.905, -36.745, -59.815);
+        else if(pos){ rgCentrar(pos.lat, pos.lng, RG_V.w / 12000); RG_V.sel = {k:"pt", x:RG.toW(pos.lat, pos.lng)[0], y:RG.toW(pos.lat, pos.lng)[1], o:{lat:pos.lat, lng:pos.lng}}; rgPanel(); }
+        else { pedirPos(); const s2 = document.getElementById("rg-sel"); if(s2) s2.innerHTML = `<p>Buscando dónde estás… Sal al aire libre si tarda.</p>`; }
+        drawRegion(); const cv2 = document.getElementById("rgmap"); if(cv2) cv2.scrollIntoView({block:"center", behavior:"smooth"}); } break;
+    case "rg-town": if(RG){ const t = RG.pl[+el.dataset.i]; if(t){ RG_V.sel = {k:"t", o:t, x:t.x, y:t.y}; rgCentrar(t.lat, t.lng, Math.max(RG_V.z, RG_V.w / (t.c <= 2 ? 25000 : 12000))); drawRegion(); rgPanel(); const cv2 = document.getElementById("rgmap"); if(cv2) cv2.scrollIntoView({block:"start", behavior:"smooth"}); } } break;
     case "ped-mandar": pedMandar(); break;
     case "ped-editar": ui.pedVolver = true; ui.planSeg = "ficha"; ui.fichaEdit = el.dataset.id; ui.fichaBig = null; go("numeros"); break;
     case "ped-enviar": pedEnviar(el.dataset.id); break;
@@ -9072,6 +9382,7 @@ function routeHash(hash){
   else if(hash === "hoy"){ ui.sub = "hoy"; ui.hoyVer = 0; }
   else if(hash === "problema"){ ui.sub = "prob"; ui.pbId = null; }
   else if(hash === "azul") ui.sub = "azul";
+  else if(hash === "region") ui.sub = "region";
   else if(hash.indexOf("pedido-ficha") === 0){ const q = new URLSearchParams(hash.split("?")[1] || ""); if(q.get("n") || q.get("de")) pedGuardar({n:(q.get("n") || "").slice(0, 40), de:(q.get("de") || "").slice(0, 40), at:Date.now()}); ui.sub = "pedido"; }
   else if(hash.indexOf("problema-") === 0 && PROBLEMAS.some(x => x.id === hash.slice(9))){ ui.sub = "prob"; ui.pbId = hash.slice(9); }
   else if(hash.indexOf("guia-") === 0 && GUIDES.some(g => g.id === hash.slice(5))){ ui.tab = "guias"; ui.guide = hash.slice(5); }
