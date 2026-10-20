@@ -145,6 +145,7 @@ body.navegando .upd{bottom:calc(10px + env(safe-area-inset-bottom,0px))}
 .net{display:flex;align-items:center;gap:6px;min-width:0;font-size:13px;font-weight:700;color:var(--ok);white-space:nowrap}
 .net::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor}
 .net.off{color:var(--warn)}
+@media (max-width:359px){.brand{font-size:18px;gap:8px;letter-spacing:.05em}.net{font-size:11px}}
 
 /* Vista */
 .view{display:block;max-width:592px;margin:0 auto;padding-block:20px calc(var(--tabbar-h) + 88px + env(safe-area-inset-bottom,0px));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
@@ -551,6 +552,8 @@ body:has(input:focus,textarea:focus) .ay-stick{display:none}
 .sb-911{background:var(--surface);color:var(--crit);border:2px solid var(--crit)}.sb-911 span{font-family:var(--font-data);font-size:22px}
 .sb-ayuda{background:var(--crit);color:var(--on-crit);font-size:18px}
 .sb-bien{background:var(--surface);color:var(--ok);border:2px solid var(--ok)}
+.sb-ficha{background:var(--surface);color:var(--ink);border:2px solid var(--ink)}.sb-ficha .ic{color:var(--crit)}
+.sb-prob{background:var(--signal);color:var(--on-signal);font-size:18px}
 .ahora{display:flex;flex-direction:column;gap:8px}
 .net-line{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:var(--surface-2);font-size:15px;text-align:left;color:var(--ink)}
 .hsecs{display:flex;flex-direction:column;gap:8px}
@@ -2761,10 +2764,10 @@ function renderHome(){
       <button class="sb sb-ayuda" data-action="go-ayuda">${icon("sos")}<span>Necesito ayuda</span></button>
       <button class="sb sb-llevar" data-action="go-llevar">${icon("compass")}<span>Llevarme</span></button>
       <button class="sb sb-bien" data-action="go-aviso">${icon("heart")}<span>Estoy bien</span></button>
+      <button class="sb sb-ficha" data-action="go-mificha" aria-label="Mi ficha: datos médicos y documentos">${icon("id")}<span>Mi ficha</span></button>
+      <button class="sb sb-prob" data-action="go-prob" aria-label="Tengo un problema: qué hacer, paso a paso">${icon("help")}<span>Tengo un problema</span></button>
     </div>
     ${ahora.length ? `<div class="ahora">${ahora.join("")}</div>` : ""}
-    <button class="mf-btn" data-action="go-mificha">${icon("id")}<span><strong>Mi ficha</strong><span>${miFicha() ? esc(miFicha().nombre) + (fpCfg() ? " · con clave" : "") : "Datos médicos y documentos"}</span></span>${icon("chev")}</button>
-    <button class="mf-btn pb-home" data-action="go-prob">${icon("help")}<span><strong>Tengo un problema</strong><span>Qué hacer, paso a paso, con lo que hay en casa</span></span>${icon("chev")}</button>
     <div class="hsecs">
       ${hsec("pasa", "storm", "¿Qué está pasando?", "Toca la situación y sigue los pasos", pasa, "hs-main")}
       ${hsec("tel", "phone", "Teléfonos", c ? `911 y los de ${esc(state.ciudad)}: hospital, luz, agua, gas` : "911 y tus contactos", tels)}
@@ -5274,7 +5277,7 @@ async function recNotif(){
 
 /* ---------- Configuración: todos los ajustes en un lugar (engranaje arriba a la derecha) ----------
    En un celular con control parental se ve todo; para cambiar algo, salvo voz y vibración, pide el PIN. */
-const APP_VER = 33;
+const APP_VER = 34;
 const GEAR_SVG = `<svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>`;
 function renderConfig(){
   const lc = lockCfg(), lockOn = !!(lc && lc.on), f = miFicha(), fp = fpCfg(), aqui = recsAqui(), nRec = REMINDERS.filter(recOn).length;
