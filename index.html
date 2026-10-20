@@ -5281,7 +5281,7 @@ async function recNotif(){
 
 /* ---------- Configuración: todos los ajustes en un lugar (engranaje arriba a la derecha) ----------
    En un celular con control parental se ve todo; para cambiar algo, salvo voz y vibración, pide el PIN. */
-const APP_VER = 37;
+const APP_VER = 38;
 const GEAR_SVG = `<svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>`;
 function renderConfig(){
   const lc = lockCfg(), lockOn = !!(lc && lc.on), f = miFicha(), fp = fpCfg(), aqui = recsAqui(), nRec = REMINDERS.filter(recOn).length;
@@ -6493,12 +6493,12 @@ const WC_CSS = `.wc-sheet{font-family:Arial,Helvetica,sans-serif;color:#111;marg
 .wc-dia{width:2.4mm;height:2.4mm;background:#F26A1B;transform:rotate(45deg);border-radius:.3mm}
 .wc-tt{font-weight:700;font-size:7.4pt;letter-spacing:.08em;color:#FFB27F}
 .wc-body{flex:1;min-height:0;display:flex;gap:2.5mm;padding:2.2mm 3mm 1.5mm}
-.wc-id{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:1.2mm}.wc-f .wc-l{font-size:8.6pt}.wc-f .wc-gr{align-self:center}
-.wc-n{font-size:13.5pt;font-weight:700;line-height:1.08;margin:0 0 .6mm;color:#0F1F3D}
+.wc-id{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:1.2mm}.wc-f .wc-l{font-size:10.4pt;line-height:1.18}.wc-xl .wc-l{font-size:11.6pt}.wc-xl .wc-n{font-size:18pt}.wc-xl .wc-id{gap:1.6mm}.wc-f .wc-body{padding:2mm 2.6mm 1.4mm 3mm;gap:2mm}.wc-f .wc-gr{align-self:center}
+.wc-n{font-size:15.5pt;font-weight:700;line-height:1.08;margin:0 0 .6mm;color:#0F1F3D}
 .wc-k{display:block;font-size:6.4pt;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#3D4A63}
 .wc-v{font-weight:700}
-.wc-gr{flex:none;align-self:flex-start;width:17mm;height:17mm;border-radius:50%;background:#C9302C;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
-.wc-gr span{font-size:6pt;font-weight:700;letter-spacing:.1em}.wc-gr strong{font-size:15pt;margin-top:.4mm}
+.wc-gr{flex:none;align-self:flex-start;width:15mm;height:15mm;border-radius:50%;background:#C9302C;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
+.wc-gr span{font-size:6pt;font-weight:700;letter-spacing:.1em}.wc-gr strong{font-size:14pt;margin-top:.4mm}
 .wc-foot{flex:none;display:flex;justify-content:space-between;align-items:center;background:#C9302C;color:#fff;padding:1.2mm 3mm;font-weight:700;font-size:7pt}
 .wc-foot b{font-size:10pt;letter-spacing:.04em}
 .wc-sec{font-size:7pt;font-weight:700;letter-spacing:.12em;color:#C9302C;margin:0 0 .6mm;padding-bottom:.4mm;border-bottom:0.3mm solid #E3C4C2}
@@ -6539,12 +6539,13 @@ function tarjetaHTML(f, oculto, color){
   const nac = v("nac"), dni = f.dni ? wcDni(f.dni) : "", dom = f.domicilio || "";
   const idRows = [
     dni ? `<p class="wc-l"><em>DNI</em> <span class="wc-v">${oculto ? "••••••••" : esc(dni)}</span></p>` : "",
-    nac ? `<p class="wc-l"><em>Nacimiento</em> <span class="wc-v">${esc(nac)}</span></p>` : "",
+    nac ? `<p class="wc-l"><em>Nació el</em> <span class="wc-v">${esc(nac.replace(/ \((\d+ años?)\)$/, " · $1"))}</span></p>` : "",
     dom ? `<p class="wc-l"><em>Domicilio</em> <span class="wc-v">${oculto ? "protegido con la clave" : esc(wcCorta(dom, 60))}</span></p>` : "",
     f.comunica ? `<p class="wc-l"><em>Para comunicarse</em> ${esc(wcCorta(f.comunica, 60))}</p>` : ""
   ].join("");
-  const frente = `<div class="wc wc-f"><div class="wc-top"><span class="wc-brand"><i class="wc-dia"></i>PREPARADOS</span><span class="wc-tt">EN CASO DE EMERGENCIA</span></div>
-    <div class="wc-body"><div class="wc-id"><span class="wc-k">Nombre</span><p class="wc-n">${esc(wcCorta(f.nombre, 40))}</p>${idRows}</div>${gr ? `<div class="wc-gr"><span>GRUPO</span><strong>${esc(gr)}</strong></div>` : ""}</div>
+  const xl = String(f.nombre || "").length <= 22 && dom.length <= 34 && !f.comunica;
+  const frente = `<div class="wc wc-f${xl ? " wc-xl" : ""}"><div class="wc-top"><span class="wc-brand"><i class="wc-dia"></i>PREPARADOS</span><span class="wc-tt">EN CASO DE EMERGENCIA</span></div>
+    <div class="wc-body"><div class="wc-id"><p class="wc-n">${esc(wcCorta(f.nombre, 40))}</p>${idRows}</div>${gr ? `<div class="wc-gr"><span>GRUPO</span><strong>${esc(gr)}</strong></div>` : ""}</div>
     <div class="wc-foot"><span>Emergencias <b>911</b> · SAME <b>107</b></span><span>Salud y a quién avisar ↻</span></div></div>`;
   const salud = [
     f.alergias ? `<p class="wc-l wc-al">Alergias: ${esc(wcCorta(f.alergias, 70))}</p>` : "",
