@@ -989,6 +989,11 @@ const SRC = {
   azRefes:["Guiafarma: farmacias de Azul (registro REFES)","https://guiafarma.com.ar/farmacias-de-turno/buenos-aires/azul"],
   azHosp:["Ministerio de Salud PBA: hospitales provinciales","https://www.gba.gob.ar/saludprovincia/hospitales"],
   azGuia:["Guía judicial de Azul: comisarías","https://stabogados.com.ar/defensa/zonas/azul/guia-judicial"],
+  uocraAzul:["Fundación UOCRA: CIFIC CFL 402 Azul, cursos y contacto","https://fundacion.uocra.org/oferta-educativa-formacion-profesional/cific-cfl-402-azul/"],
+  cruzRojaAzul:["El Tiempo: curso de primeros auxilios de Cruz Roja filial Azul (2025)","https://www.diarioeltiempo.com.ar/nota-la-cruz-roja-filial-azul-realizara--un-nuevo-curso-de-primeros-auxilios-207704"],
+  cruzRojaPA:["Cruz Roja Argentina: cursos de primeros auxilios, presenciales y virtuales","https://www.cruzroja.org.ar/primeros-auxilios/"],
+  ocuToma:["OCU: cómo cambiar un interruptor o un enchufe, con seguridad","https://www.ocu.org/vivienda-y-energia/equipamiento-hogar/consejos/cambiar-interruptor-y-enchufe"],
+  gasSeg:["MetroGAS: uso seguro del gas, siempre con gasista matriculado","https://www.metrogas.com.ar/assets/media/2022/11/10-tips-para-un-uso-seguro-del-gas-en-el-hogar-Junio.pdf"],
   smnColores:["Chequeado: qué significan las alertas amarillas, naranjas y rojas del SMN","https://chequeado.com/el-explicador/que-significan-las-alertas-meteorologicas-amarillas-naranjas-y-rojas/"],
   smnApp:["Gobierno argentino: la app oficial del SMN avisa cuando hay alerta para tu ciudad","https://www.argentina.gob.ar/node/356042"],
   smnWeb:["SMN: alertas vigentes","https://www.smn.gob.ar/alertas"],
@@ -2617,6 +2622,7 @@ const NUMS = [
 
 /* ---------- Íconos ---------- */
 const ICON = {
+  tool:'<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>',
   bolt:'<path d="M13 2 4 14h7l-1 8 9-12h-7l1-8z"/>',
   drop:'<path d="M12 2.7S5.5 9.6 5.5 14.3a6.5 6.5 0 0 0 13 0C18.5 9.6 12 2.7 12 2.7z"/>',
   waves:'<path d="M2 9c2 0 2-1.5 4-1.5S8 9 10 9s2-1.5 4-1.5S16 9 18 9s2-1.5 4-1.5"/><path d="M2 14c2 0 2-1.5 4-1.5s2 1.5 4 1.5 2-1.5 4-1.5 2 1.5 4 1.5 2-1.5 4-1.5"/><path d="M2 19c2 0 2-1.5 4-1.5s2 1.5 4 1.5 2-1.5 4-1.5 2 1.5 4 1.5 2-1.5 4-1.5"/>',
@@ -4079,7 +4085,128 @@ const APRENDER = [
    ["h","Una gotera"],
    ["ul",["Pon un balde debajo y un trapo adentro, para que no salpique.","Mueve los muebles y aparta lo eléctrico.","Cuando pare de llover, busca en el techo de dónde viene: una chapa floja o una teja corrida."]],
    ["ojo","No subas al techo con lluvia, viento o de noche, ni sin otra persona abajo."],
+   ["h","¿Hay una pérdida escondida?"],
+   ["ol",["Cierren todas las canillas y que no ande el lavarropas.","Si la casa tiene medidor de agua, mírenlo: si el molinete o la ruedita gira, hay agua que se va por algún lado. Si no tiene, sirve igual la prueba del inodoro y mirar paredes y piso húmedos.","Para saber si es el inodoro, unas gotas de café o colorante en el depósito, sin tirar la cadena: si en 15 minutos hay color en el inodoro, pierde la goma."]],
    ["tip","Sumen cinta autosoldable y precintos a la caja de herramientas."]]}
+ ]},
+ {id:"oficios", t:"Oficios de la casa", ic:"tool", sub:"Aprender de cero a arreglar la casa en familia: herramientas, plomería, electricidad, techo, costura y bicicleta.", lec:[
+  {id:"of-plan", t:"Cómo aprender un oficio en casa", min:4, b:[
+   ["p","Cuando no hay luz ni negocios abiertos, el que sabe arreglar mantiene la casa andando. Se aprende de cero, un sábado por semana, con una práctica real en casa."],
+   ["h","El plan de 12 semanas"],
+   ["p","De lo que más falla en la casa a lo complementario: primero el agua, después la luz, el techo y el resto. Unas 2 a 3 horas por semana."],
+   ["ol",["Conocer la casa: llaves de paso, medidor, tablero. Rotular las térmicas. (Las llaves de paso; El tablero de luz)","Buscar pérdidas: el medidor con todo cerrado y el colorante en el depósito. (Pérdidas de agua y goteras)","El depósito del inodoro: flotante y goma. (Sifón y depósito del inodoro)","La canilla que gotea: cuerito, teflón y aireador. (Cuerito, teflón y flexible)","Destapar: sopapa y sifón, sin mezclar químicos. (Destapar una pileta o el inodoro)","El tablero y los prolongadores: probar el disyuntor, revisar zapatillas. (Prolongadores, empalmes y respaldo)","Toma, ficha y portalámparas, con la térmica bajada. (Cambiar un toma o una llave)","Taladro y tarugos: anclar el ropero y la biblioteca. (Taladro y tarugos)","Puertas y ventanas: bisagras, burletes y cerraduras. (Puertas y ventanas)","Techo y canaletas, antes de las lluvias. (Techo, canaletas y humedad)","Arreglos de tormenta: lona, vidrio roto y el kit. (Arreglos de tormenta)","Costura y bicicleta: botón, remiendo, cámara y frenos."]],
+   ["p","Después: probar el disyuntor cada mes, mirar las canaletas después de cada tormenta y, una vez, un sábado sin luz en el que cada uno resuelve un arreglo solo. Primeros auxilios y la huerta están en sus propias lecturas."],
+   ["h","Lo que hacemos y lo que no"],
+   ["ul",["<strong>Nosotros:</strong> cambiar un toma, una llave o un portalámparas con la térmica bajada; cuerito, flexible, sifón y flotante; destapar; taladrar; techo y canaletas; coser; la bici.","<strong>Siempre un gasista matriculado:</strong> cualquier caño, artefacto o conexión de gas. Nosotros solo cerramos la llave y miramos la llama.","<strong>Siempre un electricista matriculado:</strong> el tablero y los cables nuevos."]],
+   ["h","Dónde aprender en Azul"],
+   ["ul",["<strong>Fundación UOCRA, CFL 402:</strong> Alvear 973, tel. 2281-654580 (de 18 a 22). Cursos de instalaciones sanitarias y de gas, soldador, pintura y zinguería, para mayores de 18.","<strong>Cruz Roja, filial Azul:</strong> Burgos 185. Primeros auxilios con certificado, desde los 16 años.","<strong>Cruz Roja Argentina, virtual:</strong> primeros auxilios en dos clases de 2 horas, para toda la familia.","<strong>INTA Azul:</strong> Av. Perón 1015, para la huerta. Pregunten si este año entregan semillas."]],
+   ["tip","Cada sábado, lean la lección juntos, hagan la práctica y anoten en un cuaderno qué salió y qué herramienta faltó."]]},
+  {id:"of-caja", t:"La caja de herramientas, en tres etapas", min:3, b:[
+   ["p","No hace falta comprar todo junto: cada herramienta, justo antes de usarla. Buena calidad en lo que toca la luz; en el resto alcanza con lo común."],
+   ["h","Etapa 1: para empezar"],
+   ["ul",["Destornilladores aislados, planos y Phillips.","Buscapolo o detector de tensión sin contacto.","Pinza universal y alicate de corte, con mango aislado.","Martillo, cinta métrica, nivel y cúter.","Anteojos de seguridad y guantes."]],
+   ["h","Etapa 2: taladro y plomería"],
+   ["ul",["Taladro percutor, con mechas para pared de 6 y 8 mm, para madera y para metal.","Tarugos de 6 y 8 mm con sus tornillos.","Llave francesa y pinza pico de loro.","Teflón, cinta autosoldable y cueritos de 1/2 y 3/4.","Sopapa y sonda destapacañerías."]],
+   ["h","Etapa 3: electricidad, techo, costura y bici"],
+   ["ul",["Pelacables, borneras de empalme y cinta aisladora.","Pistola con sellador poliuretánico.","Escalera tijera.","Agujas, hilos, tijera, dedal, botones y parches.","Inflador, palancas, parches con pegamento y llaves Allen."]],
+   ["tip","Guarden todo en una caja y vuelvan cada herramienta a su lugar: a oscuras, se encuentra al tacto."]]},
+  {id:"of-taladro", t:"Taladro y tarugos: colgar y fijar", min:4, b:[
+   ["p","Con un taladro y tarugos se cuelga un estante, se fija un mueble a la pared o se refuerza el pasador de una puerta."],
+   ["h","La mecha justa"],
+   ["ul",["<strong>Pared de ladrillo:</strong> mecha de widia (la punta es una plaquita de metal duro) y el taladro con percusión.","<strong>Cerámica o azulejo:</strong> mecha de widia sin percusión, con cinta de papel encima para que no resbale.","<strong>Madera:</strong> mecha para madera, con punta centradora.","<strong>Metal:</strong> mecha para metal, despacio y sin percusión."]],
+   ["h","Tarugo y tornillo"],
+   ["ul",["El número del tarugo es la medida de la mecha: tarugo del 8, mecha del 8.","El agujero, un poco más profundo que el tarugo.","El tornillo, un poco más largo que el tarugo más lo que sujeta."]],
+   ["h","Paso a paso"],
+   ["ol",["Marquen con lápiz y nivel dónde van los agujeros.","Anteojos puestos y el pelo atado.","Perforen derecho, sin hacer palanca.","Saquen el polvo del agujero.","Metan el tarugo con un golpecito y atornillen."]],
+   ["ojo","No perforen arriba, abajo ni al costado de un toma, una llave de luz o una canilla: los caños y los cables suelen ir rectos desde ahí. Con el taladro, sin guantes: se pueden enganchar."],
+   ["tip","Las chicas pueden marcar con el nivel y atornillar a mano. El taladro, con un adulto al lado."]]},
+  {id:"of-canilla", t:"Plomería: cuerito, teflón y flexible", min:5, b:[
+   ["p","Una canilla que gotea tira muchos litros por día. Cuando el agua escasea, eso importa."],
+   ["h","Cambiar el cuerito"],
+   ["ol",["Cierren la llave de paso y abran la canilla para que salga lo que queda.","Tapen la rejilla de la pileta, para que no se caiga un tornillo.","Saquen la tapita y el tornillo de la manija, y saquen la manija.","Desenrosquen el vástago con la llave francesa, con un trapo para no rayar.","Saquen el cuerito viejo y llévenlo a la ferretería para comprar la misma medida: 1/2 o 3/4.","Pongan el nuevo y enrosquen a mano; después ajusten con la llave, sin forzar.","Abran la llave de paso despacio y prueben."]],
+   ["p","Si sigue goteando, el asiento de la canilla puede estar gastado: es para un plomero. Las canillas monocomando llevan un cartucho: se cambia igual, llevando el viejo."],
+   ["h","El teflón"],
+   ["ul",["Va en las roscas de caño que entran en otra pieza.","De 6 a 10 vueltas, bien estirado, en el sentido en que se enrosca: mirando la punta de la rosca, como las agujas del reloj.","Los flexibles con arandela de goma no llevan teflón."]],
+   ["h","Cambiar un flexible"],
+   ["ol",["Cierren la llave de paso.","Aflojen las dos tuercas y lleven el viejo para comprar el mismo largo y medida.","Enrosquen a mano y den un cuarto de vuelta con la llave.","Abran el agua y miren que no gotee."]],
+   ["tip","Desenrosquen la punta de cada canilla y enjuaguen la mallita: sale más agua y con más fuerza."]]},
+  {id:"of-sifon", t:"Plomería: sifón y depósito del inodoro", min:4, b:[
+   ["p","Una pileta que tarda en vaciarse o un inodoro que pierde agua sin parar se arreglan sin llamar a nadie."],
+   ["h","Limpiar el sifón"],
+   ["ol",["Un balde debajo de la pileta.","Desenrosquen las tuercas del sifón a mano: son de plástico, sin herramientas.","Limpien la curva con un cepillo y revisen las arandelas.","Armen sin forzar, abran el agua y miren que no gotee."]],
+   ["h","El depósito que pierde"],
+   ["ol",["Cierren la llave del depósito y saquen la tapa.","Si el agua se va por el tubo del medio (el rebalse), el flotante está alto: bájenlo con su tornillo o su traba.","Si el agua pasa al inodoro con el depósito lleno, la goma de abajo está gastada o la cadena se traba: cámbienla, llevando la vieja."]],
+   ["p","Si el inodoro tiene una válvula en la pared en vez de depósito, el arreglo es para un plomero."],
+   ["tip","Pongan unas gotas de café en el depósito y no tiren la cadena: si en 15 minutos aparece color en el inodoro, la goma pierde. El sifón lo pueden limpiar las chicas."]]},
+  {id:"of-toma", t:"Electricidad: cambiar un toma o una llave", min:5, b:[
+   ["p","Un toma flojo o roto se cambia en 15 minutos. Lo hace un adulto; las chicas alumbran, pasan herramientas y miran."],
+   ["h","Antes de tocar nada"],
+   ["ol",["Bajen la térmica de esa parte de la casa. Si no saben cuál es, la llave general.","Prueben el buscapolo en un toma que tenga luz: tiene que encender.","Pónganlo en cada agujero del toma que van a cambiar: no tiene que encender. Si enciende, esa no era la térmica."]],
+   ["h","Cambiarlo"],
+   ["ol",["Saquen la tapa y los tornillos que sujetan el módulo a la caja.","Saquen el módulo y una foto de dónde va cada cable.","Colores: celeste es el neutro, verde y amarillo la tierra, y marrón, negro o rojo la fase.","Saquen los cables. Si la punta está negra, córtenla y pelen 1 cm nuevo.","Conecten el toma nuevo como en la foto. La tierra, siempre en el borne del agujero vertical del medio, marcado con el símbolo de tierra.","Apreten firme, que no quede cobre a la vista, y acomoden los cables en la caja.","Atornillen, pongan la tapa, suban la térmica y prueben con una lámpara."]],
+   ["p","Una llave de luz se cambia igual: tiene dos cables, la fase y el que va a la lámpara. Si tiene tres, es de combinación: cada cable al mismo lugar que en la foto."],
+   ["ojo","Si el toma estaba caliente, olía a quemado o los cables se deshacen al tocarlos, no lo cambien: dejen la térmica baja y llamen a un electricista. Nunca trabajen con la luz encendida ni con las manos mojadas."],
+   ["tip","La primera vez, practiquen con un toma que anda bien: desarmar, mirar y volver a armar."]]},
+  {id:"of-prolongador", t:"Electricidad: prolongadores, empalmes y respaldo", min:4, b:[
+   ["p","En un corte largo se usan más prolongadores y aparatos de respaldo. Ahí están los riesgos de incendio."],
+   ["h","Zapatillas y prolongadores"],
+   ["ul",["Nunca uno enchufado a otro.","Nada que caliente en una zapatilla: estufa, pava, plancha, horno.","El prolongador de carrete, desenrollado del todo.","Si la ficha o el cable se calientan, desenchufen."]],
+   ["h","Armar una ficha"],
+   ["ol",["Corten la ficha rota y pelen cada cable 1 cm.","La tierra (verde y amarillo) a la pata del medio; los otros dos, a las patas planas.","Apreten la mordaza sobre la vaina del cable, no sobre los cables sueltos: así un tirón no los arranca."]],
+   ["h","Empalmes"],
+   ["p","Con borneras o fichas de empalme, nunca solo retorcidos con cinta. La cinta aisladora va encima, de refuerzo."],
+   ["ojo","Nunca enchufen un generador ni una estación de energía a un toma de la casa para «darle luz a todo»: manda corriente a la calle, puede electrocutar a quien repara la red y quemar la casa. Los aparatos se enchufan directo al equipo. Conectar la casa a un generador exige una llave inversora instalada por un electricista."],
+   ["tip","Revisen hoy los prolongadores de la casa: el que tenga el cable pelado o la ficha floja, se arregla o se tira."]]},
+  {id:"of-techo", t:"Techo, canaletas y humedad", min:4, b:[
+   ["p","Con lluvias fuertes, lo que más entra a una casa es el agua de una canaleta tapada o una chapa floja."],
+   ["h","Canaletas"],
+   ["ul",["Límpienlas en otoño y antes de las tormentas: las hojas las tapan y el agua rebalsa contra la pared.","Tiren un balde de agua arriba y miren que corra por la bajada.","La bajada, que descargue lejos de la pared."]],
+   ["h","Revisar el techo"],
+   ["ul",["Chapas levantadas, tornillos sin arandela de goma, tejas corridas, membrana con globos o fisuras.","Sellen con día seco y la superficie limpia: sellador poliuretánico en juntas y tornillos; membrana líquida en techos planos, con las manos que diga el envase."]],
+   ["h","La escalera"],
+   ["ul",["Base firme y nivelada, con alguien abajo sosteniéndola.","Un metro separada de la pared por cada cuatro de altura.","Si van a subir al techo, que sobresalga un metro del borde."]],
+   ["ojo","Sobre chapa, pisen solo la línea de tornillos, donde hay tirante abajo; nunca las chapas traslúcidas. Nada de techo con lluvia, viento o de noche."],
+   ["tip","Después de la próxima lluvia fuerte, recorran la casa con una linterna mirando cielorrasos y paredes: una mancha nueva dice dónde buscar."]]},
+  {id:"of-puertas", t:"Puertas y ventanas: bisagras, burletes y cerraduras", min:4, b:[
+   ["p","Una puerta que cierra bien y una ventana sin chiflete ahorran gas en invierno y dejan la casa más segura."],
+   ["h","La puerta que roza o no cierra"],
+   ["ol",["Miren dónde roza: arriba del lado de la cerradura casi siempre es una bisagra floja.","Ajusten los tornillos de las bisagras, empezando por la de arriba.","Si el tornillo gira loco, saquen el tornillo, metan un tarugo o escarbadientes con cola en el agujero y vuelvan a atornillar."]],
+   ["h","Burletes contra el frío"],
+   ["ul",["Busquen el chiflete con una vela o un papel fino en un día de viento: donde se mueve, entra aire.","Limpien y sequen el marco; el burlete autoadhesivo no pega sobre polvo ni grasa.","Midan cada lado y corten justo. Que la puerta cierre sin forzar.","Abajo de la puerta, un burlete de cepillo o un rollo de tela."]],
+   ["h","Cerraduras"],
+   ["ul",["Si la llave entra dura, grafito en polvo o un lubricante seco. El aceite junta tierra.","Una copia de cada llave, rotulada y guardada en un lugar que sepa la familia."]],
+   ["h","Que no se caigan los muebles"],
+   ["ul",["Roperos, bibliotecas y la tele, anclados a la pared con escuadras de metal y tarugos.","Lo pesado, en los estantes de abajo."]],
+   ["ojo","Las rejillas de ventilación de los artefactos a gas no se tapan nunca, ni con burlete ni con cinta."],
+   ["tip","Las chicas pueden buscar los chifletes con la vela (con un adulto), medir y cortar el burlete."]]},
+  {id:"of-tormenta", t:"Arreglos de tormenta: lona, vidrio roto y el kit", min:4, b:[
+   ["p","Después de una tormenta fuerte hay que tapar rápido lo que se rompió, hasta que se pueda arreglar bien."],
+   ["h","El kit, listo antes"],
+   ["ul",["Una lona grande con ojales, soga y precintos.","Una placa de fenólico o nylon grueso, listones y clavos o tornillos.","Cinta ancha, sellador, guantes gruesos y la linterna frontal."]],
+   ["h","Un vidrio roto"],
+   ["ol",["Guantes gruesos, anteojos y calzado cerrado. Las chicas, lejos hasta que se junten los vidrios.","Saquen los pedazos que quedaron flojos en el marco, de arriba hacia abajo.","Tapen el hueco con fenólico atornillado al marco o con nylon grueso sujeto con listones.","Los vidrios, envueltos en papel de diario y rotulados antes de ir a la basura."]],
+   ["h","El techo que deja pasar agua"],
+   ["ul",["Mientras llueve, desde adentro: balde, trapos, mover muebles y lo eléctrico. Si el agua cae cerca de una lámpara o un toma, bajen esa térmica.","Cuando pare la lluvia y el viento, de día y con otra persona: la lona sobre la zona, pasando la cumbrera si se puede, atada con soga a puntos firmes y con peso en los bordes."]],
+   ["ojo","Nada de techo con lluvia, viento, de noche o solo. Sobre chapa mojada se resbala."],
+   ["tip","Practiquen una vez la lona en el patio, con buen tiempo: el día que haga falta, ya saben cómo."]]},
+  {id:"of-costura", t:"Costura: botón, dobladillo y remiendo", min:5, b:[
+   ["p","Sin negocios abiertos, la ropa y el abrigo tienen que durar. Coser a mano se aprende en una tarde, y las chicas pueden enseñarle al resto."],
+   ["h","Lo básico"],
+   ["ul",["Hilo del largo del brazo: más largo se enreda.","Nudo al final: enrollar el hilo dos vueltas en el dedo y deslizarlo.","<strong>Punto atrás:</strong> cada puntada vuelve hasta la anterior. Es el más fuerte, para costuras abiertas.","<strong>Punto escondido:</strong> se toma apenas un hilo de la tela de afuera. Para dobladillos."]],
+   ["h","Un botón"],
+   ["ol",["Un alfiler sobre el botón, entre los agujeros.","Cuatro o cinco pasadas por cada par de agujeros.","Saquen el alfiler, enrollen el hilo tres vueltas debajo del botón y rematen atrás: queda firme y fácil de abrochar."]],
+   ["h","Un agujero o una rotura"],
+   ["ul",["Agujero chico: zurcir, pasando hilos de un lado al otro y después cruzados, como un tejido.","Rotura grande: un parche por dentro, cosido alrededor con puntadas chicas."]],
+   ["tip","Armen una cajita de costura con agujas, hilos blanco, negro y azul, tijera, dedal, alfileres y botones sueltos."]]},
+  {id:"of-bici", t:"Bicicleta: parchar, frenos y cadena", min:5, b:[
+   ["p","Sin nafta ni colectivos, la bici lleva a la escuela, al almacén o al hospital. Mantenerla es fácil y las chicas lo pueden hacer solas."],
+   ["h","Parchar una cámara"],
+   ["ol",["Saquen la rueda y, con las palancas, saquen un lado de la cubierta y la cámara.","Inflen un poco y busquen el agujero: se escucha, o en un balde con agua salen burbujas.","Lijen alrededor, pongan una capa fina de pegamento y esperen a que deje de brillar.","Pongan el parche y apreten fuerte un minuto.","Pasen los dedos con cuidado por dentro de la cubierta: busquen la espina o el vidrio que pinchó.","Monten sin pellizcar la cámara e inflen a la presión que dice el costado de la cubierta."]],
+   ["h","Frenos"],
+   ["p","Si la palanca llega al manubrio, giren el regulador donde entra el cable hasta que frene firme. Si las zapatas están gastadas, se cambian."],
+   ["h","Cadena"],
+   ["p","Límpienla con un trapo, una gota de aceite por eslabón mientras giran los pedales para atrás, y saquen lo que sobra."],
+   ["tip","Una vez por mes: inflar, probar frenos y aceitar la cadena. Lleven siempre un parche y las palancas."]]}
  ]},
  {id:"salud", t:"Salud y botiquín", ic:"heart", sub:"El botiquín, los remedios, cuidar a un enfermo, picaduras, dengue y golpes.", lec:[
   {id:"sa-botiquin", t:"Armar el botiquín de la casa", min:4, b:[
@@ -4198,7 +4325,7 @@ function renderAprender(){
     <div class="field"><label class="lbl" for="apr-q">Buscar</label><input id="apr-q" type="search" autocomplete="off" value="${esc(a.q || "")}" placeholder="Ej.: huerta, nudos, puerta"></div>
     <div id="apr-list">${hits ? (hits.length ? `<ul class="apr-list">${hits.map(row).join("")}</ul>` : `<p class="fine">No encontré «${esc(a.q)}».</p>`) :
       `<div class="hsecs">${APRENDER.map(t => `<details class="hsec apr-t" data-apr="${t.id}"${a.open === t.id ? " open" : ""}><summary><span class="g-ic">${icon(t.ic)}</span><span class="hs-t"><strong>${t.t}</strong><span>${t.sub}</span></span><span class="hs-chev" aria-hidden="true"></span></summary><div class="hs-body"><ul class="apr-list">${t.lec.map(row).join("")}</ul></div></details>`).join("")}</div>`}</div>
-    ${srcBox(["botulismo","robosMza","sroCasero","stcChicos","lavandinaDil","sodis","ponzonosos","legitima","pimienta","taser","dengueGba","dengueSint","dengueVac","repelUnc"], "Lecturas de referencia. Ante una emergencia, llama al 911.")}
+    ${srcBox(["botulismo","robosMza","sroCasero","stcChicos","lavandinaDil","sodis","ponzonosos","legitima","pimienta","taser","dengueGba","dengueSint","dengueVac","repelUnc","uocraAzul","cruzRojaAzul","cruzRojaPA","ocuToma","gasSeg"], "Lecturas de referencia. Ante una emergencia, llama al 911.")}
   </section>`;
 }
 
@@ -5359,7 +5486,7 @@ async function recNotif(){
 
 /* ---------- Configuración: todos los ajustes en un lugar (engranaje arriba a la derecha) ----------
    En un celular con control parental se ve todo; para cambiar algo, salvo voz y vibración, pide el PIN. */
-const APP_VER = 45;
+const APP_VER = 46;
 const GEAR_SVG = `<svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>`;
 function renderConfig(){
   const lc = lockCfg(), lockOn = !!(lc && lc.on), f = miFicha(), fp = fpCfg(), aqui = recsAqui(), nRec = REMINDERS.filter(recOn).length;
