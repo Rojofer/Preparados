@@ -1,6 +1,6 @@
 /* Preparados: guarda la app en el celular para que abra sin internet. */
-const CACHE = "preparados-v46";
-const BASE = ["./", "index.html", "manifest.webmanifest", "icons/icon-192.png", "icons/icon-512.png", "icons/icon-maskable-512.png", "icons/sc-ayuda.png", "icons/sc-problema.png", "icons/sc-hoy.png", "icons/sc-llevar.png", "region.json"];
+const CACHE = "preparados-v47";
+const BASE = ["./", "index.html", "manifest.webmanifest", "icons/icon-192.png", "icons/icon-512.png", "icons/icon-maskable-512.png", "icons/sc-ayuda.png", "icons/sc-problema.png", "icons/sc-hoy.png", "icons/sc-llevar.png", "region.json", "fonts/atkinson-400.woff2", "fonts/atkinson-700.woff2", "fonts/barlow-condensed-600.woff2", "fonts/barlow-condensed-700.woff2", "fonts/plex-mono-500.woff2", "fonts/plex-mono-600.woff2"];
 /* Al instalar una versión nueva, pide todo de nuevo a internet (sin la copia del navegador) */
 self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(BASE.map(u => new Request(u, {cache:"reload"})))).then(() => self.skipWaiting())); });
 const DATOS = "preparados-datos"; /* la lista de recordatorios que arma la app: no se borra al actualizar */
@@ -16,8 +16,8 @@ self.addEventListener("fetch", e => {
     e.respondWith(abrirPagina(e));
     return;
   }
-  /* Íconos, manifiesto y tipografías: la copia guardada y, en segundo plano, se actualiza. */
-  if(url.origin === location.origin || url.host === "fonts.googleapis.com" || url.host === "fonts.gstatic.com"){
+  /* Íconos, manifiesto, mapa y tipografías (todo propio, nada de afuera): la copia guardada y, en segundo plano, se actualiza. */
+  if(url.origin === location.origin){
     e.respondWith(caches.open(CACHE).then(c => c.match(req).then(hit => {
       const net = fetch(req).then(r => { if(r && (r.ok || r.type === "opaque")) c.put(req, r.clone()); return r; }).catch(() => hit);
       return hit || net;

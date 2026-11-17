@@ -1,0 +1,5 @@
+Tipografías incluidas en la app, con licencia SIL Open Font License 1.1:
+- Atkinson Hyperlegible (Braille Institute)
+- Barlow Condensed (The Barlow Project Authors)
+- IBM Plex Mono (IBM Corp.)
+Archivos tomados de los paquetes @fontsource. Texto de la licencia: https://openfontlicense.org

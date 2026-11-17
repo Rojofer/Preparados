@@ -9,10 +9,15 @@
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <title>Preparados</title>
 <meta name="description" content="Prototipo de app de emergencias para el hogar en Argentina: instructivos ilustrados, mochila y botiquín mínimos, reserva de comida, plan familiar y datos que pasan de celular a celular sin internet.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
 <style>
+/* Tipografías guardadas con la app (antes venían de Google): se ven igual sin internet y desde la primera vez */
+@font-face{font-family:"Atkinson Hyperlegible";font-weight:400;font-style:normal;font-display:swap;src:url(fonts/atkinson-400.woff2) format("woff2")}
+@font-face{font-family:"Atkinson Hyperlegible";font-weight:700;font-style:normal;font-display:swap;src:url(fonts/atkinson-700.woff2) format("woff2")}
+@font-face{font-family:"Barlow Condensed";font-weight:600;font-style:normal;font-display:swap;src:url(fonts/barlow-condensed-600.woff2) format("woff2")}
+@font-face{font-family:"Barlow Condensed";font-weight:700;font-style:normal;font-display:swap;src:url(fonts/barlow-condensed-700.woff2) format("woff2")}
+@font-face{font-family:"IBM Plex Mono";font-weight:500;font-style:normal;font-display:swap;src:url(fonts/plex-mono-500.woff2) format("woff2")}
+@font-face{font-family:"IBM Plex Mono";font-weight:600;font-style:normal;font-display:swap;src:url(fonts/plex-mono-600.woff2) format("woff2")}
+
 /* Layout: app de una mano. Una columna de 560 px, barra superior fija, pestañas abajo al alcance del pulgar y botones grandes como señalética. */
 :root{
   /* Color: azul de defensa civil como base, naranja de alta visibilidad como señal, semáforo para estados */
@@ -172,6 +177,20 @@ body.navegando .upd{bottom:calc(10px + env(safe-area-inset-bottom,0px))}
 .back .ic{width:22px;height:22px}
 
 /* Inicio */
+.save-warn{background:var(--il-no);color:#fff;padding:10px max(16px,env(safe-area-inset-right,0px)) 10px max(16px,env(safe-area-inset-left,0px))}
+.sw-in{max-width:720px;margin:0 auto;display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}.sw-in p{margin:0;flex:1 1 220px;font-size:16px;line-height:1.35}
+.save-warn .btn{background:#fff;color:#14233A;border:0;font-weight:700}
+.mem-bar{height:12px;border-radius:6px;background:var(--line);overflow:hidden;margin:8px 0}.mem-bar>i{display:block;height:100%;background:var(--ok,#1F7A45)}.mem-bar.alta>i{background:var(--il-no)}
+.card#memoria{scroll-margin-top:210px}
+.mem-full{background:var(--warn-soft);border:1px solid var(--warn-fill);border-radius:var(--r);padding:10px 12px}
+.gq{display:grid;gap:8px}
+.gq-box{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:10px;padding:0 14px;min-height:54px;border-radius:14px;background:var(--surface);border:2px solid var(--line)}
+.gq-box:focus-within{border-color:var(--signal)}
+.gq-box .ic{width:22px;height:22px;color:var(--ink-2)}
+.gq-box input{border:0;background:none;font-size:18px;color:var(--ink);min-width:0;width:100%;padding:12px 0;outline:none}
+.gq-row .g-txt span{font-size:14px;color:var(--ink-2)}
+a.gq-row{text-decoration:none;color:inherit}
+.gq-none{margin:0}
 .banner{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:12px;padding:12px 14px;border-radius:var(--r);background:var(--warn-soft);border:1px solid var(--warn-fill);color:var(--ink);text-align:left}
 .banner-txt{display:flex;flex-direction:column;line-height:1.3}
 .banner-txt span{font-size:15px;color:var(--ink-2)}
@@ -182,6 +201,8 @@ body.navegando .upd{bottom:calc(10px + env(safe-area-inset-bottom,0px))}
 .tile .ic{flex:none;width:28px;height:28px;color:var(--signal)}
 .tile .t-label{font-family:var(--font-display);font-weight:700;font-size:20px;line-height:1.05;text-wrap:balance;hyphens:auto;overflow-wrap:break-word;min-width:0}
 @media (max-width:400px){.tile .t-label{font-size:18px}}
+@media (max-width:400px){.tile{gap:8px;padding:10px}.tile .ic{width:24px;height:24px}.tile .t-label{font-size:19px}}
+@media (max-width:345px){.tile{gap:6px;padding:10px 8px}.tile .ic{width:20px;height:20px}.tile .t-label{font-size:17px}}
 .tile .t-hint{font-size:14px;line-height:1.3;color:var(--tile-sub)}
 .tile.signal{background:var(--signal);border-color:var(--signal);color:var(--on-signal)}
 .tile.signal .ic,.tile.signal .t-hint{color:var(--on-signal)}
@@ -205,8 +226,8 @@ body.navegando .upd{bottom:calc(10px + env(safe-area-inset-bottom,0px))}
 .g-txt{display:flex;flex-direction:column;min-width:0}
 .g-txt strong{font-size:18px;line-height:1.25}
 .g-txt span{font-size:15px;line-height:1.35;color:var(--ink-2)}
-.g-txt .tagi{align-self:flex-start;margin-top:6px;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:700;line-height:1.5;background:var(--warn-soft);color:var(--ink)}
-.g-meta{display:flex;align-items:center;gap:2px;font-size:13px;color:var(--ink-2);white-space:nowrap}
+.g-txt .tagi{align-self:flex-start;margin-top:6px;padding:2px 9px;border-radius:999px;font-size:14px;font-weight:700;line-height:1.5;background:var(--warn-soft);color:var(--ink)}
+.g-meta{display:flex;align-items:center;gap:2px;font-size:14px;color:var(--ink-2);white-space:nowrap}
 .g-meta .ic{width:18px;height:18px}
 .seg{display:grid;gap:4px;padding:4px;border-radius:12px;background:var(--surface-2)}
 .seg-2{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -293,7 +314,7 @@ body.navegando .upd{bottom:calc(10px + env(safe-area-inset-bottom,0px))}
 
 /* Práctica */
 .quiz{display:flex;flex-direction:column;gap:12px}
-.q-n{font-size:13px;color:var(--ink-2)}
+.q-n{font-size:14px;color:var(--ink-2)}
 .q-t{font-size:24px;line-height:1.15}
 .q-opts{display:flex;flex-direction:column;gap:8px}
 .q-opt{display:block;width:100%;min-height:50px;padding:12px 14px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);font-weight:700;line-height:1.3;text-align:left}
@@ -314,7 +335,7 @@ body.navegando .upd{bottom:calc(10px + env(safe-area-inset-bottom,0px))}
 .lim,.verdicts li{display:flex;flex-direction:column;gap:8px;padding:14px 0}
 .lim+.lim,.verdicts li+li{border-top:1px solid var(--line)}
 .lim-head{display:flex;justify-content:space-between;align-items:center;gap:10px;font-weight:700}
-.pill{padding:3px 10px;border-radius:999px;font-size:13px;font-weight:700;white-space:nowrap;background:var(--ok-soft);color:var(--ok)}
+.pill{padding:3px 10px;border-radius:999px;font-size:14px;font-weight:700;white-space:nowrap;background:var(--ok-soft);color:var(--ok)}
 .lim .bar>span{background:var(--ok)}
 .lim.warn .pill,.verdicts .warn .pill{background:var(--warn-soft);color:var(--warn)}
 .lim.warn .bar>span{background:var(--warn-fill)}
@@ -343,6 +364,8 @@ body.navegando .upd{bottom:calc(10px + env(safe-area-inset-bottom,0px))}
 .stepper output{min-width:2.5ch;text-align:center;font-family:var(--font-data);font-weight:600;font-size:30px}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
 .chip{min-height:44px;padding:0 16px;border-radius:999px;border:1.5px solid var(--line);background:var(--surface);font-weight:700;font-size:16px;text-align:center}
+.chip-sm{min-height:40px;padding:0 12px;font-size:15px}
+.idx{display:grid;gap:6px}.idx-t{margin:0;font-size:14px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)}.idx-h{scroll-margin-top:72px}
 .chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--surface)}
 .results{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
 .res{display:flex;flex-direction:column;gap:2px;padding:14px;border-radius:12px;background:var(--surface-2);min-width:0}
@@ -358,19 +381,21 @@ textarea{min-height:76px;resize:vertical}
 .form-err{font-size:15px;font-weight:700;color:var(--crit)}
 .saved{font-size:15px;font-weight:700;color:var(--ok)}
 .seg-4{grid-template-columns:repeat(2,minmax(0,1fr))}
-.tagmin{display:inline-block;margin-left:6px;padding:1px 8px;border-radius:999px;font-size:12px;font-weight:700;line-height:1.5;vertical-align:1px;background:var(--warn-soft);color:var(--ink)}
+.seg-4x{grid-template-columns:repeat(4,minmax(0,1fr))}.mes-seg{scroll-margin-top:72px}.mes-seg button{font-size:14px;padding:0 2px}.mes-dur h2{margin-bottom:8px}
+@media (max-width:359px){.seg-4x{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.tagmin{display:inline-block;margin-left:6px;padding:1px 8px;border-radius:999px;font-size:14px;font-weight:700;line-height:1.5;vertical-align:1px;background:var(--warn-soft);color:var(--ink)}
 .st{font-size:15px;font-weight:700;color:var(--ink)}
 .card[id],.sec[id]{scroll-margin-top:72px}
 .mapwrap{border-radius:12px;background:var(--il-bg);border:1px solid var(--line);overflow:hidden}
 .azwrap{position:relative;border-radius:12px;overflow:hidden;border:1px solid var(--line)}
 #rgmap{display:block;width:100%;height:min(66vh,520px);touch-action:none;cursor:grab;background:var(--map-bg)}
-.rg-kv{list-style:none;margin:6px 0;padding:0;display:flex;flex-direction:column;gap:6px}.rg-kv li{display:flex;flex-direction:column;padding:6px 10px;border-radius:10px;background:var(--surface-2)}.rg-kv li>span:first-child{font-size:13px;color:var(--ink-2)}.rg-kv .mono{font-size:13px;color:var(--ink-2)}
+.rg-kv{list-style:none;margin:6px 0;padding:0;display:flex;flex-direction:column;gap:6px}.rg-kv li{display:flex;flex-direction:column;padding:6px 10px;border-radius:10px;background:var(--surface-2)}.rg-kv li>span:first-child{font-size:14px;color:var(--ink-2)}.rg-kv .mono{font-size:14px;color:var(--ink-2)}
 .rg-poi{list-style:none;margin:4px 0 8px;padding:0;display:flex;flex-direction:column;gap:6px}.rg-poi li{display:flex;gap:8px;align-items:flex-start;font-size:15px}
 .rg-ic{flex:none;display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;border:2px solid currentColor;font:800 11px/1 var(--font-body);background:var(--surface)}
 .rg-h,.rg-c{color:var(--crit)}.rg-p{color:var(--map-police)}.rg-b{color:var(--signal-ink)}.rg-f{color:var(--ok)}.rg-g,.rg-s{color:var(--ink)}
 .rg-ley{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:14px;margin:4px 0}.rg-ley span{display:inline-flex;align-items:center;gap:6px}.rg-ley i{display:inline-block;width:22px;height:10px;border-radius:3px}
 .rg-alt{background:#B48E6E}.rg-baj{background:#74AA8E}.rg-ruta{background:var(--map-main);border:1px solid var(--map-edge)}.rg-via{background:repeating-linear-gradient(90deg,var(--map-rail) 0 5px,transparent 5px 9px);height:3px!important}.rg-agua{background:var(--map-water)}
-.rg-l{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}.rg-l .mono{font-size:12px;color:var(--ink-2)}
+.rg-l{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}.rg-l .mono{font-size:14px;color:var(--ink-2)}
 .rg-more{margin:6px 0}.rg-more>summary{cursor:pointer;font-weight:700;padding:8px 0;min-height:40px}.rg-sel h2{margin:0 0 4px}.rg-sel h3{margin:10px 0 4px;font-size:16px}
 #azmap{display:block;width:100%;height:min(62vh,460px);touch-action:none;cursor:grab;background:var(--map-bg)}
 #azmap:active{cursor:grabbing}
@@ -379,11 +404,11 @@ textarea{min-height:76px;resize:vertical}
 .map-res{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px}
 .map-res:empty{display:none}
 .map-res button{display:flex;flex-wrap:wrap;gap:2px 8px;align-items:baseline;width:100%;text-align:left;padding:10px 12px;border-radius:10px;background:var(--surface-2)}
-.mr-t{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--signal-ink)}
+.mr-t{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--signal-ink)}
 .mr-n{font-weight:700}.mr-a{font-size:14px;color:var(--ink-2);flex-basis:100%}
 .mr-none{font-size:15px;color:var(--ink-2);padding:6px 2px}
 .selcard{display:flex;flex-direction:column;gap:8px;padding:12px;border-radius:12px;background:var(--surface-2)}
-.sel-k{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--signal-ink)}
+.sel-k{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--signal-ink)}
 .sel-n{font-size:19px;font-weight:700;line-height:1.25}
 .yo-row{display:flex;flex-direction:column;gap:6px}
 .yo-row [aria-pressed="true"]{outline:2px solid var(--blue)}
@@ -458,7 +483,7 @@ textarea{min-height:76px;resize:vertical}
 .qcall .ic{flex:none;width:24px;height:24px;color:var(--blue)}
 .qcall > span{display:flex;flex-direction:column;min-width:0;line-height:1.2}
 .qcall strong{font-size:15px}
-.qcall .mono{font-size:13px;color:var(--ink-2)}
+.qcall .mono{font-size:14px;color:var(--ink-2)}
 .story-txt{font-size:19px;font-weight:700;line-height:1.35;min-height:3.9em}
 .dots{display:flex;justify-content:center;gap:6px}
 .dots span{width:8px;height:8px;border-radius:50%;background:var(--line)}
@@ -536,14 +561,14 @@ body:has(input:focus,textarea:focus) .ay-stick{display:none}
 .ext-g{display:flex;flex-direction:column;gap:10px}.ext-g[open] summary{margin-bottom:10px}
 .mes-cfg{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .mes-cfg .stepper{gap:6px}.mes-cfg .stepper button{width:42px;height:42px;font-size:22px}.mes-cfg .stepper output{font-size:26px}
-.mes-casa li span{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-2)}
+.mes-casa li span{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-2)}
 .res-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
 .res-grid .res .num{font-size:36px}
 .cmp{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
 .cmp-c{display:flex;flex-direction:column;gap:8px;padding:14px;border-radius:var(--r);background:var(--surface);border:1px solid var(--line)}
 .cmp-c.rec{border:2px solid var(--ok)}
 .cmp-c h3{font-size:19px}.cmp-k{font-size:14px;color:var(--ink-2);font-weight:700}
-.cmp-badge{align-self:flex-start;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:3px 8px;border-radius:99px;background:var(--ok);color:var(--surface)}
+.cmp-badge{align-self:flex-start;font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:3px 8px;border-radius:99px;background:var(--ok);color:var(--surface)}
 .cmp-v{font-weight:700}.cmp-v.ok{color:var(--ok)}.cmp-v.no{color:var(--crit)}
 .cmp-c .stepper button{width:44px;height:44px;font-size:22px}.cmp-c .stepper output{font-size:24px}
 .mes-plan{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:0;border-left:3px solid var(--line);margin-left:8px}
@@ -580,7 +605,7 @@ body:has(input:focus,textarea:focus) .ay-stick{display:none}
 @media (max-width:340px){.tools4{grid-template-columns:repeat(2,minmax(0,1fr))}.sb{font-size:16px}}
 .apr-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
 .apr-row{display:flex;justify-content:space-between;align-items:center;gap:12px;width:100%;min-height:52px;padding:10px 12px;border-radius:10px;text-align:left;font-size:17px;font-weight:700;background:var(--surface-2)}
-.apr-row .mono{flex:none;font-size:13px;font-weight:500;color:var(--ink-2)}
+.apr-row .mono{flex:none;font-size:14px;font-weight:500;color:var(--ink-2)}
 .apr-art{display:flex;flex-direction:column;gap:12px;max-width:62ch;font-size:18px;line-height:1.55}
 .apr-art h1{font-size:32px;line-height:1.1}
 .apr-art h3{font-size:20px;margin-top:8px}
@@ -596,7 +621,7 @@ body:has(input:focus,textarea:focus) .ay-stick{display:none}
 .radios li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 12px;align-items:center;padding:10px 12px;border-radius:12px;background:var(--surface-2);border:2px solid transparent}
 .radios li.on{border-color:var(--ok)}
 .r-f{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:64px;padding:6px 4px;border-radius:10px;background:var(--tile);color:var(--tile-ink);font-size:20px;font-weight:600;line-height:1}
-.r-f small{font-size:11px;letter-spacing:.08em;color:var(--signal);margin-bottom:3px}
+.r-f small{font-size:14px;letter-spacing:.08em;color:var(--signal);margin-bottom:3px}
 .r-t{display:flex;flex-direction:column;line-height:1.3;min-width:0}.r-t span{font-size:14px;color:var(--ink-2)}
 .r-ok{grid-column:2;display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ink-2);min-height:36px;cursor:pointer}
 .r-ok input{width:20px;height:20px;accent-color:var(--ok)}
@@ -617,7 +642,7 @@ html.ahorro *{animation:none!important;transition:none!important}
 .ah-911{border-color:var(--crit);color:var(--crit);font-family:var(--font-data);font-size:24px}
 .ah-ay{background:var(--crit);border-color:var(--crit);color:#000}
 .ah-dl{display:grid;gap:4px 0;margin:0}
-.ah-dl dt{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2);margin-top:10px}
+.ah-dl dt{font-size:14px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2);margin-top:10px}
 .ah-dl dd{margin:0;font-size:19px;line-height:1.4}
 .ah-tels{display:flex;flex-wrap:wrap;gap:8px}
 .ah-tels a{padding:8px 12px;border:1px solid #333;border-radius:10px;color:#E9EEF6;text-decoration:none;font-weight:700}
@@ -628,14 +653,14 @@ html.ahorro *{animation:none!important;transition:none!important}
 .auto-t{display:flex;flex-direction:column;gap:2px;padding:12px;border-radius:12px;background:var(--surface-2);border:2px solid transparent;min-width:0}
 .auto-t.warn{border-color:var(--crit)}
 .auto-n{font-size:38px;font-weight:600;line-height:1}
-.auto-u{font-size:13px;color:var(--ink-2)}
-.auto-s{font-size:13px;color:var(--ink-2);overflow-wrap:anywhere}
+.auto-u{font-size:14px;color:var(--ink-2)}
+.auto-s{font-size:14px;color:var(--ink-2);overflow-wrap:anywhere}
 .nav-row{display:flex;flex-direction:column;gap:8px;padding:12px 14px;border-radius:var(--r);background:var(--surface);border:2px solid var(--blue)}
 .nav-row-t{display:flex;align-items:center;gap:8px;font-weight:700;font-size:18px;color:var(--blue)}.nav-row-t .ic{width:22px;height:22px}
 .nav-row-b{display:flex;flex-wrap:wrap;gap:8px}.nav-row-b .btn{min-height:44px;font-size:16px}
 .pl-dot{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:8px;vertical-align:1px;box-shadow:0 0 0 2px var(--surface)}
 .pl-casa{background:var(--pl-casa)}.pl-fam{background:var(--pl-fam)}.pl-pe{background:var(--pl-pe)}.pl-otro{background:var(--pl-otro)}
-.map-ley{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:13px;color:var(--ink-2);margin:8px 2px 0}
+.map-ley{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:14px;color:var(--ink-2);margin:8px 2px 0}
 .map-ley span{display:inline-flex;align-items:center;gap:6px}.map-ley i{width:11px;height:11px;border-radius:50%;box-shadow:0 0 0 2px var(--surface)}
 .ml-yo{background:var(--blue)}.ml-casa{background:var(--pl-casa)}.ml-fam{background:var(--pl-fam)}.ml-pe{background:var(--pl-pe)}.ml-otro{background:var(--pl-otro)}.ml-hosp{background:var(--crit)}.map-ley .ml-pol{background:var(--map-police);border-radius:2px}
 .nr-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
@@ -687,7 +712,7 @@ body.navegando .view{padding-bottom:calc(28px + env(safe-area-inset-bottom,0px))
 .hoy-x{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:0 14px 12px 56px}
 .hoy-t.ver{display:flex;flex-wrap:wrap;gap:4px 12px;padding:12px 14px;font-size:16px;line-height:1.4}.hoy-t.ver .pb-n{background:transparent;color:var(--ink-2);width:12px}
 .hoy-tx{display:flex;flex-direction:column;gap:8px;flex:1;min-width:0}.hoy-t.ver .hoy-x{padding:0}
-.hoy-ad{font-size:13px;font-weight:700;padding:3px 10px;border-radius:999px;background:var(--warn-soft);color:var(--warn)}
+.hoy-ad{font-size:14px;font-weight:700;padding:3px 10px;border-radius:999px;background:var(--warn-soft);color:var(--warn)}
 .hoy-encs{display:grid;grid-template-columns:1fr;gap:8px}
 .hoy-e{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:center;padding:12px 14px;border-radius:12px;border:2px solid var(--line);background:var(--surface);text-align:left;min-height:56px}
 .hoy-e>span{display:flex;flex-direction:column}.hoy-e>span span{font-size:14px;color:var(--ink-2)}
@@ -716,7 +741,7 @@ body.navegando .view{padding-bottom:calc(28px + env(safe-area-inset-bottom,0px))
 .vd-it>summary{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;list-style:none;min-height:56px}
 .vd-it>summary::-webkit-details-marker{display:none}
 .vd-n{display:flex;flex-direction:column;min-width:0}.vd-n strong{line-height:1.3}.vd-n span{font-size:14px;color:var(--ink-2)}
-.vd-t{flex:none;font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap}
+.vd-t{flex:none;font-size:14px;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap}
 .vd-t.ok{background:var(--ok-soft);color:var(--ok)}.vd-t.rx{background:var(--crit-soft);color:var(--crit)}.vd-t.caja{background:var(--surface-2);color:var(--ink-2)}
 .vd-b{padding:0 14px 14px;border-top:1px solid var(--line);line-height:1.45}.vd-b h4{margin:12px 0 4px;font-size:15px}.vd-b p,.vd-b ul{margin:0}.vd-b ul{padding-left:20px}
 .vd-dosis{margin-top:12px!important;font-size:14px;color:var(--ink-2);font-weight:700}
@@ -829,6 +854,7 @@ body.navegando .view{padding-bottom:calc(28px + env(safe-area-inset-bottom,0px))
     <button class="brand" data-action="tab" data-tab="inicio" aria-label="Preparados, ir al inicio"><span class="mark" aria-hidden="true"></span>Preparados</button>
     <div class="top-r"><span class="net" id="net" role="status">Con conexión</span><button class="gear" id="gear" data-action="go-config" aria-label="Configuración"></button></div>
   </div>
+  <div id="save-warn" class="save-warn" role="alert" hidden></div>
 </header>
 
 <main id="view" class="view">
@@ -972,8 +998,8 @@ const SRC = {
   dengueVac:["Provincia de Buenos Aires: vacuna contra el dengue","https://dengue.gba.gob.ar/preguntas-frecuentes"],
   repelUnc:["CIME, Universidad Nacional de Córdoba: repelentes (2024)","https://www.fcq.unc.edu.ar/wp-content/uploads/2024/03/informe-cime-fcq-unc_1.2024-consulta-repelentes.pdf"],
   dengueLluvia:["Provincia de Buenos Aires: descacharrar todo el año y cada vez que llueve","https://gba.gob.ar/saludprovincia/noticias/salud_realiz%C3%B3_dos_jornadas_de_descacharrado_en_los_135_municipios"],
-  azNoaa:["NOAA: El Niño, discusión del 8/10/2026","https://www.cpc.ncep.noaa.gov/products/analysis_monitoring/enso_advisory/ensodisc.shtml"],
-  azSmn:["SMN: pronóstico trimestral de octubre de 2026","https://bichosdecampo.com/wp-content/uploads/2026/10/pronostico_climatico_trimestral_102026.pdf"],
+  azNoaa:["NOAA: El Niño, discusión del 12/11/2026","https://www.cpc.ncep.noaa.gov/products/analysis_monitoring/enso_advisory/ensodisc.shtml"],
+  azSmn:["SMN: pronóstico de noviembre de 2026 a enero de 2027, según Infobae","https://www.infobae.com/salud/ciencia/2026/10/31/el-nino-marca-el-pulso-que-regiones-tendran-mas-lluvias-y-temperaturas-mas-bajas-segun-el-pronostico-trimestral/"],
   azPlan:["Azul activa un plan de prevención por el Súper Niño (agosto de 2026)","https://agroempresario.com/publicacion/120767/ante-la-amenaza-del-super-nino-el-municipio-de-azul-pone-en-marcha-un-operativo-de-prevencion-urbana-y-rural/"],
   az2002:["Infobae: inundación en Azul, agosto de 2002","https://www.infobae.com/2002/08/18/16503-cientos-evacuados-la-inundacion-azul/"],
   az2012:["Infocielo: el arroyo desbordó e inundó el casco urbano, mayo de 2012","https://www.infocielo.com/politica-y-economia/azul-intensas-lluvias-desbordaron-el-arroyo-e-inundo-el-casco-urbano-n36805"],
@@ -2622,6 +2648,8 @@ const NUMS = [
 
 /* ---------- Íconos ---------- */
 const ICON = {
+  search:'<circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/>',
+  book:'<path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5"/>',
   tool:'<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>',
   bolt:'<path d="M13 2 4 14h7l-1 8 9-12h-7l1-8z"/>',
   drop:'<path d="M12 2.7S5.5 9.6 5.5 14.3a6.5 6.5 0 0 0 13 0C18.5 9.6 12 2.7 12 2.7z"/>',
@@ -2705,7 +2733,21 @@ function load(){
   }catch(e){}
 }
 let recsT = 0;
-function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} clearTimeout(recsT); recsT = setTimeout(() => { try{ recsSync(); }catch(e){} }, 1500); }
+/* Si la memoria del navegador se llena, guardar falla. Antes pasaba en silencio y los cambios se perdían al cerrar: ahora se avisa. */
+let saveFail = false;
+function saveWarn(){
+  const el = document.getElementById("save-warn"); if(!el) return;
+  el.hidden = !saveFail;
+  if(saveFail && !el.innerHTML) el.innerHTML = `<div class="sw-in"><p><strong>No se pudo guardar.</strong> La memoria de la app está llena: lo último que cambiaste se pierde al cerrar.</p><button class="btn btn-sm" data-action="go-memoria">Liberar lugar</button></div>`;
+}
+const lsLen = k => { try{ return (localStorage.getItem(k) || "").length; }catch(e){ return 0; } };
+function memoriaUso(){
+  let total = 0; try{ for(let i = 0; i < localStorage.length; i++){ const k = localStorage.key(i); total += k.length + lsLen(k); } }catch(e){}
+  const fotos = state.fichas.reduce((a, f) => a + (typeof f.foto === "string" ? f.foto.length : 0), 0);
+  return {total, dni:lsLen(DOCS_KEY), fotos, tope:5000000};
+}
+const mbTxt = n => n < 100000 ? `${Math.max(1, Math.round(n / 1000))} KB` : `${(n / 1e6).toFixed(1).replace(".", ",")} MB`;
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); if(saveFail){ saveFail = false; saveWarn(); } }catch(e){ if(!saveFail){ saveFail = true; saveWarn(); } } clearTimeout(recsT); recsT = setTimeout(() => { try{ recsSync(); }catch(e){} }, 1500); }
 
 const ui = {tab:"inicio", sub:null, guide:null, step:0, mode:"paso", quizAns:{}, prep:"indisp", verMin:true, invEdit:null, invDel:null, planSeg:"numeros", planStep:null, memDel:null, simStart:null, planTextShow:false, fichaEdit:null, fichaBig:null, fichaDel:null, aviso:{estado:"bien", extra:"", geo:null}, resetAsk:null, delAsk:null, sosAsk:false, summary:null, calc:{personas:2, dias:3, litros:10, diasC:14},
   story:{i:0, play:false}, persist:null, mapa:{tab:"azul", sel:null, yo:null, modo:null, ruta:null, calle:null, q:"", res:[], heading:null, gpsMsg:"", seguir:true, guardar:false, nombre:""},
@@ -2816,6 +2858,7 @@ function renderHome(){
       <button class="sb sb-ficha" data-action="go-mificha" aria-label="Mi ficha: datos médicos y documentos">${icon("id")}<span>Mi ficha</span></button>
       <button class="sb sb-prob" data-action="go-prob" aria-label="Tengo un problema: qué hacer, paso a paso">${icon("help")}<span>Tengo un problema</span></button>
     </div>
+    ${gqHTML()}
     ${ahora.length ? `<div class="ahora">${ahora.join("")}</div>` : ""}
     <div class="hsecs">
       ${hsec("pasa", "storm", "¿Qué está pasando?", "Toca la situación y sigue los pasos", pasa, "hs-main")}
@@ -2828,6 +2871,87 @@ function renderHome(){
     <p class="fine">Información de referencia basada en fuentes oficiales. No reemplaza las indicaciones de las autoridades ni la atención médica. En una emergencia, llama al 911.</p>
   </section>`;
 }
+
+/* ---------- Buscador general: una sola caja en Inicio que busca en toda la app ----------
+   Problemas, guías, lecturas, remedios, teléfonos, lugares, pueblos de la región y pantallas. */
+const GQ_PANT = [
+  /* [título, palabras con las que se lo busca, acción, dato, ícono] */
+  ["Linterna","luz linterna flash oscuro","linterna","","torch"],
+  ["Luz SOS","sos señal luz morse pedir ayuda","sos-start","","sos"],
+  ["Silbato","silbato sonido ruido pedir ayuda","silbato","","whistle"],
+  ["Mapa y brújula","mapa brujula gps norte calles ubicacion donde estoy","go-mapa","","compass"],
+  ["Mapa de la región","mapa region rutas pueblos ciudades cercanas arroyos alturas","go-region","","compass"],
+  ["Llevarme","llevarme ir como llegar casa escuela hospital farmacia comisaria policia","go-llevar","","compass"],
+  ["Radio y comunicación","radio frecuencias am fm emisoras handy noticias","go-radio","","radio"],
+  ["Alertas del tiempo","alerta alertas smn tormenta amarilla naranja roja clima pronostico","go-alertas","","storm"],
+  ["Contador de corte","corte luz cuanto hace heladera freezer","go-corte","","bolt"],
+  ["¿Qué hago hoy?","hoy tareas del dia corte largo","go-hoy","","cal"],
+  ["¿Cuánto nos queda?","cuanto queda dura agua comida gas bateria dias alcanza","go-queda","","can"],
+  ["Plan de corte largo: 30 días","30 dias mes plan despensa compras semanas lista energia panel solar heladera","go-mes","","cal"],
+  ["Vademécum","vademecum remedios medicamentos para que sirve","go-vade","","heart"],
+  ["Tengo un problema","problema no anda no funciona que hago","go-prob","","help"],
+  ["Lo indispensable","indispensable lista basica empezar que comprar","gq-prep","indisp","pack"],
+  ["Mochila de emergencia","mochila emergencia 72 horas evacuar salir","gq-prep","mochila","pack"],
+  ["Botiquín","botiquin gasas vendas curitas primeros auxilios","gq-prep","botiquin","heart"],
+  ["Kit de casa","kit casa hogar bidones linternas","gq-prep","kit","home"],
+  ["Reserva de comida","comida reserva alimentos latas cuanto guardar","gq-prep","comida","can"],
+  ["Inventario","inventario vencimientos que tenemos stock","go-inv","","can"],
+  ["Teléfonos","telefonos numeros contactos llamar","gq-fam","numeros","phone"],
+  ["Plan familiar","plan familiar punto de encuentro quien busca a los chicos roles simulacro","gq-fam","familia","home"],
+  ["Fichas de la familia","ficha fichas datos medicos dni alergias grupo sanguineo tarjeta billetera","gq-fam","ficha","id"],
+  ["Mi ficha","mi ficha mostrar datos medico","go-mificha","","id"],
+  ["Compartir y copia de seguridad","compartir pasar datos qr quick share copia seguridad respaldo backup otro celular","go-compartir","","phone"],
+  ["Manual en papel","manual papel imprimir pdf hoja","go-manual","","book"],
+  ["Recordatorios","recordatorios avisos vencimientos revisar cada","go-recs","","cal"],
+  ["Configuración","configuracion ajustes ciudad provincia pin memoria instalar bloqueo letra","go-config","","home"],
+  ["Estoy bien","avisar estoy bien mensaje a la familia","go-aviso","","smile"],
+  ["Necesito ayuda","ayuda auxilio socorro mandar ubicacion","go-ayuda","","sos"],
+  ["Aprender","aprender lecturas oficios huerta cocina","tab","aprender","book"],
+  ["Guías","guias pasos emergencias","tab","guias","book"]
+];
+let gqIdx = null, gqIdxKey = "";
+function gqIndex(){
+  const key = [state.ciudad, state.contacts.length, state.lugares.length, RG ? 1 : 0].join("|");
+  if(gqIdx && gqIdxKey === key) return gqIdx;
+  const out = [], az = state.ciudad === "Azul";
+  const add = (tipo, t, kw, body, attrs, ic, extra) => out.push({tipo, t, nt:norm(t), nk:norm(kw || ""), nb:norm(body || ""), attrs, ic, extra:extra || ""});
+  GQ_PANT.forEach(([t, kw, a, d, ic]) => add("Pantalla", t, kw, "", `data-action="${a}"${a === "tab" ? ` data-tab="${d}"` : d ? ` data-id="${d}"` : ""}`, ic));
+  if(az) add("Pantalla", "Azul y el Súper Niño", "azul arroyo inundacion niño defensa civil antitetanica crecida", "", `data-action="go-azul"`, "waves");
+  PROBLEMAS.forEach(p => add("Problema", p.t, p.kw + " " + PB_CATS.find(c => c.id === p.c).t, p.p.join(" "), `data-action="pb-open" data-id="${p.id}"`, p.urg ? "sos" : "help"));
+  GUIDES.forEach(g => add("Guía", g.title, g.summary, (g.keys || []).join(" "), `data-action="guide" data-id="${g.id}"`, g.icon));
+  APR_ALL().forEach(l => add("Lectura", l.t, l.tema.t, l.b.map(([, v]) => Array.isArray(v) ? v.join(" ") : v).join(" "), `data-action="pb-lec" data-id="${l.id}"`, "book", `${l.min} min`));
+  VADE.forEach(v => add("Remedio", v.n, (v.m || "") + " " + (v.sirve || ""), "", `data-action="go-vade" data-id="${v.id}"`, "heart", v.m || ""));
+  const c = CIUDADES[state.ciudad];
+  NUMS.concat(c ? c.nums : []).forEach(x => add("Teléfono", x.label, (x.sh || "") + " " + (x.desc || ""), "", `href="tel:${x.tel}"`, x.ic || "phone", x.n));
+  state.contacts.forEach(x => { if(x.tel) add("Teléfono", x.nombre, "contacto familia", "", `href="tel:${String(x.tel).replace(/[^0-9+]/g, "")}"`, "phone", x.tel); });
+  if(az) AZ_LUG.forEach(cat => cat.l.forEach(r => add("Lugar", r[1], cat.t + " " + (r[6] || ""), r[4] || "", `data-action="nav-go" data-id="az:${r[0]}"`, "compass", r[4] || "")));
+  state.lugares.forEach(l => add("Lugar", l.nombre, "mis lugares", "", `data-action="nav-go" data-id="${esc(l.id)}"`, "compass", "Guardado por ustedes"));
+  if(RG) RG.pl.forEach((t, i) => { if(t.c <= 3 || t.pop > 500) add("Pueblo", t.n, "pueblo ciudad localidad region", "", `data-action="gq-town" data-i="${i}"`, "compass", "En el mapa de la región"); });
+  gqIdx = out; gqIdxKey = key; return out;
+}
+function gqBuscar(q0){
+  const q = norm(q0); if(q.length < 2) return null;
+  let words = q.split(" ").filter(w => w.length > 1 && !PB_STOP.includes(w)); if(!words.length) words = q.split(" ").filter(Boolean);
+  const has = (h, w) => h.includes(w) || (w.length > 4 && h.includes(w.slice(0, -1)));
+  const ORD = {Pantalla:0, Problema:1, Guía:2, Teléfono:3, Lugar:4, Remedio:5, Lectura:6, Pueblo:7};
+  const sc = it => { let n = 0, all = true; for(const w of words){ const k = has(it.nt, w) ? 5 : has(it.nk, w) ? 3 : has(it.nb, w) ? 1 : 0; if(!k) all = false; n += k; } if(it.nt === q || it.nt.startsWith(q + " ")) n += 4; return {n, all}; };
+  const r = gqIndex().map(it => Object.assign({it}, sc(it))).filter(x => x.n > 0);
+  const strict = r.filter(x => x.all);
+  /* Hasta 4 de cada tipo: «farmacia» no tapa todo con 19 farmacias */
+  const cnt = {};
+  return (strict.length ? strict : r).sort((a, b) => b.n - a.n || ORD[a.it.tipo] - ORD[b.it.tipo]).filter(x => (cnt[x.it.tipo] = (cnt[x.it.tipo] || 0) + 1) <= 4).slice(0, 10).map(x => x.it);
+}
+function gqResHTML(){
+  const q = (ui.gq || "").trim(); if(q.length < 2) return "";
+  const hits = gqBuscar(q) || [];
+  if(!hits.length) return `<p class="fine gq-none">No encontré «${esc(q)}». Prueba con otra palabra. Si es una emergencia, llama al 911.</p>`;
+  const row = it => { const tag = it.attrs.startsWith("href") ? "a" : "button";
+    return `<li><${tag} class="grow gq-row" ${it.attrs}><span class="g-ic">${icon(it.ic)}</span><span class="g-txt"><strong>${esc(it.t)}</strong><span>${it.tipo}${it.extra ? ` · ${esc(it.extra)}` : ""}</span></span><span class="g-meta">${icon(tag === "a" ? "phone" : "chev")}</span></${tag}></li>`; };
+  return `<ul class="glist">${hits.map(row).join("")}</ul>`;
+}
+const gqHTML = () => `<div class="gq" role="search"><label class="sr" for="gq">Buscar en toda la app</label>
+  <div class="gq-box">${icon("search")}<input id="gq" type="search" autocomplete="off" enterkeyhint="search" maxlength="40" value="${esc(ui.gq || "")}" placeholder="Buscar: fiebre, mapa, farmacia…"></div>
+  <div id="gq-res" aria-live="polite">${gqResHTML()}</div></div>`;
 
 function localHome(){
   const c = CIUDADES[state.ciudad];
@@ -5486,7 +5610,7 @@ async function recNotif(){
 
 /* ---------- Configuración: todos los ajustes en un lugar (engranaje arriba a la derecha) ----------
    En un celular con control parental se ve todo; para cambiar algo, salvo voz y vibración, pide el PIN. */
-const APP_VER = 46;
+const APP_VER = 47;
 const GEAR_SVG = `<svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>`;
 function renderConfig(){
   const lc = lockCfg(), lockOn = !!(lc && lc.on), f = miFicha(), fp = fpCfg(), aqui = recsAqui(), nRec = REMINDERS.filter(recOn).length;
@@ -5531,6 +5655,14 @@ function renderConfig(){
       ${fila("Guardado permanente", ui.persist ? "Activado: el celular no borra los datos solo" : "Sin confirmar todavía", ui.persist ? "" : `<button class="btn btn-ghost btn-sm" data-action="cfg-persist">Pedir</button>`)}
     </div>
 
+    <div class="card" id="memoria"><h2>Memoria de la app</h2>
+      ${(() => { const m = memoriaUso(), pct = Math.min(100, Math.round(m.total / m.tope * 100));
+        return `${saveFail ? `<p class="mem-full"><strong>Está llena.</strong> Primero guarda una copia de seguridad (abajo). Después quita fotos de DNI o de las fichas que no hagan falta y vuelve a intentar.</p>` : ""}
+      <p>Usada: <strong>${mbTxt(m.total)}</strong> de unos 5 MB${pct >= 80 && !saveFail ? `. <strong>Queda poco lugar.</strong>` : "."}</p>
+      <div class="mem-bar${pct >= 80 ? " alta" : ""}" role="img" aria-label="Memoria usada: ${pct} por ciento"><i style="width:${Math.max(2, pct)}%"></i></div>
+      <p class="fine">Fotos de DNI: ${m.dni > 2 ? mbTxt(m.dni) : "ninguna"}. Fotos de las fichas: ${m.fotos ? mbTxt(m.fotos) : "ninguna"}. Lo demás (plan, listas, lugares) ocupa muy poco. Las fotos se quitan desde cada ficha, en Familia.</p>
+      ${m.dni > 2 || m.fotos ? `<button class="btn btn-ghost btn-sm" data-action="go-fichas-cfg">Ir a las fichas</button>` : ""}`; })()}
+    </div>
     <div class="card"><h2>Datos y copias</h2>
       <p class="fine">Todo se guarda solo en este celular, sin cuentas ni internet.</p>
       ${fila("Copia de seguridad", d === null ? "Todavía no guardaste ninguna" : `La última, hace ${d === 0 ? "menos de un día" : `${d} ${d === 1 ? "día" : "días"}`}`, `<button class="btn btn-ghost btn-sm" data-action="backup">Guardar</button>`)}
@@ -6896,7 +7028,7 @@ function pedTarjeta(){
 }
 
 /* ---------- Azul y el Súper Niño: el arroyo, qué hacer y adónde llamar ----------
-   Revisado el 20/10/2026. Fuentes: NOAA (8/10/2026), SMN (pronóstico trimestral de octubre), Municipio de Azul (plan del 4/8/2026),
+   Revisado el 16/11/2026. Fuentes: NOAA (12/11/2026), SMN (pronóstico trimestral de noviembre a enero), Municipio de Azul (plan del 4/8/2026),
    inundaciones de 2002 y 2012 (Infobae, Infocielo, Télam), presa La Isidora (La Nación, 2017), IHLLA/UNICEN (red de alerta y modelo de 2012),
    ANMAT y Ministerio de Salud (alimentos, agua, leptospirosis, antitetánica). */
 const AZ_ARROYO = new Set(["Arroyo Azul", "Rectificación Arroyo Azul", "Aliviador Arroyo Azul"]);
@@ -6948,6 +7080,7 @@ function renderAlertas(){
     ${srcBox(["smnWeb","smnColores","smnApp","alertAR"])}
   </section>`;
 }
+const AZ_REV = "2026-11-16"; /* fecha de la última revisión del pronóstico: cambiarla cada vez que se actualiza */
 function renderAzul(){
   const pos = state.ultimaPos && Date.now() - (state.ultimaPos.at || 0) < 30 * 60000 ? state.ultimaPos : null;
   const lugs = state.lugares.filter(enAzul).map(l => [l.nombre, arroyoDist(l)]).concat(pos && enAzul(pos) ? [["Donde estás ahora", arroyoDist(pos)]] : []).filter(x => x[1] !== null);
@@ -6955,12 +7088,14 @@ function renderAzul(){
   const tet = state.fichas.map(f => [f, tetanoEstado(f)]);
   const c = CIUDADES.Azul, num = k => c.nums.find(x => x.label === k);
   const luz = num("CEAL: urgencias de luz");
+  const azViejo = Math.round((today0() - parseISO(AZ_REV)) / 864e5);
   return `<section class="stack azul">${backBtn()}
-    <div class="intro"><p class="phase">Revisado el 20/10/2026</p><h1>Azul y el Súper Niño</h1><p class="lede">Qué se espera este verano, cómo se inunda Azul y qué hacer en cada momento.</p></div>
+    <div class="intro"><p class="phase">Revisado el ${fmtDate(parseISO(AZ_REV))}</p><h1>Azul y el Súper Niño</h1><p class="lede">Qué se espera este verano, cómo se inunda Azul y qué hacer en cada momento.</p></div>
     <div class="inline"><a class="btn btn-primary" href="tel:103">${icon("phone")}Defensa Civil: 103</a><a class="btn btn-ghost" href="tel:911">911</a><a class="btn btn-ghost" href="tel:100">Bomberos: 100</a></div>
+    ${azViejo > 45 ? `<p class="mem-full"><strong>Esta página se revisó hace ${azViejo} días.</strong> El pronóstico puede haber cambiado: mira las alertas del SMN y actualiza la app cuando tengas internet.</p>` : ""}
     <div class="card"><h2>Qué se espera</h2><ul class="az-ul">
-      <li>Un <strong>El Niño fuerte o muy fuerte</strong>, que puede ser el más intenso desde 1950. Sigue por lo menos hasta marzo de 2027.</li>
-      <li>Para el centro-este de la provincia, el SMN espera de octubre a diciembre <strong>lluvias normales o más de lo normal</strong>, y temperaturas normales o más bajas.</li>
+      <li>Un <strong>El Niño fuerte a muy fuerte</strong>, que ya está en curso. Según la NOAA, tiene cerca de 6 chances en 10 de ser el más intenso desde 1950. Sigue por lo menos hasta el trimestre de enero a marzo de 2027.</li>
+      <li>Para la provincia, el SMN espera de noviembre a enero <strong>más lluvia de lo normal</strong>. La señal es más fuerte en el oeste y más débil hacia el este; Azul queda en el medio. Las temperaturas tienden a ser más frescas, sobre todo en el oeste.</li>
       <li>El municipio activó en agosto un plan con Defensa Civil: limpieza del arroyo, de los canales y de los desagües.</li>
       <li>Nadie puede saber con meses de anticipación qué día va a llover fuerte. Por eso hay que seguir las alertas.</li></ul></div>
     <div class="card"><h2>Cómo se inunda Azul</h2>
@@ -7278,6 +7413,7 @@ async function rgAfter(){
   rgBind();
   try{ await rgCargar(); }catch(e){ const s = document.getElementById("rg-sel"); if(s) s.innerHTML = `<p>No pude abrir el mapa de la región. Abre la app una vez con internet para que se guarde.</p>`; return; }
   if(!RG_V.z){ const cv = document.getElementById("rgmap"); const r = cv.getBoundingClientRect(); RG_V.w = r.width; RG_V.h = r.height; rgFit(-37.75, -60.95, -35.95, -58.95); }
+  if(ui.rgPend != null){ const t = RG.pl[ui.rgPend]; ui.rgPend = null; if(t){ RG_V.sel = {k:"t", o:t, x:t.x, y:t.y}; rgCentrar(t.lat, t.lng, Math.max(RG_V.z, RG_V.w / (t.c <= 2 ? 25000 : 12000))); } }
   drawRegion(); rgPanel();
   const l = document.getElementById("rg-lista"); if(l) l.innerHTML = rgListaHTML();
   const a = document.getElementById("rg-altas-b"); if(a) a.innerHTML = rgAltasHTML();
@@ -7426,7 +7562,7 @@ function despensaHTML(){
     return `<details class="desp-s${sem === i + 1 ? " hoy" : ""}"${sem === i + 1 ? " open" : ""}><summary><span class="mono desp-n">${i + 1}</span><span><strong>Semana ${i + 1}: ${t}</strong><span>${ok ? "Listo" : sem === i + 1 ? "Esta semana" : sem > i + 1 ? "Quedó pendiente" : `${its.filter(([id]) => hecho(id)).length} de ${its.length}`}</span></span></summary>
       <div class="checks">${its.map(([id, txt]) => mesCheck(id, txt, "desp")).join("")}</div></details>`; }).join("");
   return `<div class="card desp"><h2>Comprar de a poco: 8 semanas</h2>
-    <p>Para llegar a ${d} días de comida sin gastar todo junto: cada semana, un grupo. Lo que tildan acá se tilda también en la lista de abajo.</p>
+    <p>Para llegar a ${d} días de comida sin gastar todo junto: cada semana, un grupo. Lo que tildan acá se tilda también en la solapa Lista.</p>
     ${sem ? `<p class="fine">${sem > 8 ? "Ya pasaron las 8 semanas: completen lo que haya quedado." : `Van por la semana ${sem}.`} <button class="btn btn-ghost btn-sm" data-action="desp-ini" data-v="0">Empezar de nuevo</button></p>` : `<button class="btn btn-primary btn-sm" data-action="desp-ini" data-v="1">Empezar esta semana</button>`}
     <div class="desp-l">${semanas}</div>
     <ul class="az-ul"><li>Guarden todo junto y con fecha; lo más viejo, adelante. Lo que usen, repónganlo en la compra siguiente.</li>
@@ -7442,12 +7578,10 @@ function renderMes(){
   const hechos = Object.keys(state.mes.checks).filter(k => state.mes.checks[k] && (k.indexOf("c-") === 0 || k.indexOf("o-") === 0)).length;
   const etapas = mesEtapas().map(([t, items]) => `<li><h3>${t}</h3><ul>${items.map(([x, k]) => `<li>${x}${k ? `<div class="inline">${mesLink(k)}</div>` : ""}</li>`).join("")}</ul></li>`).join("");
   const num = (id, label, v) => `<div class="field mes-n"><span class="lbl" id="lbl-mes-${id}">${label}</span><div class="stepper" role="group" aria-labelledby="lbl-mes-${id}"><button data-action="mes-step" data-k="${id}" data-d="-1" aria-label="Restar">−</button><output aria-live="polite">${v}</output><button data-action="mes-step" data-k="${id}" data-d="1" aria-label="Sumar">+</button></div></div>`;
-  return `<section class="stack">
-    ${backBtn()}
-    <div class="intro"><h1>${d} días sin luz</h1><p class="lede">Qué tener, cuánto y qué hacer para pasar ${mesPer(d)} sin electricidad en casa.</p></div>
-    <div class="card"><h2>¿Para cuánto tiempo?</h2>
-      <div class="chips" role="group" aria-label="Duración del corte">${MES_DIAS.map(x => `<button class="chip" data-action="mes-dias" data-d="${x}" aria-pressed="${x === d}">${x} días</button>`).join("")}</div>
-      <p class="fine">Cambia las cantidades de comida, la energía, las etapas y la lista para imprimir.</p></div>
+  /* Solapas: antes era una sola pantalla de 13 pantallas de alto */
+  const segs = [["calc","Cuánto"],["plan","Qué hacer"],["compras","Compras"],["lista",`Lista ${hechos}/${total}`]];
+  const sg = segs.some(x => x[0] === ui.mesSeg) ? ui.mesSeg : "calc";
+  const tCalc = `
     <div class="card"><h2>Tu casa</h2>
       <div class="mes-cfg">${num("p","Personas",c.p)}${num("g","Gatos",c.g)}</div>
       <ul class="kv mes-casa"><li><span>Cocina</span><strong>Gas natural: sigue andando. Enciende con fósforos.</strong></li><li><span>Agua</span><strong>De red. Puede bajar la presión: guarda una reserva.</strong></li><li><span>Heladera</span><strong>Sin luz no enfría: el plan es comer sin frío.</strong></li></ul></div>
@@ -7455,7 +7589,7 @@ function renderMes(){
     <h2 class="sec">Cuánto necesitan</h2>
     <div class="res-grid">
       <div class="res"><span class="mono num">${fmtQ(n.agua7)}</span><span class="unit-l">litros</span><p>de agua de reserva para 7 días, para tomar y cocinar${c.g ? `, con ${c.g === 1 ? "el gato" : "los gatos"}` : ""}</p></div>
-      <div class="res"><span class="mono num">${fmtNum(c.p * d)}</span><span class="unit-l">días-persona</span><p>de comida que no necesita heladera: la lista está abajo</p></div>
+      <div class="res"><span class="mono num">${fmtNum(c.p * d)}</span><span class="unit-l">días-persona</span><p>de comida que no necesita heladera: está en la solapa Lista</p></div>
       <div class="res"><span class="mono num">${fmtNum(n.wh)}</span><span class="unit-l">Wh por día</span><p>para ${c.p} celulares, 3 luces LED y una radio</p></div>
     </div>
     <p class="fine">Si también se corta el agua de red, para ${d} días harían falta unos ${fmtNum(Math.round(n.agua30))} litros${d > 7 ? ": no se pueden guardar en casa. La salida es potabilizar agua de lluvia o del tanque" : ""}.</p>
@@ -7480,19 +7614,26 @@ function renderMes(){
       <ul class="kv-list"><li><strong>Sin heladera:</strong> lo más barato. La conservadora salva lo del primer día y después se come sin frío.</li>
         <li><strong>Generador de a ratos:</strong> 1 a 2 horas, 3 o 4 veces por día. Cerrada, la heladera conserva el frío unas 4 horas. Siempre afuera.</li>
         <li><strong>Estación grande y panel:</strong> de 1.000 Wh o más, con un panel de 400 W o más. Sin ruido ni combustible; con nubes no alcanza para todo el día.</li></ul></div>
-    <button class="btn btn-ghost" data-action="guide" data-id="energia">Guía: energía sin luz</button>
-
+    <button class="btn btn-ghost" data-action="guide" data-id="energia">Guía: energía sin luz</button>`;
+  const tPlan = `
     <h2 class="sec">${d === 7 ? "Día por día" : "Semana por semana"}</h2>
     <ol class="mes-plan">${etapas}</ol>
-
-    ${despensaHTML()}
+    <button class="btn btn-ghost" data-action="go-hoy">${icon("cal")}¿Qué hago hoy?</button>`;
+  const tLista = `
     <div class="card-h"><h2 class="sec">Lista para ${d} días</h2><span class="mono mes-prog">${hechos}/${total}</span></div>
     <h3 class="phase-h">Comida sin heladera, para ${c.p} ${c.p === 1 ? "persona" : "personas"}</h3>
     <div class="checks">${comida}${gato}</div>
     <p class="fine">Unas 2.000 calorías por persona por día. Los chicos comen algo menos; guarden igual la misma cantidad. Con gas natural se pueden cocinar arroz, fideos y legumbres: rinden mucho y son baratos.</p>
     ${cosas}
     <div class="inline"><button class="btn btn-outline" data-action="mes-print">Imprimir la lista</button></div>
-    ${srcBox(["epre","profileSolar"], "Cantidades orientativas. Revisa las fechas de vencimiento y repone lo que se usa.")}
+    ${srcBox(["epre","profileSolar"], "Cantidades orientativas. Revisa las fechas de vencimiento y repone lo que se usa.")}`;
+  return `<section class="stack">
+    ${backBtn()}
+    <div class="intro"><h1>${d} días sin luz</h1><p class="lede">Qué tener, cuánto y qué hacer para pasar ${mesPer(d)} sin electricidad en casa.</p></div>
+    <div class="card mes-dur"><h2>¿Para cuánto tiempo?</h2>
+      <div class="chips" role="group" aria-label="Duración del corte">${MES_DIAS.map(x => `<button class="chip" data-action="mes-dias" data-d="${x}" aria-pressed="${x === d}">${x} días</button>`).join("")}</div></div>
+    <div class="seg seg-4x mes-seg" role="tablist" aria-label="Partes del plan">${segs.map(([k, l]) => `<button role="tab" id="mes-t-${k}" aria-selected="${sg === k}" data-action="mes-seg" data-id="${k}">${l}</button>`).join("")}</div>
+    <div role="tabpanel" aria-labelledby="mes-t-${sg}" class="stack">${sg === "plan" ? tPlan : sg === "compras" ? despensaHTML() : sg === "lista" ? tLista : tCalc}</div>
   </section>`;
 }
 function mesPrintHTML(){
@@ -8788,6 +8929,18 @@ function addLugar(){
 
 /* ---------- Render y navegación ---------- */
 const view = document.getElementById("view");
+/* Índice arriba en las pantallas largas: un botón por cada título, para saltar sin deslizar */
+function idxPoner(){
+  if(ui.tab === "inicio" && (!ui.sub || ["mes","mapa","ir","region","prob","mificha"].includes(ui.sub))) return;
+  if(ui.tab === "guias" && ui.guide) return;
+  const intro = view.querySelector(".intro"); if(!intro) return;
+  const hs = [...view.querySelectorAll("h2")].filter(h => h.getBoundingClientRect().height > 0 && !h.closest("details:not([open])") && h.textContent.trim().length < 42);
+  if(hs.length < 3 || document.documentElement.scrollHeight < innerHeight * 3) return;
+  hs.forEach((h, i) => { h.dataset.idx = i; h.classList.add("idx-h"); });
+  const nav = document.createElement("nav"); nav.className = "idx"; nav.setAttribute("aria-label", "En esta pantalla");
+  nav.innerHTML = `<p class="idx-t">En esta pantalla</p><div class="chips">${hs.map((h, i) => `<button class="chip chip-sm" data-action="idx-go" data-i="${i}">${esc(h.textContent.trim())}</button>`).join("")}</div>`;
+  intro.after(nav);
+}
 function render(top){
   if(scanStream) stopScan();
   let html;
@@ -8803,6 +8956,7 @@ function render(top){
   else html = renderPlanTab();
   view.innerHTML = html;
   view.querySelectorAll("[data-pct]").forEach(el => { el.style.width = el.dataset.pct + "%"; });
+  idxPoner();
   { const g = document.getElementById("gear"); if(g){ if(!g.firstChild) g.innerHTML = GEAR_SVG; if(ui.tab === "inicio" && ui.sub === "config") g.setAttribute("aria-current", "page"); else g.removeAttribute("aria-current"); } }
   document.querySelectorAll(".tab").forEach(b => {
     if(b.dataset.tab === ui.tab) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current");
@@ -9139,7 +9293,8 @@ document.addEventListener("click", e => {
     case "go-mapa": go("inicio", {sub:"mapa"}); break;
     case "go-ayuda": goAyuda(); break;
     case "go-mes": go("inicio", {sub:"mes"}); break;
-    case "go-desp": go("inicio", {sub:"mes"}); { const dc = document.querySelector(".desp"); if(dc) dc.scrollIntoView({block:"start"}); } break;
+    case "go-desp": ui.mesSeg = "compras"; go("inicio", {sub:"mes"}); break;
+    case "mes-seg": ui.mesSeg = el.dataset.id; render(false); { const sgEl = document.querySelector(".mes-seg"); if(sgEl && sgEl.getBoundingClientRect().top < 0) sgEl.scrollIntoView({block:"start"}); } break;
     case "go-radio": go("inicio", {sub:"radio"}); break;
     case "go-manual": go("inicio", {sub:"manual"}); break;
     case "ahorro-on": state.ahorro = true; save(); go("inicio"); break;
@@ -9246,6 +9401,12 @@ document.addEventListener("click", e => {
     case "rec-notif": recNotif(); break;
     case "go-recs": go("inicio", {sub:"recs"}); break;
     case "go-config": go("inicio", {sub:"config"}); break;
+    case "idx-go": { const h = view.querySelector(`h2[data-idx="${el.dataset.i}"]`); if(h){ h.scrollIntoView({block:"start"}); h.setAttribute("tabindex", "-1"); try{ h.focus({preventScroll:true}); }catch(e){} } break; }
+    case "gq-prep": go("preparar", {prep:el.dataset.id}); break;
+    case "gq-fam": ui.planSeg = el.dataset.id; go("numeros"); break;
+    case "gq-town": ui.rgPend = +el.dataset.i; go("inicio", {sub:"region"}); break;
+    case "go-fichas-cfg": ui.planSeg = "ficha"; go("numeros"); break;
+    case "go-memoria": go("inicio", {sub:"config"}); { const mc = document.getElementById("memoria"); if(mc) mc.scrollIntoView({block:"start"}); } break;
     case "go-prob": case "pb-back": ui.pbId = null; go("inicio", {sub:"prob"}); if(el.dataset.action === "pb-back" && ui.pbOpen){ const d = document.querySelector(`[data-pbcat="${ui.pbOpen}"]`); if(d) d.scrollIntoView({block:"start"}); } break;
     case "pb-open": { const p = pbFind(el.dataset.id); if(p){ try{ speechSynthesis.cancel(); }catch(e){} ui.pbId = p.id; if(!p.urg) ui.pbOpen = p.c; go("inicio", {sub:"prob"}); } break; }
     case "pb-chk": pbChk(el); break;
@@ -9547,6 +9708,10 @@ document.addEventListener("input", e => {
   }else if(e.target.id === "vd-q"){
     ui.vdQ = e.target.value.slice(0, 40);
     const l = document.getElementById("vd-list"); if(l) l.innerHTML = vdListHTML();
+  }else if(e.target.id === "gq"){
+    ui.gq = e.target.value.slice(0, 40);
+    if(!RG && ui.gq.trim().length > 1) rgCargar().then(() => { const r = document.getElementById("gq-res"); if(r) r.innerHTML = gqResHTML(); }).catch(() => {});
+    const r = document.getElementById("gq-res"); if(r) r.innerHTML = gqResHTML();
   }else if(e.target.id === "pb-q"){
     ui.pbQ = e.target.value.slice(0, 40);
     const l = document.getElementById("pb-list"), c = document.getElementById("pb-cats");
